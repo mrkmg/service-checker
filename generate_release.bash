@@ -17,17 +17,26 @@ GET_CURRENT_VERSION ()
 
 DO_MAJOR ()
 {
-    NEW_VERSION=`increment_version.sh -M $CURRENT_VERSION`
+    a=( ${CURRENT_VERSION//./ } )
+    O=${a[0]}
+    O=$((O+1))
+    NEW_VERSION="$O.${a[1]}.${a[2]}"
 }
 
 DO_MINOR ()
 {
-    NEW_VERSION=`increment_version.sh -m $CURRENT_VERSION`
+    a=( ${CURRENT_VERSION//./ } )
+    O=${a[1]}
+    O=$((O+1))
+    NEW_VERSION="${a[0]}.$O.${a[2]}"
 }
 
 DO_PATCH ()
 {
-    NEW_VERSION=`increment_version.sh -p $CURRENT_VERSION`
+    a=( ${CURRENT_VERSION//./ } )
+    O=${a[2]}
+    O=$((O+1))
+    NEW_VERSION="${a[0]}.${a[1]}.$O"
 }
 
 START_GIT_FLOW ()
@@ -47,7 +56,7 @@ END_GIT_FLOW ()
     export GIT_MERGE_AUTOEDIT=no
     git add -A
     git commit -am "Version Bump and Asset Generation for $NEW_VERSION"
-    git flow release finish -F -m "Release $NEW_VERSION" $NEW_VERSION
+    git flow release finish -m "Release $NEW_VERSION" $NEW_VERSION
     echo "Pushing to origin"
     git push origin master -q
     git push origin --tags -q
@@ -60,7 +69,7 @@ GET_TYPE ()
 
 CONFIRM_UPDATE ()
 {
-    zenity --question --text="Update from $CURRENT_VERSION to $NEW_VERSION" &>/dev/null
+    zenity --question --text="Update from $CURRENT_VERSION to $NEW_VERSION" 2>/dev/null
     if [ $? -gt "0" ]; then
         exit $?
     fi
