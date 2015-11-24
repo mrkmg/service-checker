@@ -1,0 +1,26 @@
+{
+  "name": "service-checker",
+  "version": "0.0.1",
+  "description": "Checks a variety of common web services for errors.",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm run lint && npm run unit",
+    "lint": "eslint index.js lib test/specs",
+    "unit": "mocha --recursive test/specs --timeout 10000"
+  },
+  "keywords": [
+    "service",
+    "checker"
+  ],
+  "author": "Kevin Gravier",
+  "license": "MIT",
+  "dependencies": {
+    "moment": "^2.10.6",
+    "net-ping": "^1.1.12"
+  },
+  "devDependencies": {
+    "chai": "^3.4.1",
+    "eslint": "^1.10.1",
+    "mocha": "^2.3.4"
+  }
+}
