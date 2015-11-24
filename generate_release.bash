@@ -18,22 +18,25 @@ GET_CURRENT_VERSION ()
 DO_MAJOR ()
 {
     a=( ${CURRENT_VERSION//./ } )
-    ((a[0]++))
-    NEW_VERSION="${a[0]}.${a[1]}.${a[2]}"
+    O=${a[0]}
+    O=$((O+1))
+    NEW_VERSION="$O.${a[1]}.${a[2]}"
 }
 
 DO_MINOR ()
 {
     a=( ${CURRENT_VERSION//./ } )
-    ((a[1]++))
-    NEW_VERSION="${a[0]}.${a[1]}.${a[2]}"
+    O=${a[1]}
+    O=$((O+1))
+    NEW_VERSION="${a[0]}.$O.${a[2]}"
 }
 
 DO_PATCH ()
 {
     a=( ${CURRENT_VERSION//./ } )
-    ((a[2]++))
-    NEW_VERSION="${a[0]}.${a[1]}.${a[2]}"
+    O=${a[2]}
+    O=$((O+1))
+    NEW_VERSION="${a[0]}.${a[1]}.$O"
 }
 
 START_GIT_FLOW ()
