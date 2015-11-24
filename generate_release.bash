@@ -60,7 +60,7 @@ GET_TYPE ()
 
 CONFIRM_UPDATE ()
 {
-    zenity --question --text="Update from $CURRENT_VERSION to $NEW_VERSION" &>/dev/null
+    zenity --question --text="Update from $CURRENT_VERSION to $NEW_VERSION" 2>/dev/null
     if [ $? -gt "0" ]; then
         exit $?
     fi
