@@ -17,17 +17,17 @@ GET_CURRENT_VERSION ()
 
 DO_MAJOR ()
 {
-    NEW_VERSION=`./increment_version.sh -M $CURRENT_VERSION`
+    NEW_VERSION=`increment_version.sh -M $CURRENT_VERSION`
 }
 
 DO_MINOR ()
 {
-    NEW_VERSION=`./increment_version.sh -m $CURRENT_VERSION`
+    NEW_VERSION=`increment_version.sh -m $CURRENT_VERSION`
 }
 
 DO_PATCH ()
 {
-    NEW_VERSION=`./increment_version.sh -p $CURRENT_VERSION`
+    NEW_VERSION=`increment_version.sh -p $CURRENT_VERSION`
 }
 
 START_GIT_FLOW ()
