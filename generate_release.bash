@@ -51,7 +51,7 @@ START_GIT_FLOW ()
 WRITE_NEW_VERSION ()
 {
     perl -pi -e "s/\*\*([0-9]+\.){2}[0-9]+\*\*/**$NEW_VERSION**/g" README.md
-    echo "var i = require('./package.json'); i.version = '$NEW_VERSION'; require('fs').writeFile('package.json', JSON.stringify(i, null, 2), 'utf8');" | node
+    echo "var i = require('./package.json'); i.version = '$NEW_VERSION'; require('fs').writeFileSync('package.json', JSON.stringify(i, null, 2), 'utf8');" | node
 }
 
 END_GIT_FLOW ()
