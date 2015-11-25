@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+command -v zenity >/dev/null 2>&1 || { echo >&2 "Release Generator requires zenity. Aborting."; exit 1; }
+
 set -e
 
 CHECK_IF_CLEAN ()
@@ -49,6 +51,7 @@ START_GIT_FLOW ()
 WRITE_NEW_VERSION ()
 {
     perl -pi -e "s/\*\*([0-9]+\.){2}[0-9]+\*\*/**$NEW_VERSION**/g" README.md
+    echo "var i = require('./package.json'); i.version = '$NEW_VERSION'; require('fs').writeFile('package.json', JSON.stringify(i, null, 2), 'utf8');" | node
 }
 
 END_GIT_FLOW ()
