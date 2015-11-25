@@ -1,7 +1,7 @@
 "use strict";
 
 /**
- * server-checker : test/specs/main/smtp
+ * server-checker : test/specs/plugins/smtp
  * Author: MrKMG (https://github.com/mrkmg)
  *
  * MIT License
@@ -14,7 +14,7 @@ var async = require("async");
 
 var serviceChecker = require("../../..");
 
-describe("MAIN: smtp", function ()
+describe("PLUGIN: smtp", function ()
 {
     var good_server;
     var bad_server;

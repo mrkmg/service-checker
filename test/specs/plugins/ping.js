@@ -1,7 +1,7 @@
 "use strict";
 
 /**
- * server-checker : test/specs/main/ping
+ * server-checker : test/specs/plugins/ping
  * Author: MrKMG (https://github.com/mrkmg)
  *
  * MIT License
@@ -13,7 +13,7 @@ var assert = chai.assert;
 
 var serviceChecker = require("../../..");
 
-describe("MAIN: ping", function ()
+describe("PLUGIN: ping", function ()
 {
     it("should have method", function()
     {

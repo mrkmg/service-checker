@@ -1,7 +1,7 @@
 "use strict";
 
 /**
- * server-checker : test/specs/main/https
+ * server-checker : test/specs/plugins/https
  * Author: MrKMG (https://github.com/mrkmg)
  *
  * MIT License
@@ -15,7 +15,7 @@ var serviceChecker = require("../../..");
 chai.use(require("chai-as-promised"));
 var assert = chai.assert;
 
-describe("MAIN: https", function ()
+describe("PLUGIN: https", function ()
 {
     it("should have method", function()
     {

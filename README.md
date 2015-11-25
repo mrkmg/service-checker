@@ -45,10 +45,11 @@ service-checker takes an options argument. The current options are:
 Built in plugins
 ----------------
 
-- ping(host)
-- http(host[, port=80])
-- https(host[, port=443])
-- smtp(host[, port=25])
+- ping(host) - Uses the system ping utility to check for an ICMP response
+- http(host[, port=80]) - Ensures the host replies with a valid HTTP code
+- https(host[, port=443]) - Ensures the host replies with a valid HTTP code and has a valid SSL Cert
+- smtp(host[, port=25]) - Ensures the host replies with 220
+- rawTcp(host, port) - Ensures the host can be connected to. No further checking is performed.
 
 Including a third party plugin
 ------------------------------
@@ -62,7 +63,7 @@ would have to do is call the `use` function of service-checker
 Check the plugins documentation to see how to call use the plugin. If the plugins adds the method `exchange`, then
 all you would have to do is:
 
-    serviceChecker.exchange(args..)
+    serviceChecker().exchange(args..)
         .then(successHandler)
         .catch(failureHandler)
         
@@ -78,7 +79,9 @@ Important Notes:
 
 - The function passed to "use" **must** be named. This name will be the method name used by service-checker
 - The function passed to "use" **must** return a promise. service-checker uses 
-    [BlueBird](http://bluebirdjs.com/docs/getting-started.html)
+    [BlueBird](http://bluebirdjs.com/docs/getting-started.html) but any Promises/A+ implementation should work.
+- The function passed to "use" **should** interpret and adhere to any applicable options. Current options are:
+    - timeout
 
 License
 -------
