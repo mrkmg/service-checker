@@ -10,13 +10,40 @@ A node library to check if various web services are up and behaving. This projec
 Install
 -------
 
-_coming soon_
+    npm install --save service-checker
+
+Quick Example
+-------------
+
+    var serviceChecker = require("service-checker")({
+        timeout: 5000
+    });
+    
+    //Check if server is responing to pings
+    serviceChecker.ping("8.8.8.8")
+        .then(function ()
+        {
+            console.log("Did respond to ping");
+        })
+        .catch(function (err)
+        {
+            console.log("Did not respond to ping");
+            console.log(err);
+        });
 
 Usage
 -----
 
-_coming soon_
+service-checker takes an options argument. The options are:
 
+- timeout *How long in milliseconds before the check times out*
+
+Methods
+-------
+
+- ping(host)
+- http(host[, port=80])
+- https(host[, port=443])
 
 License
 -------
