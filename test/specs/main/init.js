@@ -1,10 +1,10 @@
 "use strict";
 
 var chai = require("chai");
-var serviceChecker = require("../../..");
-
 chai.use(require("chai-as-promised"));
 var assert = chai.assert;
+
+var serviceChecker = require("../../..");
 
 describe("MAIN: Module Exists", function ()
 {

@@ -19,7 +19,9 @@ var _options = {
 };
 
 var handlers = {
-    ping: require("./lib/checkers/ping")
+    ping: require("./lib/checkers/ping"),
+    http: require("./lib/checkers/http"),
+    https: require("./lib/checkers/https")
 };
 
 function serviceChecker(opts)
@@ -28,9 +30,21 @@ function serviceChecker(opts)
 
     return {
         _name: "service-checker",
-        checkPing: function (host)
+        ping: function (host)
         {
             return check("ping", host, {
+                timeout: _options.timeout
+            });
+        },
+        http: function (host, port)
+        {
+            return check("http", host, port, {
+                timeout: _options.timeout
+            });
+        },
+        https: function (host, port)
+        {
+            return check("https", host, port, {
                 timeout: _options.timeout
             });
         }

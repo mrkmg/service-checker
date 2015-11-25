@@ -1,35 +1,35 @@
 "use strict";
 
 var chai = require("chai");
-var serviceChecker = require("../../..");
-
 chai.use(require("chai-as-promised"));
 var assert = chai.assert;
 
-describe("MAIN: checkPing", function ()
+var serviceChecker = require("../../..");
+
+describe("MAIN: ping", function ()
 {
     it("should have method", function()
     {
-        assert.property(serviceChecker(), "checkPing");
+        assert.property(serviceChecker(), "ping");
     });
 
     it("should resolve for valid IP Address", function ()
     {
-        assert.isFulfilled(serviceChecker().checkPing("127.0.0.1"));
+        assert.isFulfilled(serviceChecker().ping("127.0.0.1"));
     });
 
     it("should resolve for valid Domain", function ()
     {
-        assert.isFulfilled(serviceChecker().checkPing("localhost"));
+        assert.isFulfilled(serviceChecker().ping("localhost"));
     });
 
     it("should reject for invalid IP Address", function ()
     {
-        assert.isRejected(serviceChecker().checkPing("127.0.0.256"));
+        assert.isRejected(serviceChecker().ping("127.0.0.256"));
     });
 
     it("should reject for invalid Domain", function ()
     {
-        assert.isRejected(serviceChecker().checkPing("hostname.invalid"));
+        assert.isRejected(serviceChecker().ping("hostname.invalid"));
     });
 });
