@@ -22,7 +22,7 @@ DO_MAJOR ()
     a=( ${CURRENT_VERSION//./ } )
     O=${a[0]}
     O=$((O+1))
-    NEW_VERSION="$O.${a[1]}.${a[2]}"
+    NEW_VERSION="$O.0.0"
 }
 
 DO_MINOR ()
@@ -30,7 +30,7 @@ DO_MINOR ()
     a=( ${CURRENT_VERSION//./ } )
     O=${a[1]}
     O=$((O+1))
-    NEW_VERSION="${a[0]}.$O.${a[2]}"
+    NEW_VERSION="${a[0]}.$O.0"
 }
 
 DO_PATCH ()
