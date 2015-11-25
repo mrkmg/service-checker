@@ -17,6 +17,6 @@ describe("MAIN: Module Exists", function ()
 {
     it("_name should exist and equal 'service-checker'", function ()
     {
-        assert.equal(serviceChecker()._name, "service-checker");
+        return assert.equal(serviceChecker()._name, "service-checker");
     });
 });

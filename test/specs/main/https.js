@@ -17,21 +17,26 @@ describe("MAIN: https", function ()
 {
     it("should have method", function()
     {
-        assert.property(serviceChecker(), "https");
+        return assert.property(serviceChecker(), "https");
     });
 
     it("should resolve for valid Domain", function ()
     {
-        assert.isFulfilled(serviceChecker().https("google.com"));
+        return assert.isFulfilled(serviceChecker().https("google.com"));
     });
 
     it("should reject for invalid Domain", function ()
     {
-        assert.isRejected(serviceChecker().https("hostname.invalid"));
+        return assert.isRejected(serviceChecker().https("invalid.domain"));
     });
 
     it("should reject for expired ssl cert", function ()
     {
-        assert.isRejected(serviceChecker().https("testssl-expire.disig.sk"));
+        return assert.isRejected(serviceChecker().https("testssl-expire.disig.sk"));
     });
+
+    it("should reject for self signed cert", function ()
+    {
+        return assert.isRejected(serviceChecker().https("www.pcwebshop.co.uk"));
+    })
 });

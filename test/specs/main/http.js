@@ -17,16 +17,16 @@ describe("MAIN: http", function ()
 {
     it("should have method", function()
     {
-        assert.property(serviceChecker(), "http");
+        return assert.property(serviceChecker(), "http");
     });
 
     it("should resolve for valid Domain", function ()
     {
-        assert.isFulfilled(serviceChecker().http("google.com"));
+        return assert.isFulfilled(serviceChecker().http("google.com"));
     });
 
     it("should reject for invalid Domain", function ()
     {
-        assert.isRejected(serviceChecker().http("google.com"));
+        return assert.isRejected(serviceChecker().http("invalid.domain"));
     });
 });

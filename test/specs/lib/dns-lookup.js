@@ -8,55 +8,35 @@
  */
 
 var chai = require("chai");
-var errorMaps = require("../../../lib/utils/error-maps");
+var dnsLookup = require("../../../lib/utils/dns-lookup");
 
 chai.use(require("chai-as-promised"));
 var assert = chai.assert;
 
-describe("LIB: error-maps", function ()
+describe("LIB: dns-lookup", function ()
 {
     it("should be a function", function ()
     {
-        assert.isFunction(errorMaps);
+        return assert.isFunction(dnsLookup);
     });
 
-    it("should reject on unknown error", function ()
+    it("should return a valid IP as is", function ()
     {
-        return assert.isRejected(errorMaps("NONREAL_ERROR"));
+        return assert.eventually.equal(dnsLookup("8.8.8.8"), "8.8.8.8");
     });
 
-    it("should resolve for ECONNREFUSED", function ()
+    it("should reject an invalid IP", function ()
     {
-        return assert.isFulfilled(errorMaps("ECONNREFUSED"));
+        return assert.isRejected(dnsLookup("1.2.3.256"));
     });
 
-    it("should resolve for ENOTFOUND", function ()
+    it("should resolve a valid domain", function ()
     {
-        return assert.isFulfilled(errorMaps("ENOTFOUND"));
+        return assert.isFulfilled(dnsLookup("google.com"));
     });
 
-    it("should resolve for UNABLE_TO_VERIFY_LEAF_SIGNATURE", function ()
+    it("should reject an invalid domain", function ()
     {
-        return assert.isFulfilled(errorMaps("UNABLE_TO_VERIFY_LEAF_SIGNATURE"));
-    });
-
-    it("should resolve for CERT_HAS_EXPIRED", function ()
-    {
-        return assert.isFulfilled(errorMaps("CERT_HAS_EXPIRED"));
-    });
-
-    it("should resolve for EHOSTUNREACH", function ()
-    {
-        return assert.isFulfilled(errorMaps("EHOSTUNREACH"));
-    });
-
-    it("should resolve for DNSNOTFOUND", function ()
-    {
-        return assert.isFulfilled(errorMaps("DNSNOTFOUND"));
-    });
-
-    it("should resolve for RequestTimedOutError", function ()
-    {
-        return assert.isFulfilled(errorMaps("RequestTimedOutError"));
-    });
+        return assert.isRejected(dnsLookup("invalid.domain"));
+    })
 });

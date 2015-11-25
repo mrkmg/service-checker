@@ -17,26 +17,26 @@ describe("MAIN: ping", function ()
 {
     it("should have method", function()
     {
-        assert.property(serviceChecker(), "ping");
+        return assert.property(serviceChecker(), "ping");
     });
 
     it("should resolve for valid IP Address", function ()
     {
-        assert.isFulfilled(serviceChecker().ping("127.0.0.1"));
+        return assert.isFulfilled(serviceChecker().ping("127.0.0.1"));
     });
 
     it("should resolve for valid Domain", function ()
     {
-        assert.isFulfilled(serviceChecker().ping("localhost"));
+        return assert.isFulfilled(serviceChecker().ping("localhost"));
     });
 
     it("should reject for invalid IP Address", function ()
     {
-        assert.isRejected(serviceChecker().ping("127.0.0.256"));
+        return assert.isRejected(serviceChecker().ping("127.0.0.256"));
     });
 
     it("should reject for invalid Domain", function ()
     {
-        assert.isRejected(serviceChecker().ping("hostname.invalid"));
+        return assert.isRejected(serviceChecker().ping("hostname.invalid"));
     });
 });

@@ -66,14 +66,7 @@ function check(func)
     {
         handlers[func].apply(null, options)
             .then(resolve)
-            .catch(function (err)
-            {
-                errorMaps(err).then(reject).catch(function (err)
-                {
-                    console.warn("Unknown Error: " + err);
-                    console.warn("Please report this as a bug.");
-                    reject("Unknown Error", err);
-                });
-            });
+            .catch(errorMaps)
+            .then(reject);
     });
 }
