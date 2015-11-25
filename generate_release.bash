@@ -44,7 +44,9 @@ DO_PATCH ()
 START_GIT_FLOW ()
 {
     echo "Bring Master Up to date"
-    git checkout -B master origin/master
+    git checkout master
+    git pull origin master
+    git checkout develop
     git flow release start $NEW_VERSION
 }
 
