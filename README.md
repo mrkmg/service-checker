@@ -1,5 +1,7 @@
-Service Checker
+Service Checker 
 ===============
+
+![Master Build Status](https://travis-ci.org/mrkmg/service-checker.svg?branch=master)
 
 Current Version: **0.0.4**
 
