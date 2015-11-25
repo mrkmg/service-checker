@@ -44,7 +44,11 @@ DO_PATCH ()
 START_GIT_FLOW ()
 {
     echo "Bring Master Up to date"
-    git checkout -B master origin/master
+    git checkout develop
+    git pull origin develop --rebase
+    git checkout master
+    git pull origin master -q
+    git checkout develop
     git flow release start $NEW_VERSION
 }
 
@@ -61,6 +65,7 @@ END_GIT_FLOW ()
     git commit -am "Version Bump for $NEW_VERSION"
     git flow release finish -m "Release $NEW_VERSION" $NEW_VERSION
     echo "Pushing to origin"
+    git push origin develop -q
     git push origin master -q
     git push origin --tags -q
 }

@@ -15,8 +15,7 @@ var errorMaps = require("./lib/utils/error-maps");
 module.exports = serviceChecker;
 module.exports.use = use;
 
-var handlers = {
-};
+var handlers = {};
 
 function serviceChecker(opts)
 {

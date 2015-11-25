@@ -1,7 +1,7 @@
 "use strict";
 
 /**
- * server-checker : test/specs/main/http
+ * server-checker : test/specs/plugins/http
  * Author: MrKMG (https://github.com/mrkmg)
  *
  * MIT License
@@ -14,7 +14,7 @@ var async = require("async");
 
 var serviceChecker = require("../../..");
 
-describe("MAIN: http", function ()
+describe("PLUGIN: http", function ()
 {
     var good_server;
     var bad_server;
