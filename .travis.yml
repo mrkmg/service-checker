@@ -1,8 +1,6 @@
-sudo: false
+sudo: true
 git:
   depth: 2
 language: node_js
 node_js:
   - stable
-  - 4.1
-  - .10
