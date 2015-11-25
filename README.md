@@ -1,7 +1,9 @@
-Service Checker
+Service Checker 
 ===============
 
-Current Version: **0.0.4**
+![Master Build Status](https://travis-ci.org/mrkmg/service-checker.svg?branch=master)
+
+Current Version: **0.0.5**
 
 A node library to check if various web services are up and behaving. This project is in alpha.
 
