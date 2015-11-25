@@ -44,6 +44,8 @@ DO_PATCH ()
 START_GIT_FLOW ()
 {
     echo "Bring Master Up to date"
+    git checkout develop
+    git pull origin develop --rebase
     git checkout master
     git pull origin master -q
     git checkout develop
