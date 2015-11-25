@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+command -v zenity >/dev/null 2>&1 || { echo >&2 "Release Generator requires zenity. Aborting."; exit 1; }
+
 set -e
 
 CHECK_IF_CLEAN ()
