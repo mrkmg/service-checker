@@ -7,7 +7,7 @@
 Service Checker 
 ===============
 
-Current Version: **0.1.0**
+Current Version: **0.1.1**
 
 A node library to check if various web services are up and behaving. This project is in alpha.
 
@@ -23,7 +23,7 @@ Quick Example
         timeout: 5000
     });
     
-    //Check if server is responing to pings
+    //Check if server is responding to pings
     serviceChecker.ping("8.8.8.8")
         .then(function ()
         {
@@ -38,16 +38,47 @@ Quick Example
 Usage
 -----
 
-service-checker takes an options argument. The options are:
+service-checker takes an options argument. The current options are:
 
 - timeout *How long in milliseconds before the check times out*
 
-Methods
--------
+Built in plugins
+----------------
 
 - ping(host)
 - http(host[, port=80])
 - https(host[, port=443])
+- smtp(host[, port=25])
+
+Including a third party plugin
+------------------------------
+
+Including plugins is very easy. Let's say you installed a plugin from npm named `exchange-checker`. All you
+would have to do is call the `use` function of service-checker
+
+    var serviceChecker = require("service-checker");
+    serviceChecker.use(require("exchange-checker"));
+    
+Check the plugins documentation to see how to call use the plugin. If the plugins adds the method `exchange`, then
+all you would have to do is:
+
+    serviceChecker.exchange(args..)
+        .then(successHandler)
+        .catch(failureHandler)
+        
+        
+*If you know a reliable way to check if an exchange server is up and running, please get in contact with me!*
+
+Writing your own plugins
+------------------------
+
+*see the current included plugins for now*
+
+Important Notes:
+
+- The function passed to "use" **must** be named. This name will be the method name used by service-checker
+- The function passed to "use" **must** return a promise. service-checker uses 
+    [BlueBird](http://bluebirdjs.com/docs/getting-started.html)
 
 License
 -------
