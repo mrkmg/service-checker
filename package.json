@@ -1,6 +1,6 @@
 {
   "name": "service-checker",
-  "version": "0.0.7",
+  "version": "0.1.0",
   "description": "Checks a variety of common web services for errors.",
   "repository": "https://github.com/mrkmg/service-checker.git",
   "main": "index.js",
