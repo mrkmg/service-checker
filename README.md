@@ -1,7 +1,11 @@
+<p align="center">
+    <a href="https://travis-ci.org/mrkmg/service-checker" title="service-checker on Travis CI">
+        <img src="https://travis-ci.org/mrkmg/service-checker.svg?branch=master" />
+    </a>
+</p>
+
 Service Checker 
 ===============
-
-![Master Build Status](https://travis-ci.org/mrkmg/service-checker.svg?branch=master)
 
 Current Version: **0.0.6**
 
