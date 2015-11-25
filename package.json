@@ -1,7 +1,8 @@
 {
   "name": "service-checker",
-  "version": "0.0.1",
+  "version": "0.0.6",
   "description": "Checks a variety of common web services for errors.",
+  "repository": "https://github.com/mrkmg/service-checker.git",
   "main": "index.js",
   "scripts": {
     "test": "npm run lint && npm run unit",
@@ -18,7 +19,7 @@
     "async": "^1.5.0",
     "bluebird": "^3.0.5",
     "moment": "^2.10.6",
-    "net-ping": "^1.1.12",
+    "ping": "^0.1.10",
     "underscore": "^1.8.3"
   },
   "devDependencies": {
