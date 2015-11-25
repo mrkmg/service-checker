@@ -14,48 +14,48 @@ var errorMaps = require("./lib/utils/error-maps");
 
 module.exports = serviceChecker;
 
-var _options = {
-    timeout: 5000
-};
-
 var handlers = {
     ping: require("./lib/checkers/ping"),
     http: require("./lib/checkers/http"),
-    https: require("./lib/checkers/https")
+    https: require("./lib/checkers/https"),
+    smtp: require("./lib/checkers/smtp")
 };
 
 function serviceChecker(opts)
 {
-    applyOptions(opts);
+    if (!_.isObject(opts)) opts = {};
+
+    _.defaults(opts, {
+        timeout: 5000
+    });
 
     return {
         _name: "service-checker",
         ping: function (host)
         {
             return check("ping", host, {
-                timeout: _options.timeout
+                timeout: opts.timeout
             });
         },
         http: function (host, port)
         {
             return check("http", host, port, {
-                timeout: _options.timeout
+                timeout: opts.timeout
             });
         },
         https: function (host, port)
         {
             return check("https", host, port, {
-                timeout: _options.timeout
+                timeout: opts.timeout
             });
+        },
+        smtp: function (host, port)
+        {
+            return check("smtp", host, port, {
+                timeout: opts.timeout
+            })
         }
     };
-}
-
-function applyOptions(opts)
-{
-    _options = _.extend(_options, _.pick(opts, [
-        "timeout"
-    ]));
 }
 
 function check(func)

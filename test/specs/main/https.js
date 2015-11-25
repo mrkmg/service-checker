@@ -5,6 +5,8 @@
  * Author: MrKMG (https://github.com/mrkmg)
  *
  * MIT License
+ *
+ * TODO: Add servers for tests, would require valid, expired, and self-signed certs.
  */
 
 var chai = require("chai");
