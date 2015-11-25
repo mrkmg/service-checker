@@ -1,5 +1,12 @@
 "use strict";
 
+/**
+ * server-checker : test/specs/main/ping
+ * Author: MrKMG (https://github.com/mrkmg)
+ *
+ * MIT License
+ */
+
 var chai = require("chai");
 chai.use(require("chai-as-promised"));
 var assert = chai.assert;

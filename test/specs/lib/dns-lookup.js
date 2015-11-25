@@ -1,7 +1,7 @@
 "use strict";
 
 /**
- * server-checker : test/specs/lib/error-maps
+ * server-checker : test/specs/lib/dns-lookup
  * Author: MrKMG (https://github.com/mrkmg)
  *
  * MIT License

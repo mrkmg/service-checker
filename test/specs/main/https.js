@@ -1,5 +1,12 @@
 "use strict";
 
+/**
+ * server-checker : test/specs/main/https
+ * Author: MrKMG (https://github.com/mrkmg)
+ *
+ * MIT License
+ */
+
 var chai = require("chai");
 var serviceChecker = require("../../..");
 
