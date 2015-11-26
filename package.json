@@ -7,7 +7,10 @@
   "scripts": {
     "test": "npm run lint && npm run unit",
     "lint": "eslint index.js lib test/specs",
-    "unit": "mocha --recursive test/specs --timeout 10000"
+    "unit": "mocha --recursive test/specs --timeout 10000",
+    "cover-local": "istanbul cover _mocha -- --timeout 10000 --recursive ./test/specs",
+    "cover": "npm run env && npm run cover-local && npm run coveralls",
+    "coveralls": "istanbul-coveralls"
   },
   "keywords": [
     "service",
@@ -27,6 +30,8 @@
     "chai": "^3.4.1",
     "chai-as-promised": "^5.1.0",
     "eslint": "^1.10.1",
+    "istanbul": "^0.4.1",
+    "istanbul-coveralls": "^1.0.3",
     "mocha": "^2.3.4"
   }
 }

@@ -28,6 +28,7 @@ describe("MAIN: plugin system", function ()
             return require("bluebird").resolve(true);
         });
 
+        assert.include(serviceChecker()._loaded, "plugin_test_1");
         assert.property(serviceChecker(), "plugin_test_1");
         assert.isFunction(serviceChecker().plugin_test_1);
     });
