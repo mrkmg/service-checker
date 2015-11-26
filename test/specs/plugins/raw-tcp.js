@@ -51,6 +51,19 @@ describe("PLUGIN: raw-tcp", function ()
 
     it("should reject for invalid domain", function ()
     {
-        return assert.isRejected(serviceChecker().rawTcp("invalid.domain"));
+        return assert.isRejected(serviceChecker().rawTcp("invalid.domain", 25));
     });
+
+    it("should reject if host is not a string", function ()
+    {
+        return assert.isRejected(serviceChecker().rawTcp(1, 10));
+    });
+
+    it("should reject if port is not a number", function ()
+    {
+        return assert.isRejected(serviceChecker().rawTcp("localhost", "port"));
+    });
+
+    //TODO: figure out a way to test for a slow connecting TCP connection. rawTcp can
+    //      not be tested the same way smtp, or http as it does not wait for data...
 });

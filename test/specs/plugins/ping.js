@@ -39,4 +39,14 @@ describe("PLUGIN: ping", function ()
     {
         return assert.isRejected(serviceChecker().ping("hostname.invalid"));
     });
+
+    it("should reject if host is not a string", function ()
+    {
+        return assert.isRejected(serviceChecker().ping(1));
+    });
+
+    it("should reject if host does not response to pings", function ()
+    {
+        return assert.isRejected(serviceChecker().ping("10.0.0.0"));
+    });
 });

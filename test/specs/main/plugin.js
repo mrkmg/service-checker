@@ -44,4 +44,35 @@ describe("MAIN: plugin system", function ()
 
         return assert.isFulfilled(serviceChecker().plugin_test_2());
     });
+
+    it("should pass options object is correct place", function ()
+    {
+        function plugin_test_3(param1, param2, param3, options)
+        {
+            return require("bluebird").resolve(options.timeout);
+        }
+
+        serviceChecker.use(plugin_test_3);
+
+        return assert.eventually.equal(serviceChecker({timeout: 1000}).plugin_test_3(), 1000);
+    });
+
+    it("should throw an error if non function passed to use", function ()
+    {
+        return assert.throws(function ()
+        {
+            serviceChecker.use(true)
+        });
+    });
+
+    it("should throw if function is not named", function ()
+    {
+        return assert.throws(function ()
+        {
+            serviceChecker.use(function ()
+            {
+                return true;
+            });
+        });
+    })
 });

@@ -18,6 +18,7 @@ describe("PLUGIN: http", function ()
 {
     var good_server;
     var bad_server;
+    var no_reply_server;
 
     before("starting up test servers", function (done)
     {
@@ -33,6 +34,11 @@ describe("PLUGIN: http", function ()
             response.end("Bad");
         });
 
+        no_reply_server = require("http").createServer(function (request, response)
+        {
+            //Do not reply
+        });
+
         async.parallel([
             function (callback)
             {
@@ -41,6 +47,10 @@ describe("PLUGIN: http", function ()
             function (callback)
             {
                 bad_server.listen(10001, callback);
+            },
+            function (callback)
+            {
+                no_reply_server.listen(10002, callback);
             }
         ], done);
 
@@ -50,6 +60,7 @@ describe("PLUGIN: http", function ()
     {
         good_server.close();
         bad_server.close();
+        no_reply_server.close();
     });
 
     it("should have method", function ()
@@ -70,5 +81,15 @@ describe("PLUGIN: http", function ()
     it("should reject for invalid Domain", function ()
     {
         return assert.isRejected(serviceChecker().http("invalid.domain"));
+    });
+
+    it("should reject for slow responding server", function ()
+    {
+        return assert.isRejected(serviceChecker({timeout: 1000}).http("localhost", 10002));
+    });
+
+    it("should reject if host is not a string", function ()
+    {
+        return assert.isRejected(serviceChecker().http(1));
     });
 });

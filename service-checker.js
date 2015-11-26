@@ -35,9 +35,15 @@ function serviceChecker(opts)
         checker._loaded.push(name);
         checker[name] = function ()
         {
+            var needed_args = handler.length - 1;
             var args = _.toArray(arguments);
-            args.unshift(name);
+
+            while (args.length < needed_args)
+                args.push(null);
+
             args.push(opts);
+            args.unshift(name);
+
             return check.apply(null, args);
         }
     });
@@ -47,11 +53,11 @@ function serviceChecker(opts)
 
 function use(plugin)
 {
-    if (!plugin.hasOwnProperty("name") || !_.isString(plugin.name))
-        throw new Exception("plugin.name must be defined and be a string");
-
     if (!_.isFunction(plugin))
-        throw new Exception("plugin must be a function");
+        throw new Error("plugin must be a function");
+
+    if (!plugin.hasOwnProperty("name") || !_.isString(plugin.name) || _.isEmpty(plugin.name))
+        throw new Error("plugin.name must be defined and be a string");
 
     handlers[plugin.name] = plugin;
 }
