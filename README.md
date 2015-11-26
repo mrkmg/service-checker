@@ -10,7 +10,7 @@
 Service Checker 
 ===============
 
-Current Version: **0.1.2**
+Current Version: **0.2.0**
 
 A node library to check if various web services are up and behaving. This project is in alpha.
 
