@@ -28,9 +28,10 @@ Quick Example
     
     //Check if server is responding to pings
     serviceChecker.ping("8.8.8.8")
-        .then(function ()
+        .then(function (time)
         {
             console.log("Did respond to ping");
+            console.log("It took " + time + "ms");
         })
         .catch(function (err)
         {
