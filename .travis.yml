@@ -6,3 +6,4 @@ node_js:
   - stable
   - 4.1
   - 0.10
+after_script: npm run cover
