@@ -45,16 +45,31 @@ describe("MAIN: plugin system", function ()
         return assert.isFulfilled(serviceChecker().plugin_test_2());
     });
 
-    it("should pass options object is correct place", function ()
+    it("should pass arguments in correct place", function (done)
     {
+        var check_timeout = 0;
+        var check_param1 = 0;
+        var check_param2 = 0;
+        var check_param3 = 0;
         function plugin_test_3(param1, param2, param3, options)
         {
-            return require("bluebird").resolve(options.timeout);
+            check_param1 = param1;
+            check_param2 = param2;
+            check_param3 = param3;
+            check_timeout = options.timeout;
+            return require("bluebird").resolve();
         }
 
         serviceChecker.use(plugin_test_3);
 
-        return assert.eventually.equal(serviceChecker({timeout: 1000}).plugin_test_3(), 1000);
+        serviceChecker({timeout: 1000}).plugin_test_3("a", "b", "c").then(function ()
+        {
+            assert.equal(check_param1, "a");
+            assert.equal(check_param2, "b");
+            assert.equal(check_param3, "c");
+            assert.equal(check_timeout, 1000);
+            done();
+        }).catch(done);
     });
 
     it("should throw an error if non function passed to use", function ()

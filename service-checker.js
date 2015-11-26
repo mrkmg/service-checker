@@ -10,8 +10,6 @@
 var _ = require("underscore");
 var Promise = require("bluebird");
 
-var errorMaps = require("./lib/utils/error-maps");
-
 module.exports = serviceChecker;
 module.exports.use = use;
 
@@ -64,13 +62,19 @@ function use(plugin)
 
 function check(func)
 {
-    var options = _.toArray(arguments).slice(1);
+    var args = _.toArray(arguments).slice(1);
 
     return new Promise(function (resolve, reject)
     {
-        handlers[func].apply(null, options)
-            .then(resolve)
-            .catch(errorMaps)
-            .then(reject);
+        var start_time = process.hrtime();
+
+        handlers[func].apply(null, args)
+            .then(function()
+            {
+                var end_time = process.hrtime(start_time);
+
+                resolve(Math.round((end_time[0] * 1000) + (end_time[1] / 1000000))); // Milliseconds
+            })
+            .catch(reject)
     });
 }
