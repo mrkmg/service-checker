@@ -62,26 +62,25 @@ describe("PLUGIN: smtp", function ()
         return assert.property(serviceChecker(), "smtp");
     });
 
-    it("should resolve for valid server", function ()
+    it("should return success:true for valid server", function ()
     {
-        return assert.isFulfilled(serviceChecker().smtp("localhost", 10000));
+        return assert.eventually.include(serviceChecker().smtp("localhost", 10000), {success: true});
     });
 
-    it("should reject for bad server", function ()
+    it("should return success:false for bad server", function ()
     {
-        return assert.isRejected(serviceChecker().smtp("localhost", 10001));
+        return assert.eventually.include(serviceChecker().smtp("localhost", 10001), {success: false});
     });
 
-    it("should reject for invalid domain", function ()
+    it("should return success:false due to timeout on slow server", function ()
     {
-        return assert.isRejected(serviceChecker().smtp("invalid.domain"));
+        return assert.eventually.include(serviceChecker({timeout: 1000}).smtp("localhost", 10002), {success: false});
     });
 
-    it("should reject due to timeout on slow server", function ()
+    it("should return success:false for invalid Domain", function ()
     {
-        return assert.isRejected(serviceChecker({timeout: 1000}).smtp("localhost", 10002));
+        return assert.eventually.include(serviceChecker().smtp("invalid.domain"), {success: false});
     });
-
     it("should reject if host is not a string", function ()
     {
         return assert.isRejected(serviceChecker().smtp(1));

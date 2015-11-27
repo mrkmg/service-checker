@@ -39,35 +39,35 @@ describe("PLUGIN: https", function ()
         return assert.property(serviceChecker(), "https");
     });
 
-    it("should resolve for valid Domain", function ()
+    it("should return success:true for good host", function ()
     {
-        return assert.isFulfilled(serviceChecker().https("google.com"));
+        return assert.eventually.include(serviceChecker().http("google.com"), {success: true});
     });
 
-    it("should reject for invalid Domain", function ()
+    it("should return success:false for expired ssl cert", function ()
     {
-        return assert.isRejected(serviceChecker().https("invalid.domain"));
+        return assert.eventually.include(serviceChecker().https("testssl-expire.disig.sk"), {success: false});
     });
 
-    it("should reject for expired ssl cert", function ()
+    it("should return success:false for self signed cert", function ()
     {
-        return assert.isRejected(serviceChecker().https("testssl-expire.disig.sk"));
+        return assert.eventually.include(serviceChecker().https("www.pcwebshop.co.uk"), {success: false});
     });
 
-    it("should reject for self signed cert", function ()
+    it("should return success:false for slow responding server", function ()
     {
-        return assert.isRejected(serviceChecker().https("www.pcwebshop.co.uk"));
+        return assert.eventually.include(serviceChecker({timeout: 1000}).https("localhost", 10000), {success: false});
+    });
+
+    //TODO: Add test for invalid status code
+
+    it("should return success:false for invalid Domain", function ()
+    {
+        return assert.eventually.include(serviceChecker().https("invalid.domain"), {success: false});
     });
 
     it("should reject if host is not a string", function ()
     {
         return assert.isRejected(serviceChecker().https(1));
     });
-
-    it("should reject for slow responding server", function ()
-    {
-        return assert.isRejected(serviceChecker({timeout: 1000}).https("localhost", 10000));
-    });
-
-    //TODO: Add test for invalid status code
 });

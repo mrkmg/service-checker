@@ -9,6 +9,7 @@
 
 var _ = require("underscore");
 var Promise = require("bluebird");
+var checkResult = require("./lib/check-result");
 
 module.exports = serviceChecker;
 module.exports.use = use;
@@ -66,15 +67,15 @@ function check(func)
 
     return new Promise(function (resolve, reject)
     {
-        var start_time = process.hrtime();
+        var result = new checkResult(func);
 
         handlers[func].apply(null, args)
-            .then(function()
+            .then(function (err)
             {
-                var end_time = process.hrtime(start_time);
+                result.finished(err);
 
-                resolve(Math.round((end_time[0] * 1000) + (end_time[1] / 1000000))); // Milliseconds
+                resolve(result);
             })
-            .catch(reject)
+            .catch(reject);
     });
 }

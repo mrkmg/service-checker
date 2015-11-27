@@ -29,15 +29,22 @@ Quick Example
     
     //Check if server is responding to pings
     serviceChecker.ping("8.8.8.8")
-        .then(function (time)
+        .then(function (result)
         {
-            console.log("Did respond to ping");
-            console.log("It took " + time + "ms");
+            if (result.success)
+                console.log("Did respond to ping");
+                console.log("It took " + result.time + "ms");
+            }
+            else
+            {
+                console.log("Did not respond to ping");
+                console.log(result.error);
+            }
         })
-        .catch(function (err)
+        .catch(function (error)
         {
-            console.log("Did not respond to ping");
-            console.log(err);
+            console.log("Other Error");
+            console.log(error);
         });
 
 Usage
@@ -46,6 +53,16 @@ Usage
 service-checker takes an options argument. The current options are:
 
 - timeout *How long in milliseconds before the check times out*
+
+Call one of the plugins *see below* as a method of service checker. A promise will be returned which will resolve with
+the following public properties:
+
+- success [bool] *Whether or not the check was successful*
+- time [int] *How long in milliseconds the check took*
+- start_time [int] *Millisecond timestamp (Date.now()) when the check started*
+- end_time [int] *Millisecond timestamp (Date.now()) when the check finished*
+- error [object|undefined] *If the test was not successful, the error object from the check*
+
 
 Built in plugins
 ----------------
@@ -69,8 +86,8 @@ Check the plugins documentation to see how to call use the plugin. If the plugin
 all you would have to do is:
 
     serviceChecker().exchange(args..)
-        .then(successHandler)
-        .catch(failureHandler)
+        .then(resultHandler)
+        .catch(errorHandler)
         
         
 *If you know a reliable way to check if an exchange server is up and running, please get in contact with me!*
@@ -78,15 +95,52 @@ all you would have to do is:
 Writing your own plugins
 ------------------------
 
-*see the current included plugins for now*
+Building a plugin in very easy. So easy, an example should be all that's needed:
 
-Important Notes:
+    //file-check.js
+    var Promise = require("bluebird");
+    var fs = require("fs");
+    var _ = require("underscore");
+    
+    module.exports = function fileCheck(file_path, options)
+    {
+        if (!_.isString(file_path)) throw new Error("file_path must be a string");
+    
+        return new Promise(function (resolve, reject)
+        {
+            var did_timeout = false;
+            var timeout_id = setTimeout(function ()
+            {
+                did_timeout = true;
+                var error = new Error("Operation Timed Out");
+                error.code = "TIMEOUT";
+                resolve(error);
+            }, options.timeout);
+        
+            fs.access(file_path, fs.F_OK, function (error)
+            {
+                if (!did_timeout)
+                {
+                    resolve(error);     
+                    clearTimeout(timeout_id);
+                }
+            });
+        });
+    }
 
-- The function passed to "use" **must** be named. This name will be the method name used by service-checker
-- The function passed to "use" **must** return a promise. service-checker uses 
+Rules for building a plugin that works correctly with service checker:
+
+- The plugin **must** be named. This name will be the method name used by service-checker.
+- The plugin **must** resolve if all passed parameters are valid.
+- The plugin **must** throw/reject if any passed parameters are invalid.
+- The plugin **must** return a promise. service-checker uses.
+- The plugin **must** resolve with a falsy object (null, undefined) if the check succeeds.
+- The plugin **must** resolve with an error object if the check fails.
     [BlueBird](http://bluebirdjs.com/docs/getting-started.html) but any Promises/A+ implementation should work.
-- The function passed to "use" **should** interpret and adhere to any applicable options. Current options are:
+- The plugin **should** interpret and adhere to any applicable options. Current options are:
     - timeout
+    
+You should notice that the plugin above demonstrates all of these rules.
 
 License
 -------

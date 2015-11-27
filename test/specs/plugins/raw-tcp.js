@@ -44,29 +44,14 @@ describe("PLUGIN: raw-tcp", function ()
         return assert.property(serviceChecker(), "rawTcp");
     });
 
-    it("should resolve for valid server", function ()
+    it("should return success:true for valid server", function ()
     {
-        return assert.isFulfilled(serviceChecker().rawTcp("localhost", 10000));
+        return assert.eventually.include(serviceChecker().rawTcp("localhost", 10000), {success: true});
     });
 
-    it("should reject for bad server", function ()
+    it("should return success:false for bad server", function ()
     {
-        return assert.isRejected(serviceChecker().rawTcp("localhost", 10001));
-    });
-
-    it("should reject for invalid domain", function ()
-    {
-        return assert.isRejected(serviceChecker().rawTcp("invalid.domain", 25));
-    });
-
-    it("should reject if host is not a string", function ()
-    {
-        return assert.isRejected(serviceChecker().rawTcp(1, 10));
-    });
-
-    it("should reject if port is not a number", function ()
-    {
-        return assert.isRejected(serviceChecker().rawTcp("localhost", "port"));
+        return assert.eventually.include(serviceChecker().rawTcp("localhost", 10001), {success: false});
     });
 
     describe("disable net connect", function ()
@@ -83,9 +68,24 @@ describe("PLUGIN: raw-tcp", function ()
             disable_net_connect_event.stop(done);
         });
 
-        it("should reject on connect event timeout", function ()
+        it("should return success:true on connect event timeout", function ()
         {
-            return assert.isRejected(serviceChecker({timeout: 1000}).rawTcp("localhost", 10000));
+            return assert.eventually.include(serviceChecker({timeout: 1000}).rawTcp("localhost", 10000), {success: false});
         });
+    });
+
+    it("should return success:false for invalid Domain", function ()
+    {
+        return assert.eventually.include(serviceChecker().rawTcp("invalid.domain", 10000), {success: false});
+    });
+
+    it("should reject if host is not a string", function ()
+    {
+        return assert.isRejected(serviceChecker().rawTcp(1, 10));
+    });
+
+    it("should reject if port is not a number", function ()
+    {
+        return assert.isRejected(serviceChecker().rawTcp("localhost", "port"));
     });
 });

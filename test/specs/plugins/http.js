@@ -62,24 +62,24 @@ describe("PLUGIN: http", function ()
         return assert.property(serviceChecker(), "http");
     });
 
-    it("should resolve for valid Domain", function ()
+    it("should return success:true for valid Domain", function ()
     {
-        return assert.isFulfilled(serviceChecker().http("localhost", 10000));
+        return assert.eventually.include(serviceChecker().http("localhost", 10000), {success: true});
     });
 
-    it("should reject for 404 error", function ()
+    it("should return success:false for 404 error", function ()
     {
-        return assert.isRejected(serviceChecker().http("localhost", 10001));
+        return assert.eventually.include(serviceChecker().http("localhost", 10001), {success: false});
     });
 
-    it("should reject for invalid Domain", function ()
+    it("should return success:false for slow responding server (timeout)", function ()
     {
-        return assert.isRejected(serviceChecker().http("invalid.domain"));
+        return assert.eventually.include(serviceChecker({timeout: 1000}).http("localhost", 10002), {success: false});
     });
 
-    it("should reject for slow responding server", function ()
+    it("should return success:false for invalid Domain", function ()
     {
-        return assert.isRejected(serviceChecker({timeout: 1000}).http("localhost", 10002));
+        return assert.eventually.include(serviceChecker().http("invalid.domain"), {success: false});
     });
 
     it("should reject if host is not a string", function ()
