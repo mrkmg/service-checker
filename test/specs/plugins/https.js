@@ -41,7 +41,7 @@ describe("PLUGIN: https", function ()
 
     it("should return success:true for good host", function ()
     {
-        return assert.eventually.include(serviceChecker().http("google.com"), {success: true});
+        return assert.eventually.include(serviceChecker().https("google.com"), {success: true});
     });
 
     it("should return success:false for expired ssl cert", function ()
