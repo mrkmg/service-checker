@@ -16,49 +16,45 @@ var serviceChecker = require("../../..");
 
 describe("PLUGIN: smtp", function ()
 {
-    var good_server;
-    var bad_server;
-    var no_reply_server;
+    var server_220 = require("../../fixtures/smtp/server-220")();
+    var server_500 = require("../../fixtures/smtp/server-500")();
+    var server_timeout = require("../../fixtures/smtp/server-timeout")();
 
     before("starting up test servers", function (done)
     {
-        good_server = require("net").createServer(function (socket)
-        {
-            socket.end("220 Good Server");
-        });
-
-        bad_server = require("net").createServer(function (socket)
-        {
-            socket.end("000 Bad Server");
-        });
-
-        no_reply_server = require("net").createServer(function (socket)
-        {
-            //Do not reply
-        });
-
         async.parallel([
             function (callback)
             {
-                good_server.listen(10000, callback);
+                server_220.start(10000, callback);
             },
             function (callback)
             {
-                bad_server.listen(10001, callback);
+                server_500.start(10001, callback);
             },
             function (callback)
             {
-                no_reply_server.listen(10002, callback);
+                server_timeout.start(10002, callback);
             }
         ], done);
 
     });
 
-    after("closing test servers", function ()
+    after("closing test servers", function (done)
     {
-        good_server.close();
-        bad_server.close();
-        no_reply_server.close();
+        async.parallel([
+            function (callback)
+            {
+                server_220.stop(callback);
+            },
+            function (callback)
+            {
+                server_500.stop(callback);
+            },
+            function (callback)
+            {
+                server_timeout.stop(callback);
+            }
+        ], done);
     });
 
     it("should have method", function()

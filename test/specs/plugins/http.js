@@ -16,51 +16,45 @@ var serviceChecker = require("../../..");
 
 describe("PLUGIN: http", function ()
 {
-    var good_server;
-    var bad_server;
-    var no_reply_server;
+    var server_200 = require("../../fixtures/http/server-200")();
+    var server_404 = require("../../fixtures/http/server-404")();
+    var server_timeout = require("../../fixtures/http/server-timeout")();
 
     before("starting up test servers", function (done)
     {
-        good_server = require("http").createServer(function (request, response)
-        {
-            response.writeHead(200, {"Content-Type": "text/plain"});
-            response.end("Good");
-        });
-
-        bad_server = require("http").createServer(function (request, response)
-        {
-            response.writeHead(404);
-            response.end("Bad");
-        });
-
-        no_reply_server = require("http").createServer(function (request, response)
-        {
-            //Do not reply
-        });
-
         async.parallel([
             function (callback)
             {
-                good_server.listen(10000, callback);
+                server_200.start(10000, callback);
             },
             function (callback)
             {
-                bad_server.listen(10001, callback);
+                server_404.start(10001, callback);
             },
             function (callback)
             {
-                no_reply_server.listen(10002, callback);
+                server_timeout.start(10002, callback);
             }
         ], done);
 
     });
 
-    after("closing test servers", function ()
+    after("closing test servers", function (done)
     {
-        good_server.close();
-        bad_server.close();
-        no_reply_server.close();
+        async.parallel([
+            function (callback)
+            {
+                server_200.stop(callback);
+            },
+            function (callback)
+            {
+                server_404.stop(callback);
+            },
+            function (callback)
+            {
+                server_timeout.stop(callback);
+            }
+        ], done);
     });
 
     it("should have method", function ()

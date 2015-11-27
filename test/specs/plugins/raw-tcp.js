@@ -16,22 +16,27 @@ var serviceChecker = require("../../..");
 
 describe("PLUGIN: raw-tcp", function ()
 {
-    var good_server;
-    var bad_server;
+    var server_open = require("../../fixtures/raw-tcp/server-open")();
 
     before("starting up test servers", function (done)
     {
-        good_server = require("net").createServer(function (socket)
-        {
-            socket.end("Hello!");
-        });
+        async.parallel([
+            function (callback)
+            {
+                server_open.start(10000, callback);
+            }
+        ], done);
 
-        good_server.listen(10000, done);
     });
 
-    after("closing test servers", function ()
+    after("closing test servers", function (done)
     {
-        good_server.close();
+        async.parallel([
+            function (callback)
+            {
+                server_open.stop(callback);
+            }
+        ], done);
     });
 
     it("should have method", function()
@@ -64,6 +69,23 @@ describe("PLUGIN: raw-tcp", function ()
         return assert.isRejected(serviceChecker().rawTcp("localhost", "port"));
     });
 
-    //TODO: figure out a way to test for a slow connecting TCP connection. rawTcp can
-    //      not be tested the same way smtp, or http as it does not wait for data...
+    describe("disable net connect", function ()
+    {
+        var disable_net_connect_event = require("../../fixtures/raw-tcp/disable-net-connect-event")();
+
+        before("disable net connect event", function (done)
+        {
+            disable_net_connect_event.start(done);
+        });
+
+        after("restore net connect event", function (done)
+        {
+            disable_net_connect_event.stop(done);
+        });
+
+        it("should reject on connect event timeout", function ()
+        {
+            return assert.isRejected(serviceChecker({timeout: 1000}).rawTcp("localhost", 10000));
+        });
+    });
 });
