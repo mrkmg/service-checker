@@ -10,7 +10,7 @@
 Service Checker 
 ===============
 
-Current Version: **0.3.1**
+Current Version: **0.3.2**
 
 A node library to check if various web services are up and behaving. This project is in beta. Until version 1, the api 
 may break at ANY point. After version 1.0.0, standard [SemVer](http://semver.org/) will be followed.
