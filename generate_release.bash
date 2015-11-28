@@ -43,12 +43,15 @@ DO_PATCH ()
 
 START_GIT_FLOW ()
 {
-    echo "Bring Master Up to date"
-    git checkout develop
-    git pull origin develop --rebase
-    git checkout master
-    git pull origin master -q
-    git checkout develop
+    echo "Rebasing Develop"
+    git checkout develop -q
+    git pull origin develop --rebase -q
+    echo "Force Checking Out Master"
+    git fetch -q
+    git checkout master -q
+    git reset --hard origin/master -q
+    git checkout develop -q
+    echo "Starting Git Flow Release"
     git flow release start $NEW_VERSION
 }
 
