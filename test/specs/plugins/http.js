@@ -62,7 +62,7 @@ describe("PLUGIN: http", function ()
         return assert.property(serviceChecker(), "http");
     });
 
-    it("should return success:true for valid Domain", function ()
+    it("should return success:true for properly responding server", function ()
     {
         return assert.eventually.include(serviceChecker().http("localhost", 10000), {success: true});
     });
@@ -85,5 +85,15 @@ describe("PLUGIN: http", function ()
     it("should reject if host is not a string", function ()
     {
         return assert.isRejected(serviceChecker().http(1));
+    });
+
+    it("should parse valid string port", function ()
+    {
+        return assert.isFulfilled(serviceChecker().http("localhost", "10000"));
+    });
+
+    it("should reject if port is not a number", function ()
+    {
+        return assert.isRejected(serviceChecker().http("localhost", "a"));
     });
 });

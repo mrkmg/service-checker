@@ -85,4 +85,14 @@ describe("PLUGIN: smtp", function ()
     {
         return assert.isRejected(serviceChecker().smtp(1));
     });
+
+    it("should parse valid string port", function ()
+    {
+        return assert.isFulfilled(serviceChecker().smtp("localhost", "10000"));
+    });
+
+    it("should reject if port is not a number", function ()
+    {
+        return assert.isRejected(serviceChecker().smtp("localhost", "a"));
+    });
 });

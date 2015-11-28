@@ -110,4 +110,14 @@ describe("PLUGIN: https", function ()
     {
         return assert.isRejected(serviceChecker().https(1));
     });
+
+    it("should parse valid string port", function ()
+    {
+        return assert.isFulfilled(serviceChecker().https("localhost", "10000"));
+    });
+
+    it("should reject if port is not a number", function ()
+    {
+        return assert.isRejected(serviceChecker().https("localhost", "a"));
+    });
 });
