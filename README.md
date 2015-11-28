@@ -1,3 +1,6 @@
+Service Checker 
+===============
+
 <p align="center">
     <a href="https://travis-ci.org/mrkmg/service-checker" title="service-checker on Travis CI">
         <img src="https://travis-ci.org/mrkmg/service-checker.svg?branch=master" />
@@ -5,10 +8,9 @@
     <a href='https://coveralls.io/github/mrkmg/service-checker?branch=master'>
         <img src='https://coveralls.io/repos/mrkmg/service-checker/badge.svg?branch=master&service=github' alt='Coverage Status' />
     </a>
+    <br />
+    <a href="https://nodei.co/npm/service-checker/"><img src="https://nodei.co/npm/service-checker.png?compact=true"></a>
 </p>
-
-Service Checker 
-===============
 
 Current Version: **0.4.1**
 
