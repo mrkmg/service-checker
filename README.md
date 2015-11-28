@@ -154,10 +154,8 @@ The following example plugin demonstrates all these rules.
     var fs = require("fs");
     var _ = require("underscore");
     
-    module.exports = function fileCheck(file_path, options)
+    function doFileCheck(options)
     {
-        if (!_.isString(file_path)) throw new Error("file_path must be a string");
-    
         return new Promise(function (resolve, reject)
         {
             var did_timeout = false;
@@ -166,19 +164,42 @@ The following example plugin demonstrates all these rules.
                 did_timeout = true;
                 var error = new Error("Operation Timed Out");
                 error.code = "TIMEOUT";
-                resolve(error);
+                reject(error);
             }, options.timeout);
-        
-            fs.access(file_path, fs.F_OK, function (error)
+    
+            fs.access(options.file_path, fs.F_OK, function (error)
             {
                 if (!did_timeout)
                 {
-                    resolve(error);     
                     clearTimeout(timeout_id);
+    
+                    if (error) reject(error);
+                    else resolve()
                 }
             });
         });
     }
+    
+    
+    module.exports = function fileCheck(file_path, options)
+    {
+        return Promise
+            .try(function ()
+            {
+                if (!_.isString(file_path)) throw new Error("file_path must be a string");
+    
+                return {
+                    file_path: file_path,
+                    timeout: options.timeout
+                }
+            }).then(function (options){
+                return doFileCheck(options)
+                    .catch(function (error)
+                    {
+                        return error;
+                    });
+            });
+    };
     
 To use the plugin you just wrote is simple as well:
 
@@ -189,17 +210,17 @@ To use the plugin you just wrote is simple as well:
     serviceChecker.use(fileCheck);
     
     serviceChecker().fileCheck("path/to/file")
-      .then(function (result)
-      {
-        if (result.success)
+        .then(function (result)
         {
-          console.log("File exists");
-        }
-        else
-        {
-          console.log("File does not exist");
-        }
-      });
+            if (result.success)
+            {
+                console.log("File exists");
+            }
+            else
+            {
+                console.log("File does not exist");
+            }
+        });
 
 Contributing
 ------------
