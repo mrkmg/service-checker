@@ -71,7 +71,8 @@ Built in plugins
 
 - ping(host) - Uses the system ping utility to check for an ICMP response
 - http(host[, port=80]) - Ensures the host replies with a valid HTTP code
-- https(host[, port=443]) - Ensures the host replies with a valid HTTP code and has a valid SSL Cert
+- https(host[, port=443, ca_cert=null]) - Ensures the host replies with a valid HTTP code and has a valid SSL Cert. You
+    can also pass a certificate if you run your own CA. Pass the whole cert, not just a file path.
 - smtp(host[, port=25]) - Ensures the host replies with 220
 - rawTcp(host, port) - Ensures the host can be connected to. No further checking is performed.
 
