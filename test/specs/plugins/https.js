@@ -24,7 +24,8 @@ describe("PLUGIN: https", function ()
     var server_valid_timeout = require("../../fixtures/https/server-valid-timeout")();
     var server_expired = require("../../fixtures/https/server-expired")();
 
-    var trusted_cert = fs.readFileSync("test/fixtures/https/certs/valid.cert");
+    var valid_cert = fs.readFileSync("test/fixtures/https/certs/valid.cert");
+    var expired_cert = fs.readFileSync("test/fixtures/https/certs/expired.cert");
 
     before("starting up test servers", function (done)
     {
@@ -77,7 +78,7 @@ describe("PLUGIN: https", function ()
 
     it("should return success:true for good host", function ()
     {
-        return assert.eventually.include(serviceChecker().https("localhost", 10000, trusted_cert), {success: true});
+        return assert.eventually.include(serviceChecker().https("localhost", 10000, valid_cert), {success: true});
     });
 
     it("should return success:false for self signed cert", function ()
@@ -87,17 +88,17 @@ describe("PLUGIN: https", function ()
 
     it("should return success:false for 404 response", function ()
     {
-        return assert.eventually.include(serviceChecker().https("localhost", 10001, trusted_cert), {success: false});
+        return assert.eventually.include(serviceChecker().https("localhost", 10001, valid_cert), {success: false});
     });
 
     it("should return success:false for slow responding server", function ()
     {
-        return assert.eventually.include(serviceChecker({timeout: 1000}).https("localhost", 10002, trusted_cert), {success: false});
+        return assert.eventually.include(serviceChecker({timeout: 1000}).https("localhost", 10002, valid_cert), {success: false});
     });
 
     it("should return success:false for expired ssl cert", function ()
     {
-        return assert.eventually.include(serviceChecker().https("localhost", 10003, trusted_cert), {success: false});
+        return assert.eventually.include(serviceChecker().https("localhost", 10003, expired_cert), {success: false});
     });
 
     it("should return success:false for invalid Domain", function ()
