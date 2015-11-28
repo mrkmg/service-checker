@@ -130,6 +130,27 @@ Building a plugin in very easy. So easy, an example should be all that's needed:
             });
         });
     }
+    
+To use the plugin you just wrote is simple as well:
+
+    //checker.js
+    var serviceChecker = require("service-checker");
+    var fileCheck = require("./file-check");
+    
+    serviceChecker.use(fileCheck);
+    
+    serviceChecker().fileCheck("path/to/file")
+      .then(function (result)
+      {
+        if (result.success)
+        {
+          console.log("File exists");
+        }
+        else
+        {
+          console.log("File does not exist");
+        }
+      });
 
 Rules for building a plugin that works correctly with service checker:
 
