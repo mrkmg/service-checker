@@ -1,5 +1,4 @@
-Service Checker 
-===============
+# Service Checker 
 
 <p align="center">
     <a href="https://travis-ci.org/mrkmg/service-checker" title="service-checker on Travis CI">
@@ -69,12 +68,49 @@ the following public properties:
 Built in plugins
 ----------------
 
-- ping(host) - Uses the system ping utility to check for an ICMP response
-- http(host[, port=80]) - Ensures the host replies with a valid HTTP code
-- https(host[, port=443, ca_cert=null]) - Ensures the host replies with a valid HTTP code and has a valid SSL Cert. You
-    can also pass a certificate if you run your own CA. Pass the whole cert, not just a file path.
-- smtp(host[, port=25]) - Ensures the host replies with 220
-- rawTcp(host, port) - Ensures the host can be connected to. No further checking is performed.
+**Ping** _Check a given host for an ICMP response. Uses the system ping utility. If your system does not have a ping utility in path, this plugin will fail._
+
+`.ping(host)`
+
+- host (string) The hostname to ping. Can be either a domain or IP address.
+
+--------------------------------------------------------------------------------
+
+**HTTP** _Check a given host for a valid HTTP response._
+
+`.http(host[, port=80])`
+
+- host (string) The hostname to connect to. Can be either a domain or IP address.
+- port (number) The port to connect to. Must be a number. Defaults to 80.
+
+--------------------------------------------------------------------------------
+
+**HTTPS** _Check a given host for a valid HTTP response and for a valid SSL Certificate._
+
+`.https(host[, port=443, ca_cert=null])`
+
+- host (string) The hostname to connect to. Can be either a domain or IP address.
+- port (number) The port to connect to. Must be a number. Defaults to 443.
+- ca_cert (string) A certificate to pass to https.request. Adds the cert to be "trusted" so it will not fail.
+
+--------------------------------------------------------------------------------
+
+**SMTP** _Check a given host for a valid SMTP response. Does not use TLS or SSL._
+
+`.smtp(host, [port=25)`
+
+- host (string) The hostname to connect to. Can be either a domain or IP address.
+- port (number) The port to connect to. Must be a number. Defaults to 25.
+
+--------------------------------------------------------------------------------
+
+**Raw-TCP** _Check that a TCP connection can be made to a given host on a given port._
+
+`.rawTcp(host, port)`
+
+- host (string) The hostname to connect to. Can be either a domain or IP address.
+- port (number) The port to connect to. Must be a number
+
 
 Including a third party plugin
 ------------------------------
@@ -98,7 +134,20 @@ all you would have to do is:
 Writing your own plugins
 ------------------------
 
-Building a plugin in very easy. So easy, an example should be all that's needed:
+Rules for building a plugin that works correctly with service checker:
+
+- The plugin **must** return a function.
+- The function **must** be named. This name will be the method name used by service-checker.
+- The function **must** return a promise. service-checker uses [BlueBird](http://bluebirdjs.com/docs/getting-started.html)
+    but any Promises/A+ implementation should work.
+- The promise **must** resolve if all passed parameters are valid.
+- The promise **must** reject if any passed parameters are invalid.
+- The promise **must** resolve with a falsy object (null, undefined) if the check succeeds.
+- The promise **must** resolve with an error object if the check fails.
+- The plugin **should** interpret and adhere to any applicable options. Current options are:
+    - timeout
+    
+The following example plugin demonstrates all these rules.
 
     //file-check.js
     var Promise = require("bluebird");
@@ -152,19 +201,15 @@ To use the plugin you just wrote is simple as well:
         }
       });
 
-Rules for building a plugin that works correctly with service checker:
+Contributing
+------------
 
-- The plugin **must** be named. This name will be the method name used by service-checker.
-- The plugin **must** resolve if all passed parameters are valid.
-- The plugin **must** throw/reject if any passed parameters are invalid.
-- The plugin **must** return a promise. service-checker uses [BlueBird](http://bluebirdjs.com/docs/getting-started.html)
-    but any Promises/A+ implementation should work.
-- The plugin **must** resolve with a falsy object (null, undefined) if the check succeeds.
-- The plugin **must** resolve with an error object if the check fails.
-- The plugin **should** interpret and adhere to any applicable options. Current options are:
-    - timeout
-    
-You should notice that the plugin above demonstrates all of these rules.
+Testing and code format is important to make sure the project stays consistant. Please run `npm test` **before** making the
+pull request.
+
+If your update breaks a test, please update the test. If you add new functionality, please write a test. That being said,
+if you are unsure how to write tests or uncomfortable writing tests, I would be more than happy helping out. Make the pull request and put a comment on it that you need help with the tests.
+
 
 License
 -------
