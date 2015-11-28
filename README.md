@@ -136,7 +136,8 @@ Rules for building a plugin that works correctly with service checker:
 - The plugin **must** be named. This name will be the method name used by service-checker.
 - The plugin **must** resolve if all passed parameters are valid.
 - The plugin **must** throw/reject if any passed parameters are invalid.
-- The plugin **must** return a promise. service-checker uses [BlueBird](http://bluebirdjs.com/docs/getting-started.html) but any Promises/A+ implementation should work.
+- The plugin **must** return a promise. service-checker uses [BlueBird](http://bluebirdjs.com/docs/getting-started.html)
+    but any Promises/A+ implementation should work.
 - The plugin **must** resolve with a falsy object (null, undefined) if the check succeeds.
 - The plugin **must** resolve with an error object if the check fails.
 - The plugin **should** interpret and adhere to any applicable options. Current options are:
