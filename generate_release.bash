@@ -65,7 +65,7 @@ END_GIT_FLOW ()
 {
     export GIT_MERGE_AUTOEDIT=no
     git add -A
-    git commit -am "Version Bump for $NEW_VERSION"
+    git commit -am "Release $NEW_VERSION"
     git flow release finish -m "Release $NEW_VERSION" $NEW_VERSION
     echo "Pushing to origin"
     git push origin develop -q
