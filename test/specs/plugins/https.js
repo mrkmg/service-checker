@@ -11,27 +11,63 @@
 
 var chai = require("chai");
 var serviceChecker = require("../../..");
+var fs = require("fs");
+var async = require("async");
 
 chai.use(require("chai-as-promised"));
 var assert = chai.assert;
 
 describe("PLUGIN: https", function ()
 {
-    var no_response_server;
+    var server_valid_200 = require("../../fixtures/https/server-valid-200")();
+    var server_valid_404 = require("../../fixtures/https/server-valid-404")();
+    var server_valid_timeout = require("../../fixtures/https/server-valid-timeout")();
+    var server_expired = require("../../fixtures/https/server-expired")();
+
+    var trusted_cert = fs.readFileSync("test/fixtures/https/certs/valid.cert");
 
     before("starting up test servers", function (done)
     {
-        no_response_server = require("net").createServer(function (socket)
-        {
-            //Do not send a response
-        });
-
-        no_response_server.listen(10000, done);
+        async.parallel([
+            function (callback)
+            {
+                server_valid_200.start(10000, callback);
+            },
+            function (callback)
+            {
+                server_valid_404.start(10001, callback);
+            },
+            function (callback)
+            {
+                server_valid_timeout.start(10002, callback);
+            },
+            function (callback)
+            {
+                server_expired.start(10003, callback);
+            }
+        ], done);
     });
 
-    after("closing test servers", function ()
+    after("closing test servers", function (done)
     {
-        no_response_server.close();
+        async.parallel([
+            function (callback)
+            {
+                server_valid_200.stop(callback);
+            },
+            function (callback)
+            {
+                server_valid_404.stop(callback);
+            },
+            function (callback)
+            {
+                server_valid_timeout.stop(callback);
+            },
+            function (callback)
+            {
+                server_expired.stop(callback);
+            }
+        ], done);
     });
 
     it("should have method", function()
@@ -41,25 +77,28 @@ describe("PLUGIN: https", function ()
 
     it("should return success:true for good host", function ()
     {
-        return assert.eventually.include(serviceChecker().https("google.com"), {success: true});
-    });
-
-    it("should return success:false for expired ssl cert", function ()
-    {
-        return assert.eventually.include(serviceChecker().https("testssl-expire.disig.sk"), {success: false});
+        return assert.eventually.include(serviceChecker().https("localhost", 10000, trusted_cert), {success: true});
     });
 
     it("should return success:false for self signed cert", function ()
     {
-        return assert.eventually.include(serviceChecker().https("www.pcwebshop.co.uk"), {success: false});
+        return assert.eventually.include(serviceChecker().https("localhost", 10000), {success: false});
+    });
+
+    it("should return success:false for 404 response", function ()
+    {
+        return assert.eventually.include(serviceChecker().https("localhost", 10001, trusted_cert), {success: false});
     });
 
     it("should return success:false for slow responding server", function ()
     {
-        return assert.eventually.include(serviceChecker({timeout: 1000}).https("localhost", 10000), {success: false});
+        return assert.eventually.include(serviceChecker({timeout: 1000}).https("localhost", 10002, trusted_cert), {success: false});
     });
 
-    //TODO: Add test for invalid status code
+    it("should return success:false for expired ssl cert", function ()
+    {
+        return assert.eventually.include(serviceChecker().https("localhost", 10003, trusted_cert), {success: false});
+    });
 
     it("should return success:false for invalid Domain", function ()
     {
