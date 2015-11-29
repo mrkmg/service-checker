@@ -87,7 +87,7 @@ CONFIRM_UPDATE ()
 }
 
 FIFO=$(mktemp)
-tail -f $FIFO | zenity --title "Release Generation" --text-info --auto-scroll &
+tail -f $FIFO | zenity --title "Release Generation" --text-info --auto-scroll 2>/dev/null &
 ZEN_PID=$!
 
 trap "sleep 3; kill $ZEN_PID; rm -f $FIFO" EXIT
