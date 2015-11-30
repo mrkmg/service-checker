@@ -1,4 +1,8 @@
-sudo: true
+sudo: false
+addons:
+  apt:
+    packages:
+      - iputils-ping
 git:
   depth: 2
 language: node_js
