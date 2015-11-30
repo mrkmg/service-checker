@@ -22,7 +22,6 @@
   "dependencies": {
     "async": "^1.5.0",
     "bluebird": "^3.0.5",
-    "ping": "^0.1.10",
     "smtp-connection": "^1.3.1",
     "underscore": "^1.8.3"
   },

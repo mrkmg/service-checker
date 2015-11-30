@@ -1,0 +1,4 @@
+#!/bin/bash
+if [ $1 = "localhost" ]; then exit 0; fi
+if [ $1 = "127.0.0.1" ]; then exit 0; fi
+exit 1
