@@ -78,46 +78,61 @@ describe("PLUGIN: https", function ()
 
     it("should return success:true for good host", function ()
     {
-        return assert.eventually.include(serviceChecker().https("localhost", 10000, valid_cert), {success: true});
+        var options = {
+            port: 10000,
+            ca: valid_cert
+        };
+        return assert.eventually.include(serviceChecker().https(options), {success: true});
     });
 
     it("should return success:false for self signed cert", function ()
     {
-        return assert.eventually.include(serviceChecker().https("localhost", 10000), {success: false});
+        var options = {
+            port: 10000
+        };
+        return assert.eventually.include(serviceChecker().https(options), {success: false});
     });
 
     it("should return success:false for 404 response", function ()
     {
-        return assert.eventually.include(serviceChecker().https("localhost", 10001, valid_cert), {success: false});
+        var options = {
+            port: 10001,
+            ca: valid_cert
+        };
+        return assert.eventually.include(serviceChecker().https(options), {success: false});
     });
 
     it("should return success:false for slow responding server", function ()
     {
-        return assert.eventually.include(serviceChecker({timeout: 1000}).https("localhost", 10002, valid_cert), {success: false});
+        var options = {
+            port: 10002,
+            ca: valid_cert
+        };
+        return assert.eventually.include(serviceChecker(options).https("localhost", 10002, valid_cert), {success: false});
     });
 
     it("should return success:false for expired ssl cert", function ()
     {
-        return assert.eventually.include(serviceChecker().https("localhost", 10003, expired_cert), {success: false});
+        var options = {
+            port: 10003,
+            ca: expired_cert
+        };
+        return assert.eventually.include(serviceChecker().https(options), {success: false});
     });
 
     it("should return success:false for invalid Domain", function ()
     {
-        return assert.eventually.include(serviceChecker().https("invalid.domain"), {success: false});
+        var options = {
+            host: "invalid.domain"
+        };
+        return assert.eventually.include(serviceChecker().https(options), {success: false});
     });
 
-    it("should reject if host is not a string", function ()
+    it("should reject if bad parameter passed", function ()
     {
-        return assert.isRejected(serviceChecker().https(1));
-    });
-
-    it("should parse valid string port", function ()
-    {
-        return assert.isFulfilled(serviceChecker().https("localhost", "10000"));
-    });
-
-    it("should reject if port is not a number", function ()
-    {
-        return assert.isRejected(serviceChecker().https("localhost", "a"));
+        var options = {
+            host: true
+        };
+        return assert.isRejected(serviceChecker().https(options));
     });
 });

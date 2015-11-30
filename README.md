@@ -13,8 +13,9 @@
 
 Current Version: **0.4.5**
 
-A node library to check if various web services are up and behaving. This project is in beta. Until version 1, the api 
-may break at ANY point. After version 1.0.0, standard [SemVer](http://semver.org/) will be followed.
+A node library to check if various services are up and behaving. This project is in beta. Expect everything to change
+frequently. Until version 1, the api may break at ANY point. After version 1.0.0, standard [SemVer](http://semver.org/) 
+will be followed.
 
 Install
 -------
@@ -53,11 +54,12 @@ Usage
 
 service-checker takes an options argument. The current options are:
 
-- timeout *How long in milliseconds before the check times out*
+- timeout *Sets the default time out for all checks*
 
-Call one of the plugins *see below* as a method of service checker. A promise will be returned which will resolve with
+Call one of the plugins *(below)* as a method of service checker. A promise will be returned which will resolve with
 the following public properties:
 
+- type [string] *Name of the check performed*
 - success [bool] *Whether or not the check was successful*
 - time [int] *How long in milliseconds the check took*
 - start_time [int] *Millisecond timestamp (Date.now()) when the check started*
@@ -70,46 +72,68 @@ Built in plugins
 
 **Ping** _Check a given host for an ICMP response. Uses the system ping utility. If your system does not have a ping utility in path, this plugin will fail._
 
-`.ping(host)`
+`.ping(options)`
+
+Where options are:
 
 - host (string) The hostname to ping. Can be either a domain or IP address.
+- timeout (number) How long to wait until the check is considered timed out.
 
 --------------------------------------------------------------------------------
 
 **HTTP** _Check a given host for a valid HTTP response._
 
-`.http(host[, port=80])`
+`.http(options)`
+
+Where options are:
 
 - host (string) The hostname to connect to. Can be either a domain or IP address.
 - port (number) The port to connect to. Must be a number. Defaults to 80.
+- timeout (number) How long to wait until the check is considered timed out.
 
 --------------------------------------------------------------------------------
 
 **HTTPS** _Check a given host for a valid HTTP response and for a valid SSL Certificate._
 
-`.https(host[, port=443, ca_cert=null])`
+`.https(options)`
+
+Where options are:
 
 - host (string) The hostname to connect to. Can be either a domain or IP address.
 - port (number) The port to connect to. Must be a number. Defaults to 443.
-- ca_cert (string) A certificate to pass to https.request. Adds the cert to be "trusted" so it will not fail.
+- ca (string) A certificate to pass to https.request. Adds the cert to be "trusted" so it will not fail.
+- timeout (number) How long to wait until the check is considered timed out.
 
 --------------------------------------------------------------------------------
 
-**SMTP** _Check a given host for a valid SMTP response. Does not use TLS or SSL._
+**SMTP** _Check a given host for a valid SMTP response. Does not use TLS.
 
-`.smtp(host, [port=25)`
+`.smtp(options)`
 
 - host (string) The hostname to connect to. Can be either a domain or IP address.
 - port (number) The port to connect to. Must be a number. Defaults to 25.
+- timeout (number) How long to wait until the check is considered timed out.
+
+--------------------------------------------------------------------------------
+
+**SMTP-TLS** _Check a given host for a valid SMTP response.
+
+`.smtpTls(options)`
+
+- host (string) The hostname to connect to. Can be either a domain or IP address.
+- port (number) The port to connect to. Must be a number. Defaults to 25.
+- ca (string) A certificate to pass to https.request. Adds the cert to be "trusted" so it will not fail.
+- timeout (number) How long to wait until the check is considered timed out.
 
 --------------------------------------------------------------------------------
 
 **Raw-TCP** _Check that a TCP connection can be made to a given host on a given port._
 
-`.rawTcp(host, port)`
+`.rawTcp(options)`
 
 - host (string) The hostname to connect to. Can be either a domain or IP address.
-- port (number) The port to connect to. Must be a number
+- port (number) The port to connect to.
+- timeout (number) How long to wait until the check is considered timed out.
 
 
 Including a third party plugin
@@ -128,23 +152,22 @@ all you would have to do is:
         .then(resultHandler)
         .catch(errorHandler)
         
-        
-*If you know a reliable way to check if an exchange server is up and running, please get in contact with me!*
 
 Writing your own plugins
 ------------------------
 
 Rules for building a plugin that works correctly with service checker:
 
-- The plugin **must** return a function.
+- The plugin **must** be a function.
 - The function **must** be named. This name will be the method name used by service-checker.
+- The function **must** take only one parameter. It will be passed an options object. All options passed by use will
+    be passed in the options parameter.
 - The function **must** return a promise. service-checker uses [BlueBird](http://bluebirdjs.com/docs/getting-started.html)
     but any Promises/A+ implementation should work.
-- The promise **must** resolve if all passed parameters are valid.
 - The promise **must** reject if any passed parameters are invalid.
 - The promise **must** resolve with a falsy object (null, undefined) if the check succeeds.
 - The promise **must** resolve with an error object if the check fails.
-- The plugin **should** interpret and adhere to any applicable options. Current options are:
+- The plugin **should** interpret and adhere to any applicable default options. Current options are:
     - timeout
     
 The following example plugin demonstrates all these rules.
@@ -167,7 +190,7 @@ The following example plugin demonstrates all these rules.
                 reject(error);
             }, options.timeout);
     
-            fs.access(options.file_path, fs.F_OK, function (error)
+            fs.access(options.path, fs.F_OK, function (error)
             {
                 if (!did_timeout)
                 {
@@ -181,17 +204,14 @@ The following example plugin demonstrates all these rules.
     }
     
     
-    module.exports = function fileCheck(file_path, options)
+    module.exports = function fileCheck(options)
     {
         return Promise
             .try(function ()
             {
-                if (!_.isString(file_path)) throw new Error("file_path must be a string");
+                if (!_.isString(options.path)) throw new Error("path must be a string");
     
-                return {
-                    file_path: file_path,
-                    timeout: options.timeout
-                }
+                return options;
             }).then(function (options){
                 return doFileCheck(options)
                     .catch(function (error)
@@ -209,7 +229,7 @@ To use the plugin you just wrote is simple as well:
     
     serviceChecker.use(fileCheck);
     
-    serviceChecker().fileCheck("path/to/file")
+    serviceChecker().fileCheck({path: "path/to/file"})
         .then(function (result)
         {
             if (result.success)
@@ -225,11 +245,12 @@ To use the plugin you just wrote is simple as well:
 Contributing
 ------------
 
-Testing and code format is important to make sure the project stays consistant. Please run `npm test` **before** making the
-pull request.
+Testing and code format is important to make sure the project stays consistent. Please run `npm test` **before** making
+the pull request.
 
-If your update breaks a test, please update the test. If you add new functionality, please write a test. That being said,
-if you are unsure how to write tests or uncomfortable writing tests, I would be more than happy helping out. Make the pull request and put a comment on it that you need help with the tests.
+If your update breaks a test, please update the test. If you add new functionality, please write a test. That being 
+said, if you are unsure how to write tests or uncomfortable writing tests, I would be more than happy helping out. Make
+the pull request and put a comment on it that you need help with the tests.
 
 
 License

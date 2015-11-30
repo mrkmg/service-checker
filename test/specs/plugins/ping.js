@@ -22,31 +22,41 @@ describe("PLUGIN: ping", function ()
 
     it("should return success:true for valid IP Address", function ()
     {
-        return assert.eventually.include(serviceChecker().ping("127.0.0.1"), {success: true});
+        var options = {
+            host: "127.0.0.1"
+        };
+        return assert.eventually.include(serviceChecker().ping(options), {success: true});
     });
 
     it("should return success:true for valid Domain", function ()
     {
-        return assert.eventually.include(serviceChecker().ping("localhost"), {success: true});
+        var options = {
+            host: "localhost"
+        };
+        return assert.eventually.include(serviceChecker().ping(options), {success: true});
     });
 
     it("should return success:false if host does not response to pings", function ()
     {
-        return assert.eventually.include(serviceChecker().ping("10.0.0.0"), {success: false});
+        var options = {
+            host: "10.0.0.0"
+        };
+        return assert.eventually.include(serviceChecker().ping(options), {success: false});
     });
 
     it("should return success:false for invalid IP Address", function ()
     {
-        return assert.eventually.include(serviceChecker().ping("127.0.0.256"), {success: false});
+        var options = {
+            host: "127.0.0.256"
+        };
+        return assert.eventually.include(serviceChecker().ping(options), {success: false});
     });
 
     it("should return success:false for invalid Domain", function ()
     {
-        return assert.eventually.include(serviceChecker().ping("invalid.domain"), {success: false});
-    });
-
-    it("should reject if host is not a string", function ()
-    {
-        return assert.isRejected(serviceChecker().ping(1));
+        var options = {
+            host: "invalid.domain"
+        };
+        return assert.eventually.include(serviceChecker().ping(options), {success: false});
     });
 });

@@ -64,36 +64,33 @@ describe("PLUGIN: http", function ()
 
     it("should return success:true for properly responding server", function ()
     {
-        return assert.eventually.include(serviceChecker().http("localhost", 10000), {success: true});
+        var options = {
+            port: 10000
+        };
+        return assert.eventually.include(serviceChecker().http(options), {success: true});
     });
 
     it("should return success:false for 404 error", function ()
     {
-        return assert.eventually.include(serviceChecker().http("localhost", 10001), {success: false});
+        var options = {
+            port: 10001
+        };
+        return assert.eventually.include(serviceChecker().http(options), {success: false});
     });
 
     it("should return success:false for slow responding server (timeout)", function ()
     {
-        return assert.eventually.include(serviceChecker({timeout: 1000}).http("localhost", 10002), {success: false});
+        var options = {
+            port: 10002
+        };
+        return assert.eventually.include(serviceChecker({timeout: 1000}).http(options), {success: false});
     });
 
-    it("should return success:false for invalid Domain", function ()
+    it("should reject if bad parameter passed", function ()
     {
-        return assert.eventually.include(serviceChecker().http("invalid.domain"), {success: false});
-    });
-
-    it("should reject if host is not a string", function ()
-    {
-        return assert.isRejected(serviceChecker().http(1));
-    });
-
-    it("should parse valid string port", function ()
-    {
-        return assert.isFulfilled(serviceChecker().http("localhost", "10000"));
-    });
-
-    it("should reject if port is not a number", function ()
-    {
-        return assert.isRejected(serviceChecker().http("localhost", "a"));
+        var options = {
+            host: true
+        };
+        return assert.isRejected(serviceChecker().http(options));
     });
 });

@@ -1,7 +1,7 @@
 "use strict";
 
 /**
- * server-checker : test/fixtures/smtp/server-220
+ * server-checker : test/fixtures/smtp-tls/server-timeout
  * Author: MrKMG (https://github.com/mrkmg)
  *
  * MIT License
@@ -9,9 +9,9 @@
 
 module.exports = function ()
 {
-    var client = require("net").createServer(function (socket)
+    var client = require("net").createServer(function (request, response)
     {
-        socket.end("220 Good Server");
+        //Do not reply
     });
 
     return {
