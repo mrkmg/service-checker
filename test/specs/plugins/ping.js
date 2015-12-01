@@ -39,7 +39,8 @@ describe("PLUGIN: ping", function ()
     it("should return success:false if host does not response to pings", function ()
     {
         var options = {
-            host: "10.0.0.0"
+            host: "10.0.0.0",
+            timeout: 1000
         };
         return assert.eventually.include(serviceChecker().ping(options), {success: false});
     });
