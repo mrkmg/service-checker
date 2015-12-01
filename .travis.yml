@@ -6,4 +6,4 @@ node_js:
   - stable
   - 4.1
 script: PATH=$(pwd)/test/travis-bin:$PATH npm test
-after_script: npm run cover
+after_script: PATH=$(pwd)/test/travis-bin:$PATH npm run cover

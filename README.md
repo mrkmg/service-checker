@@ -1,7 +1,7 @@
 # Service Checker 
 
 <p align="center">
-    <a href="https://travis-ci.org/mrkmg/service-checker" title="service-checker on Travis CI">
+    <a href="https://travis-ci.org/mrkmg/service-checker/branches" title="service-checker on Travis CI">
         <img src="https://travis-ci.org/mrkmg/service-checker.svg?branch=master" />
     </a>  
     <a href='https://coveralls.io/github/mrkmg/service-checker?branch=master'>
