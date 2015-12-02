@@ -55,7 +55,6 @@ runRequest = (options, request) ->
       request.destroy()
 
     doTimeout = ->
-      console.log 'test'
       cleanupRequest()
       err = new Error('Request exceeded timeout of ' + options.timeout + 'ms')
       err.code = 'TIMEOUT'
