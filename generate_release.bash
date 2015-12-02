@@ -47,9 +47,9 @@ START_GIT_FLOW ()
     git checkout develop -q
     git pull origin develop --rebase -q
     echo "Force Checking Out Master"
-    git fetch -q
+    git fetch --all -q
     git checkout master -q
-    git reset --hard origin/master -q
+    git reset --hard origin/master
     git checkout develop -q
     echo "Starting Git Flow Release"
     git flow release start $NEW_VERSION

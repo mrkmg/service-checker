@@ -2,16 +2,19 @@
 
 <p align="center">
     <a href="https://travis-ci.org/mrkmg/service-checker/branches" title="service-checker on Travis CI">
-        <img src="https://travis-ci.org/mrkmg/service-checker.svg?branch=master" />
+        <img src="https://travis-ci.org/mrkmg/service-checker.svg?branch=master" alt="Build Status" />
     </a>  
-    <a href='https://coveralls.io/github/mrkmg/service-checker?branch=master'>
-        <img src='https://coveralls.io/repos/mrkmg/service-checker/badge.svg?branch=master&service=github' alt='Coverage Status' />
+    <a href="https://coveralls.io/github/mrkmg/service-checker?branch=master">
+        <img src="https://coveralls.io/repos/mrkmg/service-checker/badge.svg?branch=master&service=github" alt="Coverage Status" />
+    </a>
+    <a href="https://david-dm.org/mrkmg/service-checker">
+        <img src="https://david-dm.org/mrkmg/service-checker#badge-embed" alt="Dependencies Status" />
     </a>
     <br />
     <a href="https://nodei.co/npm/service-checker/"><img src="https://nodei.co/npm/service-checker.png?compact=true"></a>
 </p>
 
-Current Version: **0.6.0**
+Current Version: **0.6.1**
 
 A node library to check if various services are up and behaving. This project is in beta. Expect everything to change
 frequently. Until version 1, the api may break at ANY point. After version 1.0.0, standard [SemVer](http://semver.org/) 
@@ -146,8 +149,8 @@ would have to do is call the `use` function of service-checker
     var serviceChecker = require("service-checker")();
     serviceChecker.use(require("exchange-checker"));
     
-Check the plugins documentation to see how to call use the plugin. If the plugins adds the method `exchange`, then
-all you would have to do is:
+Check the plugins documentation to see which methods are added by the plugin. If the plugins adds the method `exchange`, 
+then all you would have to do is:
 
     serviceChecker.exchange(args..)
         .then(resultHandler)
@@ -251,7 +254,7 @@ Contributing
 The project uses [CoffeeScript](http://coffeescript.org/). Please **DO NOT** edit the js files directly. All js files
 should be compiled in the following way:
 
-    npm run compile-once
+    npm run compile
     
 If you would prefer that the coffeescript files be continually compiled as you save use:
  

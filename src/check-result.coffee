@@ -4,8 +4,6 @@ Author: MrKMG (https://github.com/mrkmg)
 MIT License
 ###
 
-_ = require 'underscore'
-
 class CheckResult
   constructor: (@type) ->
     @start_time = Date.now()
