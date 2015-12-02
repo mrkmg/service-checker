@@ -11,7 +11,7 @@
     <a href="https://nodei.co/npm/service-checker/"><img src="https://nodei.co/npm/service-checker.png?compact=true"></a>
 </p>
 
-Current Version: **0.5.1**
+Current Version: **0.6.0**
 
 A node library to check if various services are up and behaving. This project is in beta. Expect everything to change
 frequently. Until version 1, the api may break at ANY point. After version 1.0.0, standard [SemVer](http://semver.org/) 
