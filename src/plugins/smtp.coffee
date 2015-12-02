@@ -43,7 +43,9 @@ makeRequest = (options, tls) ->
   new smtpConnection(_.pick(options, [
     'host'
     'port'
-    'tls'
+    'tls',
+    'requireTLS',
+    'ignoreTLS'
   ]))
 
 runRequest = (options, request) ->
