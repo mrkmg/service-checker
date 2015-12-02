@@ -7,8 +7,8 @@
     <a href="https://coveralls.io/github/mrkmg/service-checker?branch=master">
         <img src="https://coveralls.io/repos/mrkmg/service-checker/badge.svg?branch=master&service=github" alt="Coverage Status" />
     </a>
-    <a href="https://david-dm.org/mrkmg/service-checker">
-        <img src="https://david-dm.org/mrkmg/service-checker#badge-embed" alt="Dependencies Status" />
+    <a href="https://david-dm.org/mrkmg/service-checker#badge-embed">
+        <img src="https://david-dm.org/mrkmg/service-checker.svg" alt="Dependencies Status" />
     </a>
     <br />
     <a href="https://nodei.co/npm/service-checker/"><img src="https://nodei.co/npm/service-checker.png?compact=true"></a>
