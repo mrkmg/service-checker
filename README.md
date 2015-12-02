@@ -25,6 +25,7 @@ Install
 Quick Example
 -------------
 
+    //Initialize serviceChecker with default timeout value
     var serviceChecker = require("service-checker")({
         timeout: 5000
     });
@@ -142,13 +143,13 @@ Including a third party plugin
 Including plugins is very easy. Let's say you installed a plugin from npm named `exchange-checker`. All you
 would have to do is call the `use` function of service-checker
 
-    var serviceChecker = require("service-checker");
+    var serviceChecker = require("service-checker")();
     serviceChecker.use(require("exchange-checker"));
     
 Check the plugins documentation to see how to call use the plugin. If the plugins adds the method `exchange`, then
 all you would have to do is:
 
-    serviceChecker().exchange(args..)
+    serviceChecker.exchange(args..)
         .then(resultHandler)
         .catch(errorHandler)
         
@@ -158,16 +159,15 @@ Writing your own plugins
 
 Rules for building a plugin that works correctly with service checker:
 
-- The plugin **must** be a function.
-- The function **must** be named. This name will be the method name used by service-checker.
-- The function **must** take only one parameter. It will be passed an options object. All options passed by use will
-    be passed in the options parameter.
-- The function **must** return a promise. service-checker uses [BlueBird](http://bluebirdjs.com/docs/getting-started.html)
+- The plugin **must** be a an object following {method1: handler1, method2: handler2}.
+- The handlers **must** take only one parameter. It will be passed an options object. All options passed by the user
+    will be passed in the options parameter.
+- The handlers **must** return a promise. service-checker uses [BlueBird](http://bluebirdjs.com/docs/getting-started.html)
     but any Promises/A+ implementation should work.
 - The promise **must** reject if any passed parameters are invalid.
 - The promise **must** resolve with a falsy object (null, undefined) if the check succeeds.
 - The promise **must** resolve with an error object if the check fails.
-- The plugin **should** interpret and adhere to any applicable default options. Current options are:
+- The handlers **should** interpret and adhere to any applicable default options. Current default options are:
     - timeout
     
 The following example plugin demonstrates all these rules.
@@ -203,33 +203,36 @@ The following example plugin demonstrates all these rules.
         });
     }
     
-    
-    module.exports = function fileCheck(options)
+    function fileCheck(options)
     {
-        return Promise
-            .try(function ()
-            {
-                if (!_.isString(options.path)) throw new Error("path must be a string");
+            return Promise
+                .try(function ()
+                {
+                    if (!_.isString(options.path)) throw new Error("path must be a string");
+        
+                    return options;
+                }).then(function (options){
+                    return doFileCheck(options)
+                        .catch(function (error)
+                        {
+                            return error;
+                        });
+                });
+        };
     
-                return options;
-            }).then(function (options){
-                return doFileCheck(options)
-                    .catch(function (error)
-                    {
-                        return error;
-                    });
-            });
-    };
+    
+    module.exports = { fileCheck: fileCheck };
+    
     
 To use the plugin you just wrote is simple as well:
 
     //checker.js
-    var serviceChecker = require("service-checker");
+    var serviceChecker = require("service-checker")();
     var fileCheck = require("./file-check");
     
     serviceChecker.use(fileCheck);
     
-    serviceChecker().fileCheck({path: "path/to/file"})
+    serviceChecker.fileCheck({path: "path/to/file"})
         .then(function (result)
         {
             if (result.success)
@@ -245,12 +248,31 @@ To use the plugin you just wrote is simple as well:
 Contributing
 ------------
 
-Testing and code format is important to make sure the project stays consistent. Please run `npm test` **before** making
-the pull request.
+The project uses [CoffeeScript](http://coffeescript.org/). Please **DO NOT** edit the js files directly. All js files
+should be compiled in the following way:
 
-If your update breaks a test, please update the test. If you add new functionality, please write a test. That being 
-said, if you are unsure how to write tests or uncomfortable writing tests, I would be more than happy helping out. Make
-the pull request and put a comment on it that you need help with the tests.
+    npm run compile-once
+    
+If you would prefer that the coffeescript files be continually compiled as you save use:
+ 
+    npm run compile-watch
+    
+A linter is included for the CoffeeScript. To lint any changes you have made run:
+
+    npm run lint
+
+Testing and code format is important to make sure the project stays consistent. Please test the code **before** making
+a pull request with:
+
+    npm test
+    
+If your update breaks a test, please update the test. If you add new functionality, please write a test. You can see
+the current test coverage by running:
+
+    npm cover-local
+
+That being said, if you are unsure how to write tests or uncomfortable writing tests, I would be more than happy 
+helping out. Make the pull request and put a comment on it that you need help with the tests.
 
 
 License
