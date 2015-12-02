@@ -1,8 +1,9 @@
-sudo: true
+sudo: false
 git:
   depth: 2
 language: node_js
 node_js:
   - stable
   - 4.1
-  - 0.10
+script: PATH=$(pwd)/test/travis-bin:$PATH npm test
+after_script: PATH=$(pwd)/test/travis-bin:$PATH npm run cover

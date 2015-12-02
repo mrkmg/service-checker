@@ -43,12 +43,15 @@ DO_PATCH ()
 
 START_GIT_FLOW ()
 {
-    echo "Bring Master Up to date"
-    git checkout develop
-    git pull origin develop --rebase
-    git checkout master
-    git pull origin master -q
-    git checkout develop
+    echo "Rebasing Develop"
+    git checkout develop -q
+    git pull origin develop --rebase -q
+    echo "Force Checking Out Master"
+    git fetch -q
+    git checkout master -q
+    git reset --hard origin/master -q
+    git checkout develop -q
+    echo "Starting Git Flow Release"
     git flow release start $NEW_VERSION
 }
 
@@ -62,7 +65,7 @@ END_GIT_FLOW ()
 {
     export GIT_MERGE_AUTOEDIT=no
     git add -A
-    git commit -am "Version Bump for $NEW_VERSION"
+    git commit -am "Release $NEW_VERSION"
     git flow release finish -m "Release $NEW_VERSION" $NEW_VERSION
     echo "Pushing to origin"
     git push origin develop -q
@@ -84,7 +87,7 @@ CONFIRM_UPDATE ()
 }
 
 FIFO=$(mktemp)
-tail -f $FIFO | zenity --title "Release Generation" --text-info --auto-scroll &
+tail -f $FIFO | zenity --title "Release Generation" --text-info --auto-scroll 2>/dev/null &
 ZEN_PID=$!
 
 trap "sleep 3; kill $ZEN_PID; rm -f $FIFO" EXIT

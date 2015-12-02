@@ -3,12 +3,14 @@
   'use strict';
 
   /**
-   * server-checker : test/specs/plugins/smtp
+   * server-checker : test/specs/plugins/smtp-tls
    * Author: MrKMG (https://github.com/mrkmg)
    *
    * MIT License
    */
-  var assert, async, chai, serviceChecker;
+  var assert, async, chai, fs, serviceChecker;
+
+  fs = require('fs');
 
   chai = require('chai');
 
@@ -22,11 +24,14 @@
     timeout: 1000
   });
 
-  describe('PLUGIN: smtp', function() {
-    var server_error, server_timeout, server_valid;
-    server_valid = require('../../fixtures/smtp/server-valid')();
-    server_error = require('../../fixtures/smtp/server-error')();
-    server_timeout = require('../../fixtures/smtp/server-timeout')();
+  describe('PLUGIN: smtp-tls', function() {
+    var expired_cert, server_error, server_expired, server_timeout, server_valid, valid_cert;
+    server_valid = require('../../fixtures/smtp-tls/server-valid')();
+    server_error = require('../../fixtures/smtp-tls/server-error')();
+    server_timeout = require('../../fixtures/smtp-tls/server-timeout')();
+    server_expired = require('../../fixtures/smtp-tls/server-expired')();
+    valid_cert = fs.readFileSync('test/fixtures/smtp-tls/certs/valid.cert');
+    expired_cert = fs.readFileSync('test/fixtures/smtp-tls/certs/expired.cert');
     before('starting up test servers', function(done) {
       return async.parallel([
         function(callback) {
@@ -35,6 +40,8 @@
           return server_error.start(10001, callback);
         }, function(callback) {
           return server_timeout.start(10002, callback);
+        }, function(callback) {
+          return server_expired.start(10003, callback);
         }
       ], done);
     });
@@ -46,53 +53,61 @@
           return server_error.stop(callback);
         }, function(callback) {
           return server_timeout.stop(callback);
+        }, function(callback) {
+          return server_expired.stop(callback);
         }
       ], done);
     });
     it('should have method', function() {
-      return assert.property(serviceChecker, 'smtp');
+      return assert.property(serviceChecker, 'smtpTls');
     });
     it('should return success:true for valid server', function() {
       var options;
       options = {
         host: 'localhost',
-        port: 10000
+        port: 10000,
+        ca: valid_cert
       };
-      return assert.eventually.include(serviceChecker.smtp(options), {
+      return assert.eventually.include(serviceChecker.smtpTls(options), {
         success: true
       });
     });
     it('should return success:false for bad server', function() {
       var options;
       options = {
-        port: 10001
+        port: 10001,
+        ca: valid_cert
       };
-      return assert.eventually.include(serviceChecker.smtp(options), {
+      return assert.eventually.include(serviceChecker.smtpTls(options), {
         success: false
       });
     });
     it('should return success:false due to timeout on slow server', function() {
       var options;
       options = {
-        port: 10002
+        port: 10002,
+        ca: valid_cert
       };
-      return assert.eventually.include(serviceChecker.smtp(options), {
+      return assert.eventually.include(serviceChecker.smtpTls(options), {
         success: false
       });
     });
-    it('should reject if bad host parameter passed', function() {
+    it('should return success:false due to a expired cert', function() {
+      var options;
+      options = {
+        port: 10003,
+        ca: expired_cert
+      };
+      return assert.eventually.include(serviceChecker.smtpTls(options), {
+        success: false
+      });
+    });
+    return it('should reject if bad parameter passed', function() {
       var options;
       options = {
         host: true
       };
-      return assert.isRejected(serviceChecker.smtp(options));
-    });
-    return it('should reject if bad port parameter passed', function() {
-      var options;
-      options = {
-        port: true
-      };
-      return assert.isRejected(serviceChecker.smtp(options));
+      return assert.isRejected(serviceChecker.smtpTls(options));
     });
   });
 
