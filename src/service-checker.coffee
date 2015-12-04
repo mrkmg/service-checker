@@ -1,4 +1,4 @@
-###*
+###
 # service-checker
 # Author: MrKMG (https://github.com/mrkmg)
 #
@@ -38,13 +38,14 @@ class ServiceChecker
         result.finished(error)
 
   use: (plugin) ->
+    self = this
+
     if !_.isObject(plugin)
       throw new Error('plugin must key:value object')
 
-    t = this
     _.each plugin, (handler, name) ->
       if _.isFunction(handler) and _.isString(name)
-        t.makeHandler name, handler
+        self.makeHandler name, handler
       else
         throw new Error("#{name} does not have a valid handler")
 

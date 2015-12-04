@@ -12,7 +12,7 @@ _ = require 'underscore'
 
 makeRequest = (options) ->
   options = _.defaults options,
-    host: "localhost"
+    host: "127.0.0.1"
     port: 53
     name: 'google.com'
     type: 'A'

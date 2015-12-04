@@ -42,14 +42,24 @@
     it('should have method', function() {
       return assert.property(serviceChecker, 'dns');
     });
-    return it.only('should return success:true for valid request', function() {
+    it('should return success:true for valid request', function() {
       var options;
       options = {
-        host: 'localhost',
+        host: '127.0.0.1',
         port: 10000
       };
       return assert.eventually.include(serviceChecker.dns(options), {
         success: true
+      });
+    });
+    return it('should return success:false for timeout', function() {
+      var options;
+      options = {
+        host: '127.0.0.1',
+        port: 10001
+      };
+      return assert.eventually.include(serviceChecker.dns(options), {
+        success: false
       });
     });
   });

@@ -5,11 +5,11 @@
 # MIT License
 ###
 
-chai = require('chai')
-chai.use require('chai-as-promised')
+chai = require 'chai'
+chai.use require 'chai-as-promised'
 assert = chai.assert
-async = require('async')
-serviceChecker = require('../../..')(timeout: 1000)
+async = require 'async'
+serviceChecker = require('../../..') timeout: 1000
 
 describe 'PLUGIN: http', ->
 
