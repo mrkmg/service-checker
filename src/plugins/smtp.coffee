@@ -27,7 +27,7 @@ makeRequest = (options, tls) ->
     timeout: 5000)
 
   if !(_.isString(options.host) or !options.host)
-    throw new Error('Hostname but be a string or falsey')
+    throw new Error('Hostname must be a string or falsey')
 
   if !(_.isNumber(options.port) or !options.port)
     throw new Error('Port but be a number or falsey')
@@ -49,7 +49,7 @@ makeRequest = (options, tls) ->
   ]))
 
 runRequest = (options, request) ->
-  new Promise((resolve, reject) ->
+  new Promise (resolve, reject) ->
     cancelEvent = (event_name) ->
       request.removeAllListeners event_name
       request.on event_name, _.noop
@@ -66,7 +66,6 @@ runRequest = (options, request) ->
       err.code = 'TIMEOUT'
       reject err
 
-    request.on 'log', console.log
     request.on 'connect', ->
       cleanupRequest()
       resolve()
@@ -77,7 +76,6 @@ runRequest = (options, request) ->
 
     request_timeout = setInterval(doTimeout, options.timeout)
     request.connect()
-  )
 
 module.exports =
   smtp: (options) ->

@@ -12,12 +12,13 @@ https_node = require 'https'
 _ = require 'underscore'
 
 run = (options, ssl) ->
-  Promise.try(->
-    makeRequest options, ssl
-  ).then (request) ->
-    runRequest(options, request)
-    .then(checkResponse)
-    .catch _.identity
+  Promise
+    .try ->
+      makeRequest options, ssl
+    .then (request) ->
+      runRequest(options, request)
+      .then(checkResponse)
+      .catch _.identity
 
 makeRequest = (options, ssl) ->
   options = _.defaults(options,
@@ -32,7 +33,7 @@ makeRequest = (options, ssl) ->
 
   handler = if ssl then https_node else http_node
 
-  handler.request _.pick(options, [
+  handler.request _.pick options,
     'host'
     'port'
     'method'
@@ -40,10 +41,9 @@ makeRequest = (options, ssl) ->
     'strictSSL'
     'rejectUnauthorized'
     'ca'
-  ])
 
 runRequest = (options, request) ->
-  new Promise((resolve, reject) ->
+  new Promise (resolve, reject) ->
     cancelEvent = (event_name) ->
       request.removeAllListeners event_name
       request.on event_name, _.noop
@@ -56,7 +56,7 @@ runRequest = (options, request) ->
 
     doTimeout = ->
       cleanupRequest()
-      err = new Error('Request exceeded timeout of ' + options.timeout + 'ms')
+      err = new Error 'Request exceeded timeout of ' + options.timeout + 'ms'
       err.code = 'TIMEOUT'
       reject err
 
@@ -70,7 +70,7 @@ runRequest = (options, request) ->
 
     request_timeout = setTimeout doTimeout, options.timeout
     request.end()
-  )
+
 
 checkResponse = (response) ->
   if response.statusCode >= 400
