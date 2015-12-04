@@ -74,7 +74,7 @@ the following public properties:
 Built in plugins
 ----------------
 
-**Ping** _Check a given host for an ICMP response. Uses the system ping utility. If your system does not have a ping utility in path, this plugin will fail._
+**Ping** _Check a given host for an ICMP response. Uses the system ping utility. If your system does not have a ping utility in path, this plugin will fail_
 
 `.ping(options)`
 
@@ -85,7 +85,7 @@ Where options are:
 
 --------------------------------------------------------------------------------
 
-**HTTP** _Check a given host for a valid HTTP response._
+**HTTP** _Check a given host for a valid HTTP response_
 
 `.http(options)`
 
@@ -97,7 +97,7 @@ Where options are:
 
 --------------------------------------------------------------------------------
 
-**HTTPS** _Check a given host for a valid HTTP response and for a valid SSL Certificate._
+**HTTPS** _Check a given host for a valid HTTP response and for a valid SSL Certificate_
 
 `.https(options)`
 
@@ -110,7 +110,7 @@ Where options are:
 
 --------------------------------------------------------------------------------
 
-**SMTP** _Check a given host for a valid SMTP response. Does not use TLS.
+**SMTP** _Check a given host for a valid SMTP response. Does not use TLS_
 
 `.smtp(options)`
 
@@ -120,7 +120,7 @@ Where options are:
 
 --------------------------------------------------------------------------------
 
-**SMTP-TLS** _Check a given host for a valid SMTP response.
+**SMTP-TLS** _Check a given host for a valid SMTP response_
 
 `.smtpTls(options)`
 
@@ -131,13 +131,25 @@ Where options are:
 
 --------------------------------------------------------------------------------
 
-**Raw-TCP** _Check that a TCP connection can be made to a given host on a given port._
+**Raw-TCP** _Check that a TCP connection can be made to a given host on a given port_
 
 `.rawTcp(options)`
 
 - host (string) The hostname to connect to. Can be either a domain or IP address.
 - port (number) The port to connect to.
 - timeout (number) How long to wait until the check is considered timed out.
+
+--------------------------------------------------------------------------------
+
+**DNS** _Check that a dns server is resolving_
+
+`.dns(options)`
+
+- host (string) The IP address of the local sever. Defaults to '127.0.0.1'.
+- port (number) The port to make the dns request to. Default to 53.
+- name (string) The hostname to lookup. Defaults to 'google.com'.
+- type (string) The record type to lookup. Defaults to 'A'.
+- timeout (number) How long to wait until the request is considered timed out.
 
 
 Including a third party plugin
