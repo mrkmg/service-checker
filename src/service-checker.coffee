@@ -9,15 +9,27 @@ _ = require 'underscore'
 Promise = require 'bluebird'
 CheckResult = require './check-result'
 
+allowed_properties = ['timeout', 'ca']
+
 class ServiceChecker
   constructor: (options) ->
     if !_.isObject(options)
       options = {}
 
-    @options = _.defaults options,
+    _.defaults options,
       timeout: 5000
+      ca: null
 
-    this
+    if not _.isNumber options.timeout
+      throw new Error 'Timeout must be a number'
+
+    if (not _.isArray options.ca) and (not _.isString options.ca) and (not _.isNull options.ca)
+      throw new Error 'CA must be an array, string, or empty'
+
+    if _.chain(options).omit(allowed_properties).keys().value().length > 0
+      throw new Error 'Unknown Properties: ' + _.chain(options).omit(allowed_properties).keys().value().join(", ")
+
+    @options = options;
 
   makeHandler: (name, handler) ->
     @[name] = (options) ->

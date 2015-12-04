@@ -19,7 +19,7 @@ rawTcp = (options) ->
     .catch _.identity
 
 makeRequest = (options) ->
-  options = _.defaults(options,
+  _.defaults(options,
     host: 'localhost'
     timeout: 5000)
 

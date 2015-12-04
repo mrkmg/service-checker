@@ -19,7 +19,7 @@ ping = (options) ->
       .catch _.identity
 
 makeArguments = (options) ->
-  options = _.defaults options,
+  _.defaults options,
     host: 'localhost'
     timeout: 5000
 

@@ -21,7 +21,7 @@ run = (options, ssl) ->
       .catch _.identity
 
 makeRequest = (options, ssl) ->
-  options = _.defaults(options,
+  _.defaults(options,
     host: 'localhost'
     port: if ssl then 443 else 80
     method: 'GET'

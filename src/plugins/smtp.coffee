@@ -20,7 +20,7 @@ run = (options, tls) ->
     .catch _.identity
 
 makeRequest = (options, tls) ->
-  options = _.defaults(options,
+  _.defaults(options,
     host: 'localhost'
     port: 25
     ca: null

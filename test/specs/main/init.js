@@ -8,7 +8,7 @@
    *
    * MIT License
    */
-  var assert, chai, serviceChecker;
+  var assert, chai, serviceChecker, serviceCheckerNonInit;
 
   chai = require('chai');
 
@@ -18,9 +18,32 @@
 
   serviceChecker = require('../../..')();
 
+  serviceCheckerNonInit = require('../../..');
+
   describe('MAIN: Module Exists', function() {
-    return it("_name should exist and equal 'service-checker'", function() {
+    it("_name should exist and equal 'service-checker'", function() {
       return assert.equal(serviceChecker._name, 'service-checker');
+    });
+    it('should throw for bad default initialization', function() {
+      return assert.throws(function() {
+        return serviceCheckerNonInit({
+          nonprop: 'someValue'
+        });
+      });
+    });
+    it('should throw for bad default timeout', function() {
+      return assert.throws(function() {
+        return serviceCheckerNonInit({
+          timeout: 'a'
+        });
+      });
+    });
+    return it('should throw for a bad ca', function() {
+      return assert.throws(function() {
+        return serviceCheckerNonInit({
+          ca: true
+        });
+      });
     });
   });
 

@@ -11,7 +11,7 @@ dns = require 'native-dns'
 _ = require 'underscore'
 
 makeRequest = (options) ->
-  options = _.defaults options,
+  _.defaults options,
     host: "127.0.0.1"
     port: 53
     name: 'google.com'
