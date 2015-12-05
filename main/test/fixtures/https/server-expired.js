@@ -17,8 +17,8 @@
   module.exports = function() {
     var client, options;
     options = {
-      key: fs.readFileSync('service-checker/test/fixtures/https/certs/expired.key'),
-      cert: fs.readFileSync('service-checker/test/fixtures/https/certs/expired.cert')
+      key: fs.readFileSync('main/test/fixtures/https/certs/expired.key'),
+      cert: fs.readFileSync('main/test/fixtures/https/certs/expired.cert')
     };
     client = https.createServer(options, function(request, response) {
       response.writeHead(200, {

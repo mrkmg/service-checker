@@ -10,8 +10,8 @@ https = require 'https'
 
 module.exports = ->
   options =
-    key: fs.readFileSync('service-checker/test/fixtures/https/certs/valid.key')
-    cert: fs.readFileSync('service-checker/test/fixtures/https/certs/valid.cert')
+    key: fs.readFileSync('main/test/fixtures/https/certs/valid.key')
+    cert: fs.readFileSync('main/test/fixtures/https/certs/valid.cert')
 
   client = https.createServer options, (request, response) ->
     response.writeHead 404, 'Content-Type': 'text/plain'

@@ -6,15 +6,15 @@
   "bugs": {
     "url": "https://github.com/mrkmg/service-checker/issues"
   },
-  "main": "service-checker/index.js",
+  "main": "main/index.js",
   "scripts": {
-    "compile": "coffee -c -o service-checker/ src/",
-    "compile-watch": "coffee -cw -o service-checker/ src/",
+    "compile": "coffee -c -o main/ src/",
+    "compile-watch": "coffee -cw -o main/ src/",
     "test": "npm run lint && npm run unit",
     "lint": "coffeelint -f .coffeelint.json src",
-    "unit": "mocha --recursive ./service-checker/test/specs --timeout 10000",
+    "unit": "mocha --recursive ./main/test/specs --timeout 10000",
     "cover": "npm run env && npm run cover-local && npm run coveralls",
-    "cover-local": "istanbul cover _mocha -- --timeout 10000 --recursive ./service-checker/test/specs",
+    "cover-local": "istanbul cover _mocha -- --timeout 10000 --recursive ./main/test/specs",
     "coveralls": "istanbul-coveralls"
   },
   "keywords": [

@@ -12,8 +12,8 @@ https = require 'https'
 
 module.exports = ->
   options =
-    key: fs.readFileSync('service-checker/test/fixtures/https/certs/expired.key')
-    cert: fs.readFileSync('service-checker/test/fixtures/https/certs/expired.cert')
+    key: fs.readFileSync('main/test/fixtures/https/certs/expired.key')
+    cert: fs.readFileSync('main/test/fixtures/https/certs/expired.cert')
 
   client = https.createServer options, (request, response) ->
     response.writeHead 200, 'Content-Type': 'text/plain'

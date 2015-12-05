@@ -14,8 +14,8 @@ module.exports = ->
     secure: false
     logger: false
     hideSTARTTLS: false
-    key: fs.readFileSync('service-checker/test/fixtures/smtp-tls/certs/expired.key')
-    cert: fs.readFileSync('service-checker/test/fixtures/smtp-tls/certs/expired.cert')
+    key: fs.readFileSync('main/test/fixtures/smtp-tls/certs/expired.key')
+    cert: fs.readFileSync('main/test/fixtures/smtp-tls/certs/expired.cert')
 
   start: (port, callback) ->
     client.listen port, 'localhost', callback

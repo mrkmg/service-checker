@@ -19,8 +19,8 @@ describe 'PLUGIN: https', ->
   server_valid_timeout = require('../../fixtures/https/server-valid-timeout')()
   server_expired = require('../../fixtures/https/server-expired')()
 
-  valid_cert = fs.readFileSync('service-checker/test/fixtures/https/certs/valid.cert')
-  expired_cert = fs.readFileSync('service-checker/test/fixtures/https/certs/expired.cert')
+  valid_cert = fs.readFileSync('main/test/fixtures/https/certs/valid.cert')
+  expired_cert = fs.readFileSync('main/test/fixtures/https/certs/expired.cert')
 
   before 'starting up test servers', (done) ->
     async.parallel [

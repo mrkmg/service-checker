@@ -21,8 +21,8 @@ describe 'PLUGIN: smtp-tls', ->
   server_timeout = require('../../fixtures/smtp-tls/server-timeout')()
   server_expired = require('../../fixtures/smtp-tls/server-expired')()
 
-  valid_cert = fs.readFileSync('service-checker/test/fixtures/smtp-tls/certs/valid.cert')
-  expired_cert = fs.readFileSync('service-checker/test/fixtures/smtp-tls/certs/expired.cert')
+  valid_cert = fs.readFileSync('main/test/fixtures/smtp-tls/certs/valid.cert')
+  expired_cert = fs.readFileSync('main/test/fixtures/smtp-tls/certs/expired.cert')
 
   before 'starting up test servers', (done) ->
     async.parallel [
