@@ -5,5 +5,5 @@ language: node_js
 node_js:
   - stable
   - 4.1
-script: PATH=$(pwd)/service-checker/test/travis-bin:$PATH npm test
-after_script: PATH=$(pwd)/service-checker/test/travis-bin:$PATH npm run cover
+script: PATH=$(pwd)/main/test/travis-bin:$PATH npm test
+after_script: PATH=$(pwd)/main/test/travis-bin:$PATH npm run cover
