@@ -4,4 +4,12 @@ var path = require('path');
 var fs   = require('fs');
 var main  = path.join(path.dirname(fs.realpathSync(__filename)), '../main');
 
-require(main + '/bin/scheck')();
+try
+{
+  require(main + '/bin/scheck')();
+}
+catch (error)
+{
+  console.error(error);
+  process.exit(1);
+}
