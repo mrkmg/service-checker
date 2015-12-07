@@ -1,5 +1,6 @@
 serviceChecker = require('../index')()
-args = require('minimist')(process.argv.slice 2)
+Promise = require 'bluebird'
+minimist = require 'minimist'
 _ = require 'underscore'
 
 usage = ->
@@ -7,7 +8,7 @@ usage = ->
   console.log ''
   console.log 'scheck [type] host [additional_options]'
 
-makeOptions = ->
+makeOptions = (args) ->
   if args._.length == 0
     usage()
     throw new Error 'Missing host'
@@ -25,12 +26,16 @@ makeOptions = ->
     usage()
     throw new Error "#{type} is not a valid checker"
 
-  _.extend host: host, _.omit args, [
-    '_',
-    'host'
+  [
+    type,
+    host,
+    _.extend host: host, _.omit args, [
+      '_',
+      'host'
+    ]
   ]
 
-doCheck = (options) ->
+doCheck = (type, host, options) ->
   console.log "Checking #{host} via #{type}."
 
   serviceChecker[type](options)
@@ -46,6 +51,11 @@ run = ->
   console.log 'Service Checker'
   console.log ''
 
-  doCheck makeOptions()
+  Promise
+    .try ->
+      process.argv.slice 2
+    .then minimist
+    .then makeOptions
+    .spread doCheck
 
 module.exports = run
