@@ -55,11 +55,11 @@
     });
   };
 
-  run = function() {
+  run = function(args) {
     console.log('Service Checker');
     console.log('');
     return Promise["try"](function() {
-      return process.argv.slice(2);
+      return args.slice(2);
     }).then(minimist).then(makeOptions).spread(doCheck);
   };
 

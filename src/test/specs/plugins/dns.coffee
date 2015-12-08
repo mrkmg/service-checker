@@ -1,4 +1,4 @@
-###*
+###
 # server-checker : test/specs/plugins/dns
 # Author: MrKMG (https://github.com/mrkmg)
 #

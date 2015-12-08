@@ -1,6 +1,4 @@
-'use strict'
-
-###*
+###
 # server-checker : test/specs/main/init
 # Author: MrKMG (https://github.com/mrkmg)
 #

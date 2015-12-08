@@ -29,10 +29,11 @@ makeOptions = (args) ->
   [
     type,
     host,
-    _.extend host: host, _.omit args, [
-      '_',
-      'host'
-    ]
+    _.extend host: host, _.omit args,
+      [
+        '_',
+        'host'
+      ]
   ]
 
 doCheck = (type, host, options) ->
@@ -47,13 +48,13 @@ doCheck = (type, host, options) ->
       console.log ''
       console.log result.error.toString()
 
-run = ->
+run = (args) ->
   console.log 'Service Checker'
   console.log ''
 
   Promise
     .try ->
-      process.argv.slice 2
+      args.slice 2
     .then minimist
     .then makeOptions
     .spread doCheck

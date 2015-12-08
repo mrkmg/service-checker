@@ -1,4 +1,4 @@
-###*
+###
 # server-checker : test/specs/plugins/http
 # Author: MrKMG (https://github.com/mrkmg)
 #
