@@ -29,15 +29,15 @@ class ServiceChecker
     if _.chain(options).omit(allowed_properties).keys().value().length > 0
       throw new Error 'Unknown Properties: ' + _.chain(options).omit(allowed_properties).keys().value().join(', ')
 
-    @options = options
+    @_options = options
 
-  makeHandler: (name, handler) ->
+  _makeHandler: (name, handler) ->
     @[name] = (options) ->
-      @runHandler name, handler, options
+      @_runHandler name, handler, options
     @_loaded.push(name)
 
-  runHandler: (name, handler, options) ->
-    default_options = @options
+  _runHandler: (name, handler, options) ->
+    default_options = @_options
     result = undefined
 
     Promise
@@ -57,13 +57,13 @@ class ServiceChecker
 
     _.each plugin, (handler, name) ->
       if _.isFunction(handler) and _.isString(name)
-        self.makeHandler name, handler
+        self._makeHandler name, handler
       else
         throw new Error("#{name} does not have a valid handler")
 
     this
 
-  options: {}
+  _options: {}
   _name: 'service-checker'
   _loaded: []
 

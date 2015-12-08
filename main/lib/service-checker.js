@@ -36,19 +36,19 @@
       if (_.chain(options).omit(allowed_properties).keys().value().length > 0) {
         throw new Error('Unknown Properties: ' + _.chain(options).omit(allowed_properties).keys().value().join(', '));
       }
-      this.options = options;
+      this._options = options;
     }
 
-    ServiceChecker.prototype.makeHandler = function(name, handler) {
+    ServiceChecker.prototype._makeHandler = function(name, handler) {
       this[name] = function(options) {
-        return this.runHandler(name, handler, options);
+        return this._runHandler(name, handler, options);
       };
       return this._loaded.push(name);
     };
 
-    ServiceChecker.prototype.runHandler = function(name, handler, options) {
+    ServiceChecker.prototype._runHandler = function(name, handler, options) {
       var default_options, result;
-      default_options = this.options;
+      default_options = this._options;
       result = void 0;
       return Promise["try"](function() {
         result = new CheckResult(name);
@@ -67,7 +67,7 @@
       }
       _.each(plugin, function(handler, name) {
         if (_.isFunction(handler) && _.isString(name)) {
-          return self.makeHandler(name, handler);
+          return self._makeHandler(name, handler);
         } else {
           throw new Error(name + " does not have a valid handler");
         }
@@ -75,7 +75,7 @@
       return this;
     };
 
-    ServiceChecker.prototype.options = {};
+    ServiceChecker.prototype._options = {};
 
     ServiceChecker.prototype._name = 'service-checker';
 
