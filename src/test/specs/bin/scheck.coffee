@@ -7,35 +7,64 @@
 
 chai = require 'chai'
 chai.use(require 'chai-as-promised')
+sinon = require 'sinon'
 assert = chai.assert
 
 scheck = require '../../../bin/scheck'
 
 describe 'BIN: scheck', ->
 
+  before ->
+    sinon.spy console, 'log'
+
+  beforeEach ->
+    console.log.reset()
+
+  after ->
+    console.log.restore()
+
   it 'should process one argument correctly', ->
-    assert.isFulfilled scheck [
+    args = [
       'path/to/node',
       'path/to/scheck',
       '127.0.0.1'
     ]
+
+    promise = scheck args
+      .then ->
+        console.log.getCall(0).args[0]
+
+    assert.eventually.equal promise, 'Checking 127.0.0.1 via ping.'
+
 
   it 'should process two arguments correctly', ->
-    assert.isFulfilled scheck [
+    args = [
       'path/to/node',
       'path/to/scheck',
-      'ping',
+      'http',
       '127.0.0.1'
     ]
 
-  it 'should reject on no arguments', ->
-    assert.isRejected scheck [
+    promise = scheck args
+      .then ->
+        console.log.getCall(0).args[0]
+
+    assert.eventually.equal promise, 'Checking 127.0.0.1 via http.'
+
+  it 'should error on no arguments', ->
+    args = [
       'path/to/node',
       'path/to/scheck'
     ]
 
-  it 'should reject on too many arguments', ->
-    assert.isRejected scheck [
+    promise = scheck args
+      .then ->
+        console.log.getCall(0).args[0]
+
+    assert.eventually.equal promise, 'Error: Missing host'
+
+  it 'should error on too many arguments', ->
+    args = [
       'path/to/node',
       'path/to/scheck',
       'ping',
@@ -43,15 +72,28 @@ describe 'BIN: scheck', ->
       'host2'
     ]
 
-  it 'should reject on unknown type', ->
-    assert.isRejected scheck [
+    promise = scheck args
+      .then ->
+        console.log.getCall(0).args[0]
+
+    assert.eventually.equal promise, 'Error: Too many parameters!!'
+
+  it 'should error on unknown type', ->
+    args = [
       'path/to/node',
       'path/to/scheck',
-      'non_existant_check',
-      'host1'
+      'invalid',
+      '127.0.0.1'
     ]
 
-    assert.isFulfilled scheck [
+    promise = scheck args
+      .then ->
+        console.log.getCall(0).args[0]
+
+    assert.eventually.equal promise, 'Error: invalid is not a valid method'
+
+  it 'should error after proper amount of time', ->
+    args = [
       'path/to/node',
       'path/to/scheck',
       'ping',
@@ -59,3 +101,9 @@ describe 'BIN: scheck', ->
       '--timeout',
       '1000'
     ]
+
+    promise = scheck args
+      .then ->
+        parseInt console.log.getCall(1).args[0].match(/Took ([\d]+)/)[1]
+
+    assert.eventually.closeTo promise, 1000, 100

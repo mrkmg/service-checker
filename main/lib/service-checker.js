@@ -20,6 +20,7 @@
 
   ServiceChecker = (function() {
     function ServiceChecker(options) {
+      var invalid_properties;
       if (!_.isObject(options)) {
         options = {};
       }
@@ -33,8 +34,9 @@
       if ((!_.isArray(options.ca)) && (!_.isString(options.ca)) && (!_.isNull(options.ca))) {
         throw new Error('CA must be an array, string, or empty');
       }
-      if (_.chain(options).omit(allowed_properties).keys().value().length > 0) {
-        throw new Error('Unknown Properties: ' + _.chain(options).omit(allowed_properties).keys().value().join(', '));
+      invalid_properties = _.chain(options).omit(allowed_properties).keys().value();
+      if (invalid_properties.length > 0) {
+        throw new Error('Unknown Properties: ' + invalid_properties.join(', '));
       }
       this._options = options;
     }

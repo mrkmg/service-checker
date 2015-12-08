@@ -66,7 +66,7 @@ doCheck = (method, host, options) ->
     if result.success
       console.log "#{host} is up! Took #{result.time} milliseconds"
     else
-      console.log "#{host} is down!"
+      console.log "#{host} is down! Took #{result.time} milliseconds"
       console.log ''
       console.log result.error.toString()
 

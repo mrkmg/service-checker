@@ -8,32 +8,75 @@
  */
 
 (function() {
-  var assert, chai, scheck;
+  var assert, chai, scheck, sinon;
 
   chai = require('chai');
 
   chai.use(require('chai-as-promised'));
+
+  sinon = require('sinon');
 
   assert = chai.assert;
 
   scheck = require('../../../bin/scheck');
 
   describe('BIN: scheck', function() {
+    before(function() {
+      return sinon.spy(console, 'log');
+    });
+    beforeEach(function() {
+      return console.log.reset();
+    });
+    after(function() {
+      return console.log.restore();
+    });
     it('should process one argument correctly', function() {
-      return assert.isFulfilled(scheck(['path/to/node', 'path/to/scheck', '127.0.0.1']));
+      var args, promise;
+      args = ['path/to/node', 'path/to/scheck', '127.0.0.1'];
+      promise = scheck(args).then(function() {
+        return console.log.getCall(0).args[0];
+      });
+      return assert.eventually.equal(promise, 'Checking 127.0.0.1 via ping.');
     });
     it('should process two arguments correctly', function() {
-      return assert.isFulfilled(scheck(['path/to/node', 'path/to/scheck', 'ping', '127.0.0.1']));
+      var args, promise;
+      args = ['path/to/node', 'path/to/scheck', 'http', '127.0.0.1'];
+      promise = scheck(args).then(function() {
+        return console.log.getCall(0).args[0];
+      });
+      return assert.eventually.equal(promise, 'Checking 127.0.0.1 via http.');
     });
-    it('should reject on no arguments', function() {
-      return assert.isRejected(scheck(['path/to/node', 'path/to/scheck']));
+    it('should error on no arguments', function() {
+      var args, promise;
+      args = ['path/to/node', 'path/to/scheck'];
+      promise = scheck(args).then(function() {
+        return console.log.getCall(0).args[0];
+      });
+      return assert.eventually.equal(promise, 'Error: Missing host');
     });
-    it('should reject on too many arguments', function() {
-      return assert.isRejected(scheck(['path/to/node', 'path/to/scheck', 'ping', 'host1', 'host2']));
+    it('should error on too many arguments', function() {
+      var args, promise;
+      args = ['path/to/node', 'path/to/scheck', 'ping', 'host1', 'host2'];
+      promise = scheck(args).then(function() {
+        return console.log.getCall(0).args[0];
+      });
+      return assert.eventually.equal(promise, 'Error: Too many parameters!!');
     });
-    return it('should reject on unknown type', function() {
-      assert.isRejected(scheck(['path/to/node', 'path/to/scheck', 'non_existant_check', 'host1']));
-      return assert.isFulfilled(scheck(['path/to/node', 'path/to/scheck', 'ping', '169.254.0.0', '--timeout', '1000']));
+    it('should error on unknown type', function() {
+      var args, promise;
+      args = ['path/to/node', 'path/to/scheck', 'invalid', '127.0.0.1'];
+      promise = scheck(args).then(function() {
+        return console.log.getCall(0).args[0];
+      });
+      return assert.eventually.equal(promise, 'Error: invalid is not a valid method');
+    });
+    return it('should error after proper amount of time', function() {
+      var args, promise;
+      args = ['path/to/node', 'path/to/scheck', 'ping', '169.254.0.0', '--timeout', '1000'];
+      promise = scheck(args).then(function() {
+        return parseInt(console.log.getCall(1).args[0].match(/Took ([\d]+)/)[1]);
+      });
+      return assert.eventually.closeTo(promise, 1000, 100);
     });
   });
 

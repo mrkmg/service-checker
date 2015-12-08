@@ -83,7 +83,7 @@
       if (result.success) {
         return console.log(host + " is up! Took " + result.time + " milliseconds");
       } else {
-        console.log(host + " is down!");
+        console.log(host + " is down! Took " + result.time + " milliseconds");
         console.log('');
         return console.log(result.error.toString());
       }
