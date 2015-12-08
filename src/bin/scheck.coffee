@@ -9,14 +9,14 @@ serviceChecker = require('../index')()
 Promise = require 'bluebird'
 minimist = require 'minimist'
 _ = require 'underscore'
-require 'colors'
+chalk = require 'chalk'
 
-class CanceledError extends Error
-  print_usage: false
-  constructor: (@print_usage) ->
+class UsageError extends Error
+  message: 'Show The Usage'
+  constructor: ->
 
 printMethods = ->
-  console.log 'Methods'.underline
+  console.log chalk.underline 'Methods'
 
   methods = _.keys(serviceChecker).filter (value) ->
     not (value.substr(0, 1) == '_' or value == 'use')
@@ -24,7 +24,7 @@ printMethods = ->
   console.log '    ' + methods.join ', '
 
 usage = ->
-  console.log 'Usage:'.bold
+  console.log chalk.bold 'Usage:'
   console.log '    scheck [method] host [additional_options]'
   console.log ''
   printMethods()
@@ -32,7 +32,7 @@ usage = ->
 
 makeOptions = (args) ->
   if args.hasOwnProperty 'h'
-    throw new CanceledError(true)
+    throw new UsageError()
 
   if args._.length == 0
     throw new Error 'Missing host'
@@ -77,9 +77,8 @@ run = (args) ->
     .then minimist
     .then makeOptions
     .spread doCheck
-    .catch CanceledError, (error) ->
-      if error.print_usage
-        usage()
+    .catch UsageError,  ->
+      usage()
     .catch (error) ->
       console.log error.toString()
 

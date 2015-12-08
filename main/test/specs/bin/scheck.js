@@ -8,7 +8,7 @@
  */
 
 (function() {
-  var assert, chai, scheck, sinon;
+  var assert, chai, chalk, scheck, sinon;
 
   chai = require('chai');
 
@@ -16,19 +16,31 @@
 
   sinon = require('sinon');
 
+  chalk = require('chalk');
+
   assert = chai.assert;
 
   scheck = require('../../../bin/scheck');
 
   describe('BIN: scheck', function() {
     before(function() {
+      chalk.enabled = false;
       return sinon.spy(console, 'log');
     });
     beforeEach(function() {
       return console.log.reset();
     });
     after(function() {
+      chalk.enabled = true;
       return console.log.restore();
+    });
+    it('should output help correctly', function() {
+      var args, promise;
+      args = ['path/to/node', 'path/to/scheck', '--no-color', '-h'];
+      promise = scheck(args).then(function() {
+        return [].concat.apply([], console.log.args).join(' ');
+      });
+      return assert.eventually.equal(promise, 'Usage:     scheck [method] host [additional_options]  Methods     http, https, smtp, smtpTls, ping, rawTcp, dns');
     });
     it('should process one argument correctly', function() {
       var args, promise;

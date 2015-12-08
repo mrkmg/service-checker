@@ -8,7 +8,7 @@
  */
 
 (function() {
-  var CanceledError, Promise, _, doCheck, makeOptions, minimist, printMethods, run, serviceChecker, usage,
+  var Promise, UsageError, _, chalk, doCheck, makeOptions, minimist, printMethods, run, serviceChecker, usage,
     extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
     hasProp = {}.hasOwnProperty;
 
@@ -20,24 +20,22 @@
 
   _ = require('underscore');
 
-  require('colors');
+  chalk = require('chalk');
 
-  CanceledError = (function(superClass) {
-    extend(CanceledError, superClass);
+  UsageError = (function(superClass) {
+    extend(UsageError, superClass);
 
-    CanceledError.prototype.print_usage = false;
+    UsageError.prototype.message = 'Show The Usage';
 
-    function CanceledError(print_usage) {
-      this.print_usage = print_usage;
-    }
+    function UsageError() {}
 
-    return CanceledError;
+    return UsageError;
 
   })(Error);
 
   printMethods = function() {
     var methods;
-    console.log('Methods'.underline);
+    console.log(chalk.underline('Methods'));
     methods = _.keys(serviceChecker).filter(function(value) {
       return !(value.substr(0, 1) === '_' || value === 'use');
     });
@@ -45,7 +43,7 @@
   };
 
   usage = function() {
-    console.log('Usage:'.bold);
+    console.log(chalk.bold('Usage:'));
     console.log('    scheck [method] host [additional_options]');
     console.log('');
     return printMethods();
@@ -54,7 +52,7 @@
   makeOptions = function(args) {
     var host, method;
     if (args.hasOwnProperty('h')) {
-      throw new CanceledError(true);
+      throw new UsageError();
     }
     if (args._.length === 0) {
       throw new Error('Missing host');
@@ -93,10 +91,8 @@
   run = function(args) {
     return Promise["try"](function() {
       return args.slice(2);
-    }).then(minimist).then(makeOptions).spread(doCheck)["catch"](CanceledError, function(error) {
-      if (error.print_usage) {
-        return usage();
-      }
+    }).then(minimist).then(makeOptions).spread(doCheck)["catch"](UsageError, function() {
+      return usage();
     })["catch"](function(error) {
       return console.log(error.toString());
     });

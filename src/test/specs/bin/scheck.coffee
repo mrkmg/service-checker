@@ -8,6 +8,7 @@
 chai = require 'chai'
 chai.use(require 'chai-as-promised')
 sinon = require 'sinon'
+chalk = require 'chalk'
 assert = chai.assert
 
 scheck = require '../../../bin/scheck'
@@ -15,13 +16,29 @@ scheck = require '../../../bin/scheck'
 describe 'BIN: scheck', ->
 
   before ->
+    chalk.enabled = false
     sinon.spy console, 'log'
 
   beforeEach ->
     console.log.reset()
 
   after ->
+    chalk.enabled = true
     console.log.restore()
+
+  it 'should output help correctly', ->
+    args = [
+      'path/to/node',
+      'path/to/scheck',
+      '--no-color',
+      '-h'
+    ]
+
+    promise = scheck args
+      .then ->
+        [].concat.apply([], console.log.args).join ' '
+
+    assert.eventually.equal promise, 'Usage:     scheck [method] host [additional_options]  Methods     http, https, smtp, smtpTls, ping, rawTcp, dns'
 
   it 'should process one argument correctly', ->
     args = [
