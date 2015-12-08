@@ -44,6 +44,7 @@
     "istanbul": "^0.4.1",
     "istanbul-coveralls": "^1.0.3",
     "mocha": "^2.3.4",
+    "sinon": "^1.17.2",
     "smtp-server": "^1.7.1"
   }
 }
