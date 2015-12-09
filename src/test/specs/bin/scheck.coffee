@@ -3,6 +3,8 @@
 # Author: MrKMG (https://github.com/mrkmg)
 #
 # MIT License
+#
+# TODO: Add error code checks
 ###
 
 chai = require 'chai'
