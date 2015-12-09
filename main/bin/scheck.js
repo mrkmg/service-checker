@@ -101,6 +101,8 @@
         console.log(error.toString());
       }
       return process.exit(error.code);
+    }).then(function() {
+      return process.exit(0);
     });
   };
 
