@@ -14,11 +14,21 @@
     <a href="https://nodei.co/npm/service-checker/"><img src="https://nodei.co/npm/service-checker.png?compact=true"></a>
 </p>
 
-Current Version: **0.7.1**
+Current Version: **0.7.2**
 
 A node library to check if various services are up and behaving. This project is in beta. Expect everything to change
 frequently. Until version 1, the api may break at ANY point. After version 1.0.0, standard [SemVer](http://semver.org/) 
 will be followed.
+
+- [Install](#install)
+- [Quick Example](#quick-example)
+- [Usage](#usage)
+- [Included Plugins](#included-plugins)
+- [Including a Plugin](#including-a-plugin)
+- [Writing a Plugin](#writing-a-plugin)
+- [CLI Utility](#cli-utility)
+- [Contributing](#contributing)
+- [License](#license)
 
 Install
 -------
@@ -52,55 +62,6 @@ Quick Example
             console.log("Other Error");
             console.log(error);
         });
-        
-        
-CLI Utility
--------------
-
-service-checker also comes with a simple CLI utility called scheck. If service-checker is
-installed globally, you should have the `scheck` utility installed and ready to use.
-
-To use the `scheck` CLI utility, make sure to install service-checker globally.
-
-    sudo npm install -g service-checker
-     
-Then call the `scheck` utility.
-
-    #See how to use scheck
-    scheck -h
-
-    #Check 8.8.8.8 via ping
-    scheck 8.8.8.8 
-    
-    #Check google.com via https with a 500ms timeout
-    scheck https google.com --timeout 500
-    
-    #Check if gmails mail server is up and properly configured for TLS
-    scheck smtpTls gmail-smtp-in.l.google.com
-    
-The program can be used in a script multiple ways.
-
-**Exit Codes**
-
-The program will exit with the following codes.
-
-Exit Code | Meaning 
---------- | ------- 
-0         | All parameters are sane and the check was successful. 
-1         | There was an error with the parameters. Check your input. 
-2         | All parameters are sane, but the check failed. 
-255       | An unknown error occurred. Please report this as a bug. 
-
-**Simple Mode**
-
-The program can also be invoked with the `-s` parameter to enable "simple" mode. In simple mode, the output will always
-be in the following format.
-
-    (Up/Down)<tab>(Time)
-    
-For example, with cut you could run the following command to get how long it takes for a host to respond to a ping.
-
-    scheck 127.0.0.1 -s | cut -f2 -d$'\t'
 
 Usage
 -----
@@ -120,7 +81,7 @@ the following public properties:
 - error [object|undefined] *If the test was not successful, the error object from the check*
 
 
-Built in plugins
+Included Plugins
 ----------------
 
 **Ping** _Check a given host for an ICMP response. Uses the system ping utility. If your system does not have a ping utility in path, this plugin will fail_
@@ -169,7 +130,7 @@ Where options are:
 
 --------------------------------------------------------------------------------
 
-**SMTP-TLS** _Check a given host for a valid SMTP response_
+**SMTP-TLS** _Check a given host for a valid SMTP response and that STARTSSL is enabled with a valid TLS Certificate_
 
 `.smtpTls(options)`
 
@@ -201,8 +162,8 @@ Where options are:
 - timeout (number) How long to wait until the request is considered timed out.
 
 
-Including a third party plugin
-------------------------------
+Including a Plugin
+------------------
 
 Including plugins is very easy. Let's say you installed a plugin from npm named `exchange-checker`. All you
 would have to do is call the `use` function of service-checker
@@ -216,10 +177,9 @@ then all you would have to do is:
     serviceChecker.exchange(args..)
         .then(resultHandler)
         .catch(errorHandler)
-        
 
-Writing your own plugins
-------------------------
+Writing a Plugin
+----------------
 
 Rules for building a plugin that works correctly with service checker:
 
@@ -308,6 +268,54 @@ To use the plugin you just wrote is simple as well:
                 console.log("File does not exist");
             }
         });
+
+CLI Utility
+-------------
+
+service-checker also comes with a simple CLI utility called scheck. If service-checker is
+installed globally, you should have the `scheck` utility installed and ready to use.
+
+To use the `scheck` CLI utility, make sure to install service-checker globally.
+
+    sudo npm install -g service-checker
+     
+Then call the `scheck` utility.
+
+    #See how to use scheck
+    scheck -h
+
+    #Check 8.8.8.8 via ping
+    scheck 8.8.8.8 
+    
+    #Check google.com via https with a 500ms timeout
+    scheck https google.com --timeout 500
+    
+    #Check if gmails mail server is up and properly configured for TLS
+    scheck smtpTls gmail-smtp-in.l.google.com
+    
+The program can be used in a script multiple ways.
+
+**Exit Codes**
+
+The program will exit with the following codes.
+
+Exit Code | Meaning 
+--------- | ------- 
+0         | All parameters are sane and the check was successful. 
+1         | There was an error with the parameters. Check your input. 
+2         | All parameters are sane, but the check failed. 
+255       | An unknown error occurred. Please report this as a bug. 
+
+**Simple Mode**
+
+The program can also be invoked with the `-s` parameter to enable "simple" mode. In simple mode, the output will always
+be in the following format.
+
+    (Up/Down)<tab>(Time)
+    
+For example, with cut you could run the following command to get how long it takes for a host to respond to a ping.
+
+    scheck 127.0.0.1 -s | cut -f2 -d$'\t'
 
 Contributing
 ------------

@@ -5,12 +5,10 @@
  * Author: MrKMG (https://github.com/mrkmg)
  *
  * MIT License
- *
- * TODO: Add error code checks
  */
 
 (function() {
-  var assert, chai, chalk, scheck, server_200, sinon;
+  var Promise, assert, chai, chalk, scheck, server_200, sinon;
 
   chai = require('chai');
 
@@ -19,6 +17,8 @@
   sinon = require('sinon');
 
   chalk = require('chalk');
+
+  Promise = require('bluebird');
 
   assert = chai.assert;
 
@@ -34,6 +34,7 @@
       return server_200.start(10000, done);
     });
     beforeEach(function() {
+      process.exit.reset();
       return console.log.reset();
     });
     after(function(done) {
@@ -50,17 +51,33 @@
       });
       return assert.eventually.equal(promise, 'Usage:     scheck [method] host [additional_options]  Methods     http, https, smtp, smtpTls, ping, rawTcp, dns');
     });
+    it('should exit correctly for help', function() {
+      var args, promise;
+      args = ['path/to/node', 'path/to/scheck', '--no-color', '-h'];
+      promise = scheck(args).then(function() {
+        return process.exit.getCall(0).args[0];
+      });
+      return assert.eventually.equal(promise, 0);
+    });
     it('should process one argument correctly', function() {
       var args, promise;
-      args = ['path/to/node', 'path/to/scheck', '127.0.0.1', '--port 10000'];
+      args = ['path/to/node', 'path/to/scheck', '127.0.0.1'];
       promise = scheck(args).then(function() {
         return console.log.getCall(0).args[0];
       });
       return assert.eventually.equal(promise, 'Checking 127.0.0.1 via ping');
     });
+    it('should exit 0 for successful check', function() {
+      var args, promise;
+      args = ['path/to/node', 'path/to/scheck', '127.0.0.1'];
+      promise = scheck(args).then(function() {
+        return process.exit.getCall(0).args[0];
+      });
+      return assert.eventually.equal(promise, 0);
+    });
     it('should process two arguments correctly', function() {
       var args, promise;
-      args = ['path/to/node', 'path/to/scheck', 'http', '127.0.0.1'];
+      args = ['path/to/node', 'path/to/scheck', 'http', '127.0.0.1', '--port 10000'];
       promise = scheck(args).then(function() {
         return console.log.getCall(0).args[0];
       });
@@ -73,6 +90,14 @@
         return console.log.getCall(0).args[0];
       });
       return assert.eventually.equal(promise, 'Error: Missing host');
+    });
+    it('should exit 1 for invalid invocation', function() {
+      var args, promise;
+      args = ['path/to/node', 'path/to/scheck'];
+      promise = scheck(args).then(function() {
+        return process.exit.getCall(0).args[0];
+      });
+      return assert.eventually.equal(promise, 1);
     });
     it('should error on too many arguments', function() {
       var args, promise;
@@ -90,13 +115,37 @@
       });
       return assert.eventually.equal(promise, 'Error: invalid is not a valid method');
     });
-    return it('should error after proper amount of time', function() {
+    it('should error after proper amount of time', function() {
       var args, promise;
       args = ['path/to/node', 'path/to/scheck', 'ping', '169.254.0.0', '--timeout', '1000'];
       promise = scheck(args).then(function() {
         return parseInt(console.log.getCall(2).args[0].match(/([\d]+)/)[1]);
       });
       return assert.eventually.closeTo(promise, 1000, 100);
+    });
+    it('should exit 2 for unsuccessful check', function() {
+      var args, promise;
+      args = ['path/to/node', 'path/to/scheck', 'ping', '169.254.0.0', '--timeout', '1000'];
+      promise = scheck(args).then(function() {
+        return process.exit.getCall(0).args[0];
+      });
+      return assert.eventually.equal(promise, 2);
+    });
+    it('should output correctly with simple mode for successful check', function() {
+      var args, promise;
+      args = ['path/to/node', 'path/to/scheck', '127.0.0.1', '-s'];
+      promise = scheck(args).then(function() {
+        return console.log.getCall(0).args[0];
+      });
+      return assert.eventually.match(promise, /Up\t[\d]+/);
+    });
+    return it('should output correctly with simple mode for unsuccessful check', function() {
+      var args, promise;
+      args = ['path/to/node', 'path/to/scheck', '169.254.0.0', '-s', '--timeout', '1000'];
+      promise = scheck(args).then(function() {
+        return console.log.getCall(0).args[0];
+      });
+      return assert.eventually.match(promise, /Down\t[\d]+/);
     });
   });
 

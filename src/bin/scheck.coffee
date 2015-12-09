@@ -93,5 +93,7 @@ run = (args) ->
       if error.message
         console.log error.toString()
       process.exit error.code
+    .then ->
+      process.exit 0
 
 module.exports = run
