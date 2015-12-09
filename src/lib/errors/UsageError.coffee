@@ -5,6 +5,7 @@
 # MIT License
 ###
 
+### istanbul ignore next ###
 class UsageError extends Error
   message: 'Show The Usage'
   constructor: ->

@@ -5,6 +5,7 @@
 # MIT License
 ###
 
+### istanbul ignore next ###
 class ExitError extends Error
   message: 'Exit Error'
   code: 255
