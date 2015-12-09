@@ -32,6 +32,8 @@ makeOptions = (args) ->
   if args.hasOwnProperty 'h'
     throw new UsageError()
 
+  simple = args.hasOwnProperty 's'
+
   if args._.length == 0
     throw new ExitError 1, 'Missing host'
   else if args._.length == 1
@@ -49,6 +51,7 @@ makeOptions = (args) ->
   [
     method,
     host,
+    simple,
     _.extend host: host, _.omit args,
       [
         '_',
@@ -56,20 +59,26 @@ makeOptions = (args) ->
       ]
   ]
 
-doCheck = (method, host, options) ->
-  console.log "Checking #{host} via #{method}"
+doCheck = (method, host, simple, options) ->
+  not simple and console.log "Checking #{host} via #{method}"
 
   serviceChecker[method](options)
   .then (result) ->
     if result.success
-      console.log "#{host} is up"
-      console.log "Request took #{result.time} milliseconds"
+      if simple
+        console.log "Up\t#{result.time}"
+      else
+        console.log "#{host} is up"
+        console.log "Request took #{result.time} milliseconds"
     else
-      console.log "#{host} is down"
-      console.log "Request took #{result.time} milliseconds"
-      console.log ''
-      console.log result.error.toString()
-      throw new ExitError 3
+      if simple
+        console.log "Down\t#{result.time}"
+      else
+        console.log "#{host} is down"
+        console.log "Request took #{result.time} milliseconds"
+        console.log ''
+        console.log result.error.toString()
+      throw new ExitError 2
 
 run = (args) ->
   Promise
@@ -81,7 +90,8 @@ run = (args) ->
     .catch UsageError,  ->
       usage()
     .catch ExitError, (error) ->
-      console.log error.toString()
+      if error.message
+        console.log error.toString()
       process.exit error.code
 
 module.exports = run

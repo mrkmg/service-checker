@@ -78,6 +78,29 @@ Then call the `scheck` utility.
     #Check if gmails mail server is up and properly configured for TLS
     scheck smtpTls gmail-smtp-in.l.google.com
     
+The program can be used in a script multiple ways.
+
+**Exit Codes**
+
+The program will exit with the following codes.
+
+Exit Code | Meaning 
+--------- | ------- 
+0         | All parameters are sane and the check was successful. 
+1         | There was an error with the parameters. Check your input. 
+2         | All parameters are sane, but the check failed. 
+255       | An unknown error occurred. Please report this as a bug. 
+
+**Simple Mode**
+
+The program can also be invoked with the `-s` parameter to enable "simple" mode. In simple mode, the output will always
+be in the following format.
+
+    (Up/Down)<tab>(Time)
+    
+For example, with cut you could run the following command to get how long it takes for a host to respond to a ping.
+
+    scheck 127.0.0.1 -s | cut -f2 -d$'\t'
 
 Usage
 -----

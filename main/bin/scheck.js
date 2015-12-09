@@ -41,10 +41,11 @@
   };
 
   makeOptions = function(args) {
-    var host, method;
+    var host, method, simple;
     if (args.hasOwnProperty('h')) {
       throw new UsageError();
     }
+    simple = args.hasOwnProperty('s');
     if (args._.length === 0) {
       throw new ExitError(1, 'Missing host');
     } else if (args._.length === 1) {
@@ -60,24 +61,32 @@
       throw new ExitError(1, method + " is not a valid method");
     }
     return [
-      method, host, _.extend({
+      method, host, simple, _.extend({
         host: host
       }, _.omit(args, ['_', 'host']))
     ];
   };
 
-  doCheck = function(method, host, options) {
-    console.log("Checking " + host + " via " + method);
+  doCheck = function(method, host, simple, options) {
+    !simple && console.log("Checking " + host + " via " + method);
     return serviceChecker[method](options).then(function(result) {
       if (result.success) {
-        console.log(host + " is up");
-        return console.log("Request took " + result.time + " milliseconds");
+        if (simple) {
+          return console.log("Up\t" + result.time);
+        } else {
+          console.log(host + " is up");
+          return console.log("Request took " + result.time + " milliseconds");
+        }
       } else {
-        console.log(host + " is down");
-        console.log("Request took " + result.time + " milliseconds");
-        console.log('');
-        console.log(result.error.toString());
-        throw new ExitError(3);
+        if (simple) {
+          console.log("Down\t" + result.time);
+        } else {
+          console.log(host + " is down");
+          console.log("Request took " + result.time + " milliseconds");
+          console.log('');
+          console.log(result.error.toString());
+        }
+        throw new ExitError(2);
       }
     });
   };
@@ -88,7 +97,9 @@
     }).then(minimist).then(makeOptions).spread(doCheck)["catch"](UsageError, function() {
       return usage();
     })["catch"](ExitError, function(error) {
-      console.log(error.toString());
+      if (error.message) {
+        console.log(error.toString());
+      }
       return process.exit(error.code);
     });
   };
