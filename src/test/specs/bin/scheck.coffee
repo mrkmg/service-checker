@@ -11,20 +11,25 @@ sinon = require 'sinon'
 chalk = require 'chalk'
 assert = chai.assert
 
+server_200 = require('../../fixtures/http/server-200')()
 scheck = require '../../../bin/scheck'
 
 describe 'BIN: scheck', ->
 
-  before ->
-    chalk.enabled = false
+  before (done) ->
+    sinon.stub process, 'exit'
     sinon.spy console, 'log'
+    chalk.enabled = false
+    server_200.start 10000, done
 
   beforeEach ->
     console.log.reset()
 
-  after ->
-    chalk.enabled = true
+  after (done) ->
+    process.exit.restore()
     console.log.restore()
+    chalk.enabled = true
+    server_200.stop done
 
   it 'should output help correctly', ->
     args = [
@@ -44,14 +49,15 @@ describe 'BIN: scheck', ->
     args = [
       'path/to/node',
       'path/to/scheck',
-      '127.0.0.1'
+      '127.0.0.1',
+      '--port 10000'
     ]
 
     promise = scheck args
       .then ->
         console.log.getCall(0).args[0]
 
-    assert.eventually.equal promise, 'Checking 127.0.0.1 via ping.'
+    assert.eventually.equal promise, 'Checking 127.0.0.1 via ping'
 
 
   it 'should process two arguments correctly', ->
@@ -66,7 +72,7 @@ describe 'BIN: scheck', ->
       .then ->
         console.log.getCall(0).args[0]
 
-    assert.eventually.equal promise, 'Checking 127.0.0.1 via http.'
+    assert.eventually.equal promise, 'Checking 127.0.0.1 via http'
 
   it 'should error on no arguments', ->
     args = [
@@ -93,7 +99,7 @@ describe 'BIN: scheck', ->
       .then ->
         console.log.getCall(0).args[0]
 
-    assert.eventually.equal promise, 'Error: Too many parameters!!'
+    assert.eventually.equal promise, 'Error: Too many parameters'
 
   it 'should error on unknown type', ->
     args = [
@@ -121,6 +127,6 @@ describe 'BIN: scheck', ->
 
     promise = scheck args
       .then ->
-        parseInt console.log.getCall(1).args[0].match(/Took ([\d]+)/)[1]
+        parseInt console.log.getCall(2).args[0].match(/([\d]+)/)[1]
 
     assert.eventually.closeTo promise, 1000, 100

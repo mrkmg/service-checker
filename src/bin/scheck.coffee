@@ -10,10 +10,8 @@ Promise = require 'bluebird'
 minimist = require 'minimist'
 _ = require 'underscore'
 chalk = require 'chalk'
-
-class UsageError extends Error
-  message: 'Show The Usage'
-  constructor: ->
+UsageError = require '../lib/errors/UsageError'
+ExitError = require '../lib/errors/ExitError'
 
 printMethods = ->
   console.log chalk.underline 'Methods'
@@ -35,7 +33,7 @@ makeOptions = (args) ->
     throw new UsageError()
 
   if args._.length == 0
-    throw new Error 'Missing host'
+    throw new ExitError 1, 'Missing host'
   else if args._.length == 1
     method = 'ping'
     host = args._[0]
@@ -43,10 +41,10 @@ makeOptions = (args) ->
     method = args._[0]
     host = args._[1]
   else
-    throw new Error 'Too many parameters!!'
+    throw new ExitError 1, 'Too many parameters'
 
   if (not serviceChecker.hasOwnProperty(method)) or (not _.isFunction serviceChecker[method])
-    throw new Error "#{method} is not a valid method"
+    throw new ExitError 1, "#{method} is not a valid method"
 
   [
     method,
@@ -59,16 +57,19 @@ makeOptions = (args) ->
   ]
 
 doCheck = (method, host, options) ->
-  console.log "Checking #{host} via #{method}."
+  console.log "Checking #{host} via #{method}"
 
   serviceChecker[method](options)
   .then (result) ->
     if result.success
-      console.log "#{host} is up! Took #{result.time} milliseconds"
+      console.log "#{host} is up"
+      console.log "Request took #{result.time} milliseconds"
     else
-      console.log "#{host} is down! Took #{result.time} milliseconds"
+      console.log "#{host} is down"
+      console.log "Request took #{result.time} milliseconds"
       console.log ''
       console.log result.error.toString()
+      throw new ExitError 3
 
 run = (args) ->
   Promise
@@ -79,7 +80,8 @@ run = (args) ->
     .spread doCheck
     .catch UsageError,  ->
       usage()
-    .catch (error) ->
+    .catch ExitError, (error) ->
       console.log error.toString()
+      process.exit error.code
 
 module.exports = run

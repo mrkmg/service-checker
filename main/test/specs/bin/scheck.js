@@ -8,7 +8,7 @@
  */
 
 (function() {
-  var assert, chai, chalk, scheck, sinon;
+  var assert, chai, chalk, scheck, server_200, sinon;
 
   chai = require('chai');
 
@@ -20,19 +20,25 @@
 
   assert = chai.assert;
 
+  server_200 = require('../../fixtures/http/server-200')();
+
   scheck = require('../../../bin/scheck');
 
   describe('BIN: scheck', function() {
-    before(function() {
+    before(function(done) {
+      sinon.stub(process, 'exit');
+      sinon.spy(console, 'log');
       chalk.enabled = false;
-      return sinon.spy(console, 'log');
+      return server_200.start(10000, done);
     });
     beforeEach(function() {
       return console.log.reset();
     });
-    after(function() {
+    after(function(done) {
+      process.exit.restore();
+      console.log.restore();
       chalk.enabled = true;
-      return console.log.restore();
+      return server_200.stop(done);
     });
     it('should output help correctly', function() {
       var args, promise;
@@ -44,11 +50,11 @@
     });
     it('should process one argument correctly', function() {
       var args, promise;
-      args = ['path/to/node', 'path/to/scheck', '127.0.0.1'];
+      args = ['path/to/node', 'path/to/scheck', '127.0.0.1', '--port 10000'];
       promise = scheck(args).then(function() {
         return console.log.getCall(0).args[0];
       });
-      return assert.eventually.equal(promise, 'Checking 127.0.0.1 via ping.');
+      return assert.eventually.equal(promise, 'Checking 127.0.0.1 via ping');
     });
     it('should process two arguments correctly', function() {
       var args, promise;
@@ -56,7 +62,7 @@
       promise = scheck(args).then(function() {
         return console.log.getCall(0).args[0];
       });
-      return assert.eventually.equal(promise, 'Checking 127.0.0.1 via http.');
+      return assert.eventually.equal(promise, 'Checking 127.0.0.1 via http');
     });
     it('should error on no arguments', function() {
       var args, promise;
@@ -72,7 +78,7 @@
       promise = scheck(args).then(function() {
         return console.log.getCall(0).args[0];
       });
-      return assert.eventually.equal(promise, 'Error: Too many parameters!!');
+      return assert.eventually.equal(promise, 'Error: Too many parameters');
     });
     it('should error on unknown type', function() {
       var args, promise;
@@ -86,7 +92,7 @@
       var args, promise;
       args = ['path/to/node', 'path/to/scheck', 'ping', '169.254.0.0', '--timeout', '1000'];
       promise = scheck(args).then(function() {
-        return parseInt(console.log.getCall(1).args[0].match(/Took ([\d]+)/)[1]);
+        return parseInt(console.log.getCall(2).args[0].match(/([\d]+)/)[1]);
       });
       return assert.eventually.closeTo(promise, 1000, 100);
     });

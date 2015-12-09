@@ -5,7 +5,7 @@ var fs   = require('fs');
 var main  = path.join(path.dirname(fs.realpathSync(__filename)), '../main');
 
 require(main + '/bin/scheck')(process.argv)
-  .catch(function (error)
+  .catch(function ()
   {
     console.log('Unknown Error');
     process.exit(255);
