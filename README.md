@@ -14,7 +14,7 @@
     <a href="https://nodei.co/npm/service-checker/"><img src="https://nodei.co/npm/service-checker.png?compact=true"></a>
 </p>
 
-Current Version: **0.6.5**
+Current Version: **0.7.0**
 
 A node library to check if various services are up and behaving. This project is in beta. Expect everything to change
 frequently. Until version 1, the api may break at ANY point. After version 1.0.0, standard [SemVer](http://semver.org/) 
@@ -52,6 +52,32 @@ Quick Example
             console.log("Other Error");
             console.log(error);
         });
+        
+        
+CLI Utility
+-------------
+
+service-checker also comes with a simple CLI utility called scheck. If service-checker is
+installed globally, you should have the `scheck` utility installed and ready to use.
+
+To use the `scheck` CLI utility, make sure to install service-checker globally.
+
+    sudo npm install -g service-checker
+     
+Then call the `scheck` utility.
+
+    #See how to use scheck
+    scheck -h
+
+    #Check 8.8.8.8 via ping
+    scheck 8.8.8.8 
+    
+    #Check google.com via https with a 500ms timeout
+    scheck https google.com --timeout 500
+    
+    #Check if gmails mail server is up and properly configured for TLS
+    scheck smtpTls gmail-smtp-in.l.google.com
+    
 
 Usage
 -----

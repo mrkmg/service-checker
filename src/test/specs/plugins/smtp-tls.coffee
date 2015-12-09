@@ -1,6 +1,4 @@
-'use strict'
-
-###*
+###
 # server-checker : test/specs/plugins/smtp-tls
 # Author: MrKMG (https://github.com/mrkmg)
 #

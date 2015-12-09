@@ -1,6 +1,4 @@
-'use strict'
-
-###*
+###
 # server-checker : test/specs/main/plugin
 # Author: MrKMG (https://github.com/mrkmg)
 #

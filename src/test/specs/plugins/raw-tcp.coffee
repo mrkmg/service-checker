@@ -1,4 +1,4 @@
-###*
+###
 # server-checker : test/specs/plugins/raw-tcp
 # Author: MrKMG (https://github.com/mrkmg)
 #
