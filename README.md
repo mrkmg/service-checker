@@ -2,16 +2,20 @@
 
 <p align="center">
     <a href="https://travis-ci.org/mrkmg/service-checker/branches" title="service-checker on Travis CI">
-        <img src="https://travis-ci.org/mrkmg/service-checker.svg?branch=master" alt="Build Status" />
+        <img src="https://img.shields.io/travis/mrkmg/service-checker.svg?style=flat-square" alt="Build Status" />
     </a>  
     <a href="https://coveralls.io/github/mrkmg/service-checker?branch=master">
-        <img src="https://coveralls.io/repos/mrkmg/service-checker/badge.svg?branch=master&service=github" alt="Coverage Status" />
+        <img src="https://img.shields.io/coveralls/mrkmg/service-checker/master.svg?style=flat-square" alt="Coverage Status" />
     </a>
     <a href="https://david-dm.org/mrkmg/service-checker#badge-embed">
-        <img src="https://david-dm.org/mrkmg/service-checker.svg" alt="Dependencies Status" />
+        <img src="https://img.shields.io/david/mrkmg/service-checker.svg?style=flat-square" />
     </a>
-    <br />
-    <a href="https://nodei.co/npm/service-checker/"><img src="https://nodei.co/npm/service-checker.png?compact=true"></a>
+    <a href="https://www.npmjs.com/package/service-checker" title="service-checker on NPM">
+        <img src="https://img.shields.io/npm/v/service-checker.svg?style=flat-square" />
+    </a>
+    <a href="https://opensource.org/licenses/MIT" title="MIT License">
+        <img src="https://img.shields.io/npm/l/service-checker.svg?style=flat-square" />
+    </a>
 </p>
 
 Current Version: **0.7.2**
