@@ -14,7 +14,7 @@
 
   Promise = require('bluebird');
 
-  CheckResult = require('./check-result');
+  CheckResult = require('./CheckResult');
 
   allowed_properties = ['timeout', 'ca'];
 

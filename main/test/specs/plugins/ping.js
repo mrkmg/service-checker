@@ -8,65 +8,65 @@
  */
 
 (function() {
-  var assert, chai, os, serviceChecker;
-
-  os = require('os');
+  var ServiceChecker, assert, async, chai;
 
   chai = require('chai');
 
   chai.use(require('chai-as-promised'));
 
-  assert = chai.assert;
+  async = require('async');
 
-  serviceChecker = require('../../..')({
+  ServiceChecker = require('../../..')({
     timeout: 1000
   });
 
+  assert = chai.assert;
+
   describe('PLUGIN: ping', function() {
     it('should have method', function() {
-      return assert.property(serviceChecker, 'ping');
+      return assert.property(ServiceChecker, 'ping');
     });
     it('should return success:true for valid IP Address', function() {
       var options;
       options = {
         host: '127.0.0.1'
       };
-      return assert.eventually.propertyVal(serviceChecker.ping(options), 'success', true);
+      return assert.eventually.propertyVal(ServiceChecker.ping(options), 'success', true);
     });
     it('should return success:true for valid Domain', function() {
       var options;
       options = {
         host: 'localhost'
       };
-      return assert.eventually.propertyVal(serviceChecker.ping(options), 'success', true);
+      return assert.eventually.propertyVal(ServiceChecker.ping(options), 'success', true);
     });
     it('should return success:false if host does not response to pings', function() {
       var options;
       options = {
         host: '169.254.0.0'
       };
-      return assert.eventually.deepPropertyVal(serviceChecker.ping(options), 'error.code', 'TIMEOUT');
+      return assert.eventually.deepPropertyVal(ServiceChecker.ping(options), 'error.code', 'TIMEOUT');
     });
     it('should return success:false for invalid IP Address', function() {
       var options;
       options = {
         host: '127.0.0.256'
       };
-      return assert.eventually.propertyVal(serviceChecker.ping(options), 'success', false);
+      return assert.eventually.propertyVal(ServiceChecker.ping(options), 'success', false);
     });
     it('should return success:false for invalid Domain', function() {
       var options;
       options = {
         host: 'invalid.domain'
       };
-      return assert.eventually.propertyVal(serviceChecker.ping(options), 'success', false);
+      return assert.eventually.propertyVal(ServiceChecker.ping(options), 'success', false);
     });
     it('should reject if host is not a string', function() {
       var options;
       options = {
         host: 1
       };
-      return assert.isRejected(serviceChecker.ping(options));
+      return assert.isRejected(ServiceChecker.ping(options));
     });
     return it('should reject if timeout is not a number', function() {
       var options;
@@ -74,7 +74,7 @@
         host: 'localhost',
         timeout: 'ABC'
       };
-      return assert.isRejected(serviceChecker.ping(options));
+      return assert.isRejected(ServiceChecker.ping(options));
     });
   });
 

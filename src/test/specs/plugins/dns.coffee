@@ -7,9 +7,11 @@
 
 chai = require 'chai'
 chai.use require 'chai-as-promised'
-assert = chai.assert
 async = require 'async'
-serviceChecker = require('../../..') timeout: 1000
+
+ServiceChecker = require('../../..') timeout: 1000
+
+assert = chai.assert
 
 describe 'PLUGIN: dns', ->
 
@@ -28,16 +30,16 @@ describe 'PLUGIN: dns', ->
     ], done
 
   it 'should have method', ->
-    assert.property serviceChecker, 'dns'
+    assert.property ServiceChecker, 'dns'
 
   it 'should return success:true for valid request', ->
     options =
       host: '127.0.0.1'
       port: 10000
-    assert.eventually.include serviceChecker.dns(options), success: true
+    assert.eventually.include ServiceChecker.dns(options), success: true
 #
   it 'should return success:false for timeout', ->
     options =
       host: '127.0.0.1'
       port: 10001
-    assert.eventually.include serviceChecker.dns(options), success: false
+    assert.eventually.include ServiceChecker.dns(options), success: false

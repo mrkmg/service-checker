@@ -8,7 +8,7 @@
  */
 
 (function() {
-  var assert, async, chai, fs, serviceChecker;
+  var ServiceChecker, assert, async, chai, fs;
 
   fs = require('fs');
 
@@ -16,13 +16,13 @@
 
   chai.use(require('chai-as-promised'));
 
-  assert = chai.assert;
-
   async = require('async');
 
-  serviceChecker = require('../../..')({
+  ServiceChecker = require('../../..')({
     timeout: 1000
   });
+
+  assert = chai.assert;
 
   describe('PLUGIN: https', function() {
     var expired_cert, server_expired, server_valid_200, server_valid_404, server_valid_timeout, valid_cert;
@@ -59,7 +59,7 @@
       ], done);
     });
     it('should have method', function() {
-      return assert.property(serviceChecker, 'https');
+      return assert.property(ServiceChecker, 'https');
     });
     it('should return success:true for good host', function() {
       var options;
@@ -67,7 +67,7 @@
         port: 10000,
         ca: valid_cert
       };
-      return assert.eventually.include(serviceChecker.https(options), {
+      return assert.eventually.include(ServiceChecker.https(options), {
         success: true
       });
     });
@@ -76,7 +76,7 @@
       options = {
         port: 10000
       };
-      return assert.eventually.include(serviceChecker.https(options), {
+      return assert.eventually.include(ServiceChecker.https(options), {
         success: false
       });
     });
@@ -86,7 +86,7 @@
         port: 10001,
         ca: valid_cert
       };
-      return assert.eventually.include(serviceChecker.https(options), {
+      return assert.eventually.include(ServiceChecker.https(options), {
         success: false
       });
     });
@@ -96,7 +96,7 @@
         port: 10002,
         ca: valid_cert
       };
-      return assert.eventually.include(serviceChecker.https(options), {
+      return assert.eventually.include(ServiceChecker.https(options), {
         success: false
       });
     });
@@ -106,7 +106,7 @@
         port: 10003,
         ca: expired_cert
       };
-      return assert.eventually.include(serviceChecker.https(options), {
+      return assert.eventually.include(ServiceChecker.https(options), {
         success: false
       });
     });
@@ -115,7 +115,7 @@
       options = {
         host: 'invalid.domain'
       };
-      return assert.eventually.include(serviceChecker.https(options), {
+      return assert.eventually.include(ServiceChecker.https(options), {
         success: false
       });
     });
@@ -124,7 +124,7 @@
       options = {
         host: true
       };
-      return assert.isRejected(serviceChecker.https(options));
+      return assert.isRejected(ServiceChecker.https(options));
     });
   });
 

@@ -7,9 +7,11 @@
 
 chai = require 'chai'
 chai.use require 'chai-as-promised'
-assert = chai.assert
 async = require 'async'
-serviceChecker = require('../../..') timeout: 1000
+
+ServiceChecker = require('../../..') timeout: 1000
+
+assert = chai.assert
 
 describe 'PLUGIN: http', ->
 
@@ -38,20 +40,20 @@ describe 'PLUGIN: http', ->
     ], done
 
   it 'should have method', ->
-    assert.property serviceChecker, 'http'
+    assert.property ServiceChecker, 'http'
 
   it 'should return success:true for properly responding server', ->
     options = port: 10000
-    assert.eventually.include serviceChecker.http(options), success: true
+    assert.eventually.include ServiceChecker.http(options), success: true
 
   it 'should return success:false for 404 error', ->
     options = port: 10001
-    assert.eventually.include serviceChecker.http(options), success: false
+    assert.eventually.include ServiceChecker.http(options), success: false
 
   it 'should return success:false for slow responding server (timeout)', ->
     options = port: 10002
-    assert.eventually.include serviceChecker.http(options), success: false
+    assert.eventually.include ServiceChecker.http(options), success: false
 
   it 'should reject if bad parameter passed', ->
     options = host: true
-    assert.isRejected serviceChecker.http(options)
+    assert.isRejected ServiceChecker.http(options)

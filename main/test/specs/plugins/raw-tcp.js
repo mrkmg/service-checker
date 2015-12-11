@@ -8,19 +8,19 @@
  */
 
 (function() {
-  var assert, async, chai, serviceChecker;
+  var ServiceChecker, assert, async, chai;
 
   chai = require('chai');
 
   chai.use(require('chai-as-promised'));
 
-  assert = chai.assert;
-
   async = require('async');
 
-  serviceChecker = require('../../..')({
+  ServiceChecker = require('../../..')({
     timeout: 1000
   });
+
+  assert = chai.assert;
 
   describe('PLUGIN: raw-tcp', function() {
     var server_open;
@@ -40,14 +40,14 @@
       ], done);
     });
     it('should have method', function() {
-      return assert.property(serviceChecker, 'rawTcp');
+      return assert.property(ServiceChecker, 'rawTcp');
     });
     it('should return success:true for valid server', function() {
       var options;
       options = {
         port: 10000
       };
-      return assert.eventually.include(serviceChecker.rawTcp(options), {
+      return assert.eventually.include(ServiceChecker.rawTcp(options), {
         success: true
       });
     });
@@ -56,7 +56,7 @@
       options = {
         port: 10001
       };
-      return assert.eventually.include(serviceChecker.rawTcp(options), {
+      return assert.eventually.include(ServiceChecker.rawTcp(options), {
         success: false
       });
     });
@@ -74,7 +74,7 @@
         options = {
           port: 10000
         };
-        return assert.eventually.include(serviceChecker.rawTcp(options), {
+        return assert.eventually.include(ServiceChecker.rawTcp(options), {
           success: false
         });
       });
@@ -85,14 +85,14 @@
         host: 'invalid.domain',
         port: 10000
       };
-      return assert.eventually.include(serviceChecker.rawTcp(options), {
+      return assert.eventually.include(ServiceChecker.rawTcp(options), {
         success: false
       });
     });
     return it('should reject for no port', function() {
       var options;
       options = {};
-      return assert.isRejected(serviceChecker.rawTcp(options));
+      return assert.isRejected(ServiceChecker.rawTcp(options));
     });
   });
 

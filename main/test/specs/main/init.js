@@ -8,7 +8,7 @@
  */
 
 (function() {
-  var assert, chai, serviceChecker, serviceCheckerNonInit;
+  var ServiceChecker, ServiceCheckerNonInit, assert, chai;
 
   chai = require('chai');
 
@@ -16,31 +16,31 @@
 
   assert = chai.assert;
 
-  serviceChecker = require('../../..')();
+  ServiceChecker = require('../../..')();
 
-  serviceCheckerNonInit = require('../../..');
+  ServiceCheckerNonInit = require('../../..');
 
   describe('MAIN: Module Exists', function() {
     it("_name should exist and equal 'service-checker'", function() {
-      return assert.equal(serviceChecker._name, 'service-checker');
+      return assert.equal(ServiceChecker._name, 'service-checker');
     });
     it('should throw for bad default initialization', function() {
       return assert.throws(function() {
-        return serviceCheckerNonInit({
+        return ServiceCheckerNonInit({
           nonprop: 'someValue'
         });
       });
     });
     it('should throw for bad default timeout', function() {
       return assert.throws(function() {
-        return serviceCheckerNonInit({
+        return ServiceCheckerNonInit({
           timeout: 'a'
         });
       });
     });
     return it('should throw for a bad ca', function() {
       return assert.throws(function() {
-        return serviceCheckerNonInit({
+        return ServiceCheckerNonInit({
           ca: true
         });
       });

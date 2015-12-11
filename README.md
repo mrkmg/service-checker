@@ -42,13 +42,13 @@ Install
 Quick Example
 -------------
 
-    //Initialize serviceChecker with default timeout value
-    var serviceChecker = require("service-checker")({
+    //Initialize ServiceChecker with default timeout value
+    var ServiceChecker = require("service-checker")({
         timeout: 5000
     });
     
     //Check if server is responding to pings
-    serviceChecker.ping("8.8.8.8")
+    ServiceChecker.ping("8.8.8.8")
         .then(function (result)
         {
             if (result.success)
@@ -172,13 +172,13 @@ Including a Plugin
 Including plugins is very easy. Let's say you installed a plugin from npm named `exchange-checker`. All you
 would have to do is call the `use` function of service-checker
 
-    var serviceChecker = require("service-checker")();
-    serviceChecker.use(require("exchange-checker"));
+    var ServiceChecker = require("service-checker")();
+    ServiceChecker.use(require("exchange-checker"));
     
 Check the plugins documentation to see which methods are added by the plugin. If the plugins adds the method `exchange`, 
 then all you would have to do is:
 
-    serviceChecker.exchange(args..)
+    ServiceChecker.exchange(args..)
         .then(resultHandler)
         .catch(errorHandler)
 
@@ -255,12 +255,12 @@ The following example plugin demonstrates all these rules.
 To use the plugin you just wrote is simple as well:
 
     //checker.js
-    var serviceChecker = require("service-checker")();
+    var ServiceChecker = require("service-checker")();
     var fileCheck = require("./file-check");
     
-    serviceChecker.use(fileCheck);
+    ServiceChecker.use(fileCheck);
     
-    serviceChecker.fileCheck({path: "path/to/file"})
+    ServiceChecker.fileCheck({path: "path/to/file"})
         .then(function (result)
         {
             if (result.success)

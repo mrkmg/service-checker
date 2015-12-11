@@ -8,7 +8,7 @@
  */
 
 (function() {
-  var assert, chai, serviceChecker;
+  var ServiceChecker, assert, chai;
 
   chai = require('chai');
 
@@ -16,21 +16,21 @@
 
   assert = chai.assert;
 
-  serviceChecker = require('../../..')();
+  ServiceChecker = require('../../..')();
 
   describe('MAIN: plugin system', function() {
     it('should have a use function', function() {
-      assert.property(serviceChecker, 'use');
-      return assert.isFunction(serviceChecker.use);
+      assert.property(ServiceChecker, 'use');
+      return assert.isFunction(ServiceChecker.use);
     });
     it('should throw if plugin is not an object (name: handler)', function() {
       return assert["throw"](function() {
-        return serviceChecker.use('');
+        return ServiceChecker.use('');
       });
     });
     return it('should throw if plugin does not have a valid schema', function() {
       return assert["throw"](function() {
-        return serviceChecker.use({
+        return ServiceChecker.use({
           badPlugin: true
         });
       });

@@ -8,9 +8,9 @@
  */
 
 (function() {
-  var ExitError, Promise, UsageError, _, chalk, doCheck, makeOptions, minimist, printMethods, run, serviceChecker, usage;
+  var ExitError, Promise, ServiceChecker, UsageError, _, chalk, doCheck, makeOptions, minimist, printMethods, run, usage;
 
-  serviceChecker = require('../index')();
+  ServiceChecker = require('../index')();
 
   Promise = require('bluebird');
 
@@ -27,7 +27,7 @@
   printMethods = function() {
     var methods;
     console.log(chalk.underline('Methods'));
-    methods = _.keys(serviceChecker).filter(function(value) {
+    methods = _.keys(ServiceChecker).filter(function(value) {
       return !(value.substr(0, 1) === '_' || value === 'use');
     });
     return console.log('    ' + methods.join(', '));
@@ -57,7 +57,7 @@
     } else {
       throw new ExitError(1, 'Too many parameters');
     }
-    if ((!serviceChecker.hasOwnProperty(method)) || (!_.isFunction(serviceChecker[method]))) {
+    if ((!ServiceChecker.hasOwnProperty(method)) || (!_.isFunction(ServiceChecker[method]))) {
       throw new ExitError(1, method + " is not a valid method");
     }
     return [
@@ -69,7 +69,7 @@
 
   doCheck = function(method, host, simple, options) {
     !simple && console.log("Checking " + host + " via " + method);
-    return serviceChecker[method](options).then(function(result) {
+    return ServiceChecker[method](options).then(function(result) {
       if (result.success) {
         if (simple) {
           return console.log("Up\t" + result.time);

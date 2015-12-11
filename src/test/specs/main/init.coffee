@@ -8,24 +8,24 @@
 chai = require 'chai'
 chai.use(require 'chai-as-promised')
 assert = chai.assert
-serviceChecker = require('../../..')()
-serviceCheckerNonInit = require '../../..'
+ServiceChecker = require('../../..')()
+ServiceCheckerNonInit = require '../../..'
 
 describe 'MAIN: Module Exists', ->
   it "_name should exist and equal 'service-checker'", ->
-    assert.equal serviceChecker._name, 'service-checker'
+    assert.equal ServiceChecker._name, 'service-checker'
 
   it 'should throw for bad default initialization', ->
     assert.throws ->
-      serviceCheckerNonInit
+      ServiceCheckerNonInit
         nonprop: 'someValue'
 
   it 'should throw for bad default timeout', ->
     assert.throws ->
-      serviceCheckerNonInit
+      ServiceCheckerNonInit
         timeout: 'a'
 
   it 'should throw for a bad ca', ->
     assert.throws ->
-      serviceCheckerNonInit
+      ServiceCheckerNonInit
         ca: true

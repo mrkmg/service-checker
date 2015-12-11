@@ -5,11 +5,13 @@
 # MIT License
 ###
 
-chai = require('chai')
-chai.use require('chai-as-promised')
+chai = require 'chai'
+chai.use require 'chai-as-promised'
+async = require 'async'
+
+ServiceChecker = require('../../..') timeout: 1000
+
 assert = chai.assert
-async = require('async')
-serviceChecker = require('../../..')(timeout: 1000)
 
 describe 'PLUGIN: smtp', ->
   server_valid = require('../../fixtures/smtp/server-valid')()
@@ -37,26 +39,26 @@ describe 'PLUGIN: smtp', ->
     ], done
 
   it 'should have method', ->
-    assert.property serviceChecker, 'smtp'
+    assert.property ServiceChecker, 'smtp'
 
   it 'should return success:true for valid server', ->
     options =
       host: 'localhost'
       port: 10000
-    assert.eventually.include serviceChecker.smtp(options), success: true
+    assert.eventually.include ServiceChecker.smtp(options), success: true
 
   it 'should return success:false for bad server', ->
     options = port: 10001
-    assert.eventually.include serviceChecker.smtp(options), success: false
+    assert.eventually.include ServiceChecker.smtp(options), success: false
 
   it 'should return success:false due to timeout on slow server', ->
     options = port: 10002
-    assert.eventually.include serviceChecker.smtp(options), success: false
+    assert.eventually.include ServiceChecker.smtp(options), success: false
 
   it 'should reject if bad host parameter passed', ->
     options = host: true
-    assert.isRejected serviceChecker.smtp(options)
+    assert.isRejected ServiceChecker.smtp(options)
 
   it 'should reject if bad port parameter passed', ->
     options = port: true
-    assert.isRejected serviceChecker.smtp(options)
+    assert.isRejected ServiceChecker.smtp(options)

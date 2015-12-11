@@ -5,12 +5,14 @@
 # MIT License
 ###
 
-fs = require('fs')
-chai = require('chai')
-chai.use require('chai-as-promised')
+fs = require 'fs'
+chai = require 'chai'
+chai.use require 'chai-as-promised'
+async = require 'async'
+
+ServiceChecker = require('../../..') timeout: 1000
+
 assert = chai.assert
-async = require('async')
-serviceChecker = require('../../..')(timeout: 1000)
 
 describe 'PLUGIN: smtp-tls', ->
 
@@ -47,33 +49,33 @@ describe 'PLUGIN: smtp-tls', ->
     ], done
 
   it 'should have method', ->
-    assert.property serviceChecker, 'smtpTls'
+    assert.property ServiceChecker, 'smtpTls'
 
   it 'should return success:true for valid server', ->
     options =
       host: 'localhost'
       port: 10000
       ca: valid_cert
-    assert.eventually.include serviceChecker.smtpTls(options), success: true
+    assert.eventually.include ServiceChecker.smtpTls(options), success: true
 
   it 'should return success:false for bad server', ->
     options =
       port: 10001
       ca: valid_cert
-    assert.eventually.include serviceChecker.smtpTls(options), success: false
+    assert.eventually.include ServiceChecker.smtpTls(options), success: false
 
   it 'should return success:false due to timeout on slow server', ->
     options =
       port: 10002
       ca: valid_cert
-    assert.eventually.include serviceChecker.smtpTls(options), success: false
+    assert.eventually.include ServiceChecker.smtpTls(options), success: false
 
   it 'should return success:false due to a expired cert', ->
     options =
       port: 10003
       ca: expired_cert
-    assert.eventually.include serviceChecker.smtpTls(options), success: false
+    assert.eventually.include ServiceChecker.smtpTls(options), success: false
 
   it 'should reject if bad parameter passed', ->
     options = host: true
-    assert.isRejected serviceChecker.smtpTls(options)
+    assert.isRejected ServiceChecker.smtpTls(options)

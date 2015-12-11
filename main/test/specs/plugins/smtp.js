@@ -8,19 +8,19 @@
  */
 
 (function() {
-  var assert, async, chai, serviceChecker;
+  var ServiceChecker, assert, async, chai;
 
   chai = require('chai');
 
   chai.use(require('chai-as-promised'));
 
-  assert = chai.assert;
-
   async = require('async');
 
-  serviceChecker = require('../../..')({
+  ServiceChecker = require('../../..')({
     timeout: 1000
   });
+
+  assert = chai.assert;
 
   describe('PLUGIN: smtp', function() {
     var server_error, server_timeout, server_valid;
@@ -50,7 +50,7 @@
       ], done);
     });
     it('should have method', function() {
-      return assert.property(serviceChecker, 'smtp');
+      return assert.property(ServiceChecker, 'smtp');
     });
     it('should return success:true for valid server', function() {
       var options;
@@ -58,7 +58,7 @@
         host: 'localhost',
         port: 10000
       };
-      return assert.eventually.include(serviceChecker.smtp(options), {
+      return assert.eventually.include(ServiceChecker.smtp(options), {
         success: true
       });
     });
@@ -67,7 +67,7 @@
       options = {
         port: 10001
       };
-      return assert.eventually.include(serviceChecker.smtp(options), {
+      return assert.eventually.include(ServiceChecker.smtp(options), {
         success: false
       });
     });
@@ -76,7 +76,7 @@
       options = {
         port: 10002
       };
-      return assert.eventually.include(serviceChecker.smtp(options), {
+      return assert.eventually.include(ServiceChecker.smtp(options), {
         success: false
       });
     });
@@ -85,14 +85,14 @@
       options = {
         host: true
       };
-      return assert.isRejected(serviceChecker.smtp(options));
+      return assert.isRejected(ServiceChecker.smtp(options));
     });
     return it('should reject if bad port parameter passed', function() {
       var options;
       options = {
         port: true
       };
-      return assert.isRejected(serviceChecker.smtp(options));
+      return assert.isRejected(ServiceChecker.smtp(options));
     });
   });
 

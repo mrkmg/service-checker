@@ -5,11 +5,13 @@
 # MIT License
 ###
 
-chai = require('chai')
-chai.use require('chai-as-promised')
+chai = require 'chai'
+chai.use require 'chai-as-promised'
+async = require 'async'
+
+ServiceChecker = require('../../..') timeout: 1000
+
 assert = chai.assert
-async = require('async')
-serviceChecker = require('../../..')(timeout: 1000)
 
 describe 'PLUGIN: raw-tcp', ->
 
@@ -28,15 +30,15 @@ describe 'PLUGIN: raw-tcp', ->
     ], done
 
   it 'should have method', ->
-    assert.property serviceChecker, 'rawTcp'
+    assert.property ServiceChecker, 'rawTcp'
 
   it 'should return success:true for valid server', ->
     options = port: 10000
-    assert.eventually.include serviceChecker.rawTcp(options), success: true
+    assert.eventually.include ServiceChecker.rawTcp(options), success: true
 
   it 'should return success:false for bad server', ->
     options = port: 10001
-    assert.eventually.include serviceChecker.rawTcp(options), success: false
+    assert.eventually.include ServiceChecker.rawTcp(options), success: false
 
   describe 'disable net connect', ->
     disable_net_connect_event = require('../../fixtures/raw-tcp/disable-net-connect-event')()
@@ -49,14 +51,14 @@ describe 'PLUGIN: raw-tcp', ->
 
     it 'should return success:true on connect event timeout', ->
       options = port: 10000
-      assert.eventually.include serviceChecker.rawTcp(options), success: false
+      assert.eventually.include ServiceChecker.rawTcp(options), success: false
 
   it 'should return success:false for invalid Domain', ->
     options =
       host: 'invalid.domain'
       port: 10000
-    assert.eventually.include serviceChecker.rawTcp(options), success: false
+    assert.eventually.include ServiceChecker.rawTcp(options), success: false
 
   it 'should reject for no port', ->
     options = {}
-    assert.isRejected serviceChecker.rawTcp(options)
+    assert.isRejected ServiceChecker.rawTcp(options)

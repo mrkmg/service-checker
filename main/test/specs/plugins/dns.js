@@ -8,19 +8,19 @@
  */
 
 (function() {
-  var assert, async, chai, serviceChecker;
+  var ServiceChecker, assert, async, chai;
 
   chai = require('chai');
 
   chai.use(require('chai-as-promised'));
 
-  assert = chai.assert;
-
   async = require('async');
 
-  serviceChecker = require('../../..')({
+  ServiceChecker = require('../../..')({
     timeout: 1000
   });
+
+  assert = chai.assert;
 
   describe('PLUGIN: dns', function() {
     var server_valid;
@@ -40,7 +40,7 @@
       ], done);
     });
     it('should have method', function() {
-      return assert.property(serviceChecker, 'dns');
+      return assert.property(ServiceChecker, 'dns');
     });
     it('should return success:true for valid request', function() {
       var options;
@@ -48,7 +48,7 @@
         host: '127.0.0.1',
         port: 10000
       };
-      return assert.eventually.include(serviceChecker.dns(options), {
+      return assert.eventually.include(ServiceChecker.dns(options), {
         success: true
       });
     });
@@ -58,7 +58,7 @@
         host: '127.0.0.1',
         port: 10001
       };
-      return assert.eventually.include(serviceChecker.dns(options), {
+      return assert.eventually.include(ServiceChecker.dns(options), {
         success: false
       });
     });

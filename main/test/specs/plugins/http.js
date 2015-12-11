@@ -8,19 +8,19 @@
  */
 
 (function() {
-  var assert, async, chai, serviceChecker;
+  var ServiceChecker, assert, async, chai;
 
   chai = require('chai');
 
   chai.use(require('chai-as-promised'));
 
-  assert = chai.assert;
-
   async = require('async');
 
-  serviceChecker = require('../../..')({
+  ServiceChecker = require('../../..')({
     timeout: 1000
   });
+
+  assert = chai.assert;
 
   describe('PLUGIN: http', function() {
     var server_200, server_404, server_timeout;
@@ -50,14 +50,14 @@
       ], done);
     });
     it('should have method', function() {
-      return assert.property(serviceChecker, 'http');
+      return assert.property(ServiceChecker, 'http');
     });
     it('should return success:true for properly responding server', function() {
       var options;
       options = {
         port: 10000
       };
-      return assert.eventually.include(serviceChecker.http(options), {
+      return assert.eventually.include(ServiceChecker.http(options), {
         success: true
       });
     });
@@ -66,7 +66,7 @@
       options = {
         port: 10001
       };
-      return assert.eventually.include(serviceChecker.http(options), {
+      return assert.eventually.include(ServiceChecker.http(options), {
         success: false
       });
     });
@@ -75,7 +75,7 @@
       options = {
         port: 10002
       };
-      return assert.eventually.include(serviceChecker.http(options), {
+      return assert.eventually.include(ServiceChecker.http(options), {
         success: false
       });
     });
@@ -84,7 +84,7 @@
       options = {
         host: true
       };
-      return assert.isRejected(serviceChecker.http(options));
+      return assert.isRejected(ServiceChecker.http(options));
     });
   });
 

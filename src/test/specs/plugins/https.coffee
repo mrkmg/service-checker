@@ -5,12 +5,14 @@
 # MIT License
 ###
 
-fs = require('fs')
-chai = require('chai')
-chai.use require('chai-as-promised')
+fs = require 'fs'
+chai = require 'chai'
+chai.use require 'chai-as-promised'
+async = require 'async'
+
+ServiceChecker = require('../../..') timeout: 1000
+
 assert = chai.assert
-async = require('async')
-serviceChecker = require('../../..')(timeout: 1000)
 
 describe 'PLUGIN: https', ->
 
@@ -47,40 +49,40 @@ describe 'PLUGIN: https', ->
     ], done
 
   it 'should have method', ->
-    assert.property serviceChecker, 'https'
+    assert.property ServiceChecker, 'https'
 
   it 'should return success:true for good host', ->
     options =
       port: 10000
       ca: valid_cert
-    assert.eventually.include serviceChecker.https(options), success: true
+    assert.eventually.include ServiceChecker.https(options), success: true
 
   it 'should return success:false for self signed cert', ->
     options = port: 10000
-    assert.eventually.include serviceChecker.https(options), success: false
+    assert.eventually.include ServiceChecker.https(options), success: false
 
   it 'should return success:false for 404 response', ->
     options =
       port: 10001
       ca: valid_cert
-    assert.eventually.include serviceChecker.https(options), success: false
+    assert.eventually.include ServiceChecker.https(options), success: false
 
   it 'should return success:false for slow responding server', ->
     options =
       port: 10002
       ca: valid_cert
-    assert.eventually.include serviceChecker.https(options), success: false
+    assert.eventually.include ServiceChecker.https(options), success: false
 
   it 'should return success:false for expired ssl cert', ->
     options =
       port: 10003
       ca: expired_cert
-    assert.eventually.include serviceChecker.https(options), success: false
+    assert.eventually.include ServiceChecker.https(options), success: false
 
   it 'should return success:false for invalid Domain', ->
     options = host: 'invalid.domain'
-    assert.eventually.include serviceChecker.https(options), success: false
+    assert.eventually.include ServiceChecker.https(options), success: false
 
   it 'should reject if bad parameter passed', ->
     options = host: true
-    assert.isRejected serviceChecker.https(options)
+    assert.isRejected ServiceChecker.https(options)

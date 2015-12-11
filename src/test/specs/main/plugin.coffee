@@ -8,17 +8,17 @@
 chai = require('chai')
 chai.use require('chai-as-promised')
 assert = chai.assert
-serviceChecker = require('../../..')()
+ServiceChecker = require('../../..')()
 
 describe 'MAIN: plugin system', ->
   it 'should have a use function', ->
-    assert.property serviceChecker, 'use'
-    assert.isFunction serviceChecker.use
+    assert.property ServiceChecker, 'use'
+    assert.isFunction ServiceChecker.use
 
   it 'should throw if plugin is not an object (name: handler)', ->
     assert.throw ->
-      serviceChecker.use ''
+      ServiceChecker.use ''
 
   it 'should throw if plugin does not have a valid schema', ->
     assert.throw ->
-      serviceChecker.use badPlugin: true
+      ServiceChecker.use badPlugin: true

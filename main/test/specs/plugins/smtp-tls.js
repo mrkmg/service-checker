@@ -8,7 +8,7 @@
  */
 
 (function() {
-  var assert, async, chai, fs, serviceChecker;
+  var ServiceChecker, assert, async, chai, fs;
 
   fs = require('fs');
 
@@ -16,13 +16,13 @@
 
   chai.use(require('chai-as-promised'));
 
-  assert = chai.assert;
-
   async = require('async');
 
-  serviceChecker = require('../../..')({
+  ServiceChecker = require('../../..')({
     timeout: 1000
   });
+
+  assert = chai.assert;
 
   describe('PLUGIN: smtp-tls', function() {
     var expired_cert, server_error, server_expired, server_timeout, server_valid, valid_cert;
@@ -59,7 +59,7 @@
       ], done);
     });
     it('should have method', function() {
-      return assert.property(serviceChecker, 'smtpTls');
+      return assert.property(ServiceChecker, 'smtpTls');
     });
     it('should return success:true for valid server', function() {
       var options;
@@ -68,7 +68,7 @@
         port: 10000,
         ca: valid_cert
       };
-      return assert.eventually.include(serviceChecker.smtpTls(options), {
+      return assert.eventually.include(ServiceChecker.smtpTls(options), {
         success: true
       });
     });
@@ -78,7 +78,7 @@
         port: 10001,
         ca: valid_cert
       };
-      return assert.eventually.include(serviceChecker.smtpTls(options), {
+      return assert.eventually.include(ServiceChecker.smtpTls(options), {
         success: false
       });
     });
@@ -88,7 +88,7 @@
         port: 10002,
         ca: valid_cert
       };
-      return assert.eventually.include(serviceChecker.smtpTls(options), {
+      return assert.eventually.include(ServiceChecker.smtpTls(options), {
         success: false
       });
     });
@@ -98,7 +98,7 @@
         port: 10003,
         ca: expired_cert
       };
-      return assert.eventually.include(serviceChecker.smtpTls(options), {
+      return assert.eventually.include(ServiceChecker.smtpTls(options), {
         success: false
       });
     });
@@ -107,7 +107,7 @@
       options = {
         host: true
       };
-      return assert.isRejected(serviceChecker.smtpTls(options));
+      return assert.isRejected(ServiceChecker.smtpTls(options));
     });
   });
 
