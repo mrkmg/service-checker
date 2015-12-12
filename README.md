@@ -1,24 +1,14 @@
-# Service Checker 
+# ServiceChecker 
 
-<p align="center">
-    <a href="https://travis-ci.org/mrkmg/service-checker/branches" title="service-checker on Travis CI">
-        <img src="https://travis-ci.org/mrkmg/service-checker.svg?branch=master" alt="Build Status" />
-    </a>  
-    <a href="https://coveralls.io/github/mrkmg/service-checker?branch=master">
-        <img src="https://coveralls.io/repos/mrkmg/service-checker/badge.svg?branch=master&service=github" alt="Coverage Status" />
-    </a>
-    <a href="https://david-dm.org/mrkmg/service-checker#badge-embed">
-        <img src="https://david-dm.org/mrkmg/service-checker.svg" alt="Dependencies Status" />
-    </a>
-    <br />
-    <a href="https://nodei.co/npm/service-checker/"><img src="https://nodei.co/npm/service-checker.png?compact=true"></a>
-</p>
+[![ServiceChecker on Travis CI](https://img.shields.io/travis/mrkmg/service-checker.svg?style=flat-square)](https://travis-ci.org/mrkmg/service-checker/branches)
+[![Coverage Status](https://img.shields.io/coveralls/mrkmg/service-checker/master.svg?style=flat-square)](https://coveralls.io/github/mrkmg/service-checker?branch=master)
+[![ServiceChecker on DavidDM](https://img.shields.io/david/mrkmg/service-checker.svg?style=flat-square)](https://david-dm.org/mrkmg/service-checker#badge-embed)
+[![ServiceChecker on NPM](https://img.shields.io/npm/v/service-checker.svg?style=flat-square)](https://www.npmjs.com/package/service-checker)
+[![ServiceChecker uses the MIT](https://img.shields.io/npm/l/service-checker.svg?style=flat-square)](https://opensource.org/licenses/MIT)
 
-Current Version: **0.7.2**
+Current Version: **0.8.0**
 
-A node library to check if various services are up and behaving. This project is in beta. Expect everything to change
-frequently. Until version 1, the api may break at ANY point. After version 1.0.0, standard [SemVer](http://semver.org/) 
-will be followed.
+A node library to check if various services are up and behaving.
 
 - [Install](#install)
 - [Quick Example](#quick-example)
@@ -35,16 +25,16 @@ Install
 
     npm install --save service-checker
 
-Quick Example
--------------
+Quick Example - Promise
+-----------------------
 
-    //Initialize serviceChecker with default timeout value
-    var serviceChecker = require("service-checker")({
+    //Initialize ServiceChecker with default timeout value
+    var ServiceChecker = require("service-checker")({
         timeout: 5000
     });
     
     //Check if server is responding to pings
-    serviceChecker.ping("8.8.8.8")
+    ServiceChecker.ping("8.8.8.8")
         .then(function (result)
         {
             if (result.success)
@@ -63,15 +53,45 @@ Quick Example
             console.log(error);
         });
 
+Quick Example - Callback
+------------------------
+
+    //Initialize ServiceChecker with default timeout value
+    var ServiceChecker = require("service-checker")({
+        timeout: 5000
+    });
+    
+    //Check if server is responding to pings
+    ServiceChecker.ping("8.8.8.8", function (err, result)
+    {
+        if (err)
+        {
+            console.log("Other Error");
+            console.log(error);
+        }
+        else
+        {
+            if (result.success)
+                console.log("Did respond to ping");
+                console.log("It took " + result.time + "ms");
+            }
+            else
+            {
+                console.log("Did not respond to ping");
+                console.log(result.error);
+            }
+        }        
+    });
+
 Usage
 -----
 
-service-checker takes an options argument. The current options are:
+service-checker methods take an options argument and optionally a nodeback style callback. The current options are:
 
 - timeout *Sets the default time out for all checks*
 
-Call one of the plugins *(below)* as a method of service checker. A promise will be returned which will resolve with
-the following public properties:
+Call one of the plugins *(below)* as a method of service checker. All plugins will return an CheckResult object which
+contains the following properties:
 
 - type [string] *Name of the check performed*
 - success [bool] *Whether or not the check was successful*
@@ -168,13 +188,13 @@ Including a Plugin
 Including plugins is very easy. Let's say you installed a plugin from npm named `exchange-checker`. All you
 would have to do is call the `use` function of service-checker
 
-    var serviceChecker = require("service-checker")();
-    serviceChecker.use(require("exchange-checker"));
+    var ServiceChecker = require("service-checker")();
+    ServiceChecker.use(require("exchange-checker"));
     
 Check the plugins documentation to see which methods are added by the plugin. If the plugins adds the method `exchange`, 
 then all you would have to do is:
 
-    serviceChecker.exchange(args..)
+    ServiceChecker.exchange(args..)
         .then(resultHandler)
         .catch(errorHandler)
 
@@ -251,12 +271,12 @@ The following example plugin demonstrates all these rules.
 To use the plugin you just wrote is simple as well:
 
     //checker.js
-    var serviceChecker = require("service-checker")();
+    var ServiceChecker = require("service-checker")();
     var fileCheck = require("./file-check");
     
-    serviceChecker.use(fileCheck);
+    ServiceChecker.use(fileCheck);
     
-    serviceChecker.fileCheck({path: "path/to/file"})
+    ServiceChecker.fileCheck({path: "path/to/file"})
         .then(function (result)
         {
             if (result.success)

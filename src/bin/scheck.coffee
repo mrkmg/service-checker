@@ -5,7 +5,7 @@
 # MIT License
 ###
 
-serviceChecker = require('../index')()
+ServiceChecker = require('../index')()
 Promise = require 'bluebird'
 minimist = require 'minimist'
 _ = require 'underscore'
@@ -16,7 +16,7 @@ ExitError = require '../lib/errors/ExitError'
 printMethods = ->
   console.log chalk.underline 'Methods'
 
-  methods = _.keys(serviceChecker).filter (value) ->
+  methods = _.keys(ServiceChecker).filter (value) ->
     not (value.substr(0, 1) == '_' or value == 'use')
 
   console.log '    ' + methods.join ', '
@@ -45,7 +45,7 @@ makeOptions = (args) ->
   else
     throw new ExitError 1, 'Too many parameters'
 
-  if (not serviceChecker.hasOwnProperty(method)) or (not _.isFunction serviceChecker[method])
+  if (not ServiceChecker.hasOwnProperty(method)) or (not _.isFunction ServiceChecker[method])
     throw new ExitError 1, "#{method} is not a valid method"
 
   [
@@ -62,7 +62,7 @@ makeOptions = (args) ->
 doCheck = (method, host, simple, options) ->
   not simple and console.log "Checking #{host} via #{method}"
 
-  serviceChecker[method](options)
+  ServiceChecker[method](options)
   .then (result) ->
     if result.success
       if simple
