@@ -1,4 +1,4 @@
-# Service Checker 
+# ServiceChecker 
 
 <p align="center">
     <a href="https://travis-ci.org/mrkmg/service-checker/branches" title="service-checker on Travis CI">
