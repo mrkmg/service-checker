@@ -9,8 +9,7 @@ chai = require('chai')
 chai.use require('chai-as-promised')
 assert = chai.assert
 
-ServiceChecker = require('../../..')()
-serviceChecker = require('../../../src/index') timeout: 1000
+ServiceChecker = require('../../../src/index') timeout: 1000
 
 describe 'MAIN: plugin system', ->
   it 'should have a use function', ->

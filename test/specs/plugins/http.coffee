@@ -9,7 +9,7 @@ chai = require 'chai'
 chai.use require 'chai-as-promised'
 async = require 'async'
 
-serviceChecker = require('../../../src/index') timeout: 1000
+ServiceChecker = require('../../../src/index') timeout: 1000
 
 assert = chai.assert
 

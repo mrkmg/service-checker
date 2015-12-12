@@ -5,12 +5,13 @@
 # MIT License
 ###
 
+Promise = require 'bluebird'
 chai = require 'chai'
 chai.use(require 'chai-as-promised')
 assert = chai.assert
 
-serviceChecker = require('../../../src/index') timeout: 1000
-serviceCheckerNonInit = require('../../../src/index')
+ServiceChecker = require('../../../src/index') timeout: 1000
+ServiceCheckerNonInit = require('../../../src/index')
 
 describe 'MAIN: Module Exists', ->
   it "_name should exist and equal 'service-checker'", ->
