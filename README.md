@@ -8,9 +8,7 @@
 
 Current Version: **0.7.2**
 
-A node library to check if various services are up and behaving. This project is in beta. Expect everything to change
-frequently. Until version 1, the api may break at ANY point. After version 1.0.0, standard [SemVer](http://semver.org/) 
-will be followed.
+A node library to check if various services are up and behaving.
 
 - [Install](#install)
 - [Quick Example](#quick-example)
@@ -27,8 +25,8 @@ Install
 
     npm install --save service-checker
 
-Quick Example
--------------
+Quick Example - Promise
+-----------------------
 
     //Initialize ServiceChecker with default timeout value
     var ServiceChecker = require("service-checker")({
@@ -55,15 +53,45 @@ Quick Example
             console.log(error);
         });
 
+Quick Example - Callback
+------------------------
+
+    //Initialize ServiceChecker with default timeout value
+    var ServiceChecker = require("service-checker")({
+        timeout: 5000
+    });
+    
+    //Check if server is responding to pings
+    ServiceChecker.ping("8.8.8.8", function (err, result)
+    {
+        if (err)
+        {
+            console.log("Other Error");
+            console.log(error);
+        }
+        else
+        {
+            if (result.success)
+                console.log("Did respond to ping");
+                console.log("It took " + result.time + "ms");
+            }
+            else
+            {
+                console.log("Did not respond to ping");
+                console.log(result.error);
+            }
+        }        
+    });
+
 Usage
 -----
 
-service-checker takes an options argument. The current options are:
+service-checker methods take an options argument and optionally a nodeback style callback. The current options are:
 
 - timeout *Sets the default time out for all checks*
 
-Call one of the plugins *(below)* as a method of service checker. A promise will be returned which will resolve with
-the following public properties:
+Call one of the plugins *(below)* as a method of service checker. All plugins will return an CheckResult object which
+contains the following properties:
 
 - type [string] *Name of the check performed*
 - success [bool] *Whether or not the check was successful*
