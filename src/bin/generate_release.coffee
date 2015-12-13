@@ -85,13 +85,16 @@ module.exports = (args) ->
     .then (do_update) ->
       if not do_update then process.exit 1
     .then ->
-      Exec 'git fetch'
-      Exec 'git checkout develop'
-      Exec 'git pull origin develop --rebase'
-      Exec 'git checkout master'
-      Exec 'git reset --hard origin/master'
-      Exec 'git checkout develop'
-      Exec "git flow release start #{new_version}"
+      opts =
+        env:
+          HOME: process.env.HOME
+      Exec 'git fetch', opts
+      Exec 'git checkout develop', opts
+      Exec 'git pull origin develop --rebase', opts
+      Exec 'git checkout master', opts
+      Exec 'git reset --hard origin/master', opts
+      Exec 'git checkout develop', opts
+      Exec "git flow release start #{new_version}", opts
     .then ->
       writeNewVersionToReadme current_version, new_version
     .then ->
@@ -99,14 +102,15 @@ module.exports = (args) ->
     .then ->
       opts =
         env:
+          HOME: process.env.HOME
           GIT_MERGE_AUTOEDIT: 'no'
 
-      Exec 'git add -A'
-      Exec 'git commit -am "Release ' + new_version + '"'
+      Exec 'git add -A', opts
+      Exec 'git commit -am "Release ' + new_version + '"', opts
       Exec 'git flow release finish -m "' + new_version + '" ' + new_version, opts
-      Exec 'git push origin develop'
-      Exec 'git push origin master'
-      Exec 'git pish origin --tags'
+      Exec 'git push origin develop', opts
+      Exec 'git push origin master', opts
+      Exec 'git pish origin --tags', opts
 
 
 

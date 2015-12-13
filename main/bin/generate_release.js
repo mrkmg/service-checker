@@ -111,13 +111,19 @@
         return process.exit(1);
       }
     }).then(function() {
-      Exec('git fetch');
-      Exec('git checkout develop');
-      Exec('git pull origin develop --rebase');
-      Exec('git checkout master');
-      Exec('git reset --hard origin/master');
-      Exec('git checkout develop');
-      return Exec("git flow release start " + new_version);
+      var opts;
+      opts = {
+        env: {
+          HOME: process.env.HOME
+        }
+      };
+      Exec('git fetch', opts);
+      Exec('git checkout develop', opts);
+      Exec('git pull origin develop --rebase', opts);
+      Exec('git checkout master', opts);
+      Exec('git reset --hard origin/master', opts);
+      Exec('git checkout develop', opts);
+      return Exec("git flow release start " + new_version, opts);
     }).then(function() {
       return writeNewVersionToReadme(current_version, new_version);
     }).then(function() {
@@ -126,15 +132,16 @@
       var opts;
       opts = {
         env: {
+          HOME: process.env.HOME,
           GIT_MERGE_AUTOEDIT: 'no'
         }
       };
-      Exec('git add -A');
-      Exec('git commit -am "Release ' + new_version + '"');
+      Exec('git add -A', opts);
+      Exec('git commit -am "Release ' + new_version + '"', opts);
       Exec('git flow release finish -m "' + new_version + '" ' + new_version, opts);
-      Exec('git push origin develop');
-      Exec('git push origin master');
-      return Exec('git pish origin --tags');
+      Exec('git push origin develop', opts);
+      Exec('git push origin master', opts);
+      return Exec('git pish origin --tags', opts);
     });
   };
 
