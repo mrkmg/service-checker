@@ -110,10 +110,4 @@ module.exports = (args) ->
       Exec 'git flow release finish -m "' + new_version + '" ' + new_version, opts
       Exec 'git push origin develop', opts
       Exec 'git push origin master', opts
-      Exec 'git pish origin --tags', opts
-
-
-
-
-
-
+      Exec 'git push origin --tags', opts

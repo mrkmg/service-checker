@@ -46,8 +46,6 @@
     "istanbul": "^0.4.1",
     "istanbul-coveralls": "^1.0.3",
     "mocha": "^2.3.4",
-    "nodegit": "^0.6.0",
-    "nodegit-flow": "^0.1.9",
     "sinon": "^1.17.2",
     "smtp-server": "^1.7.1"
   }
