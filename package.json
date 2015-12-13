@@ -1,6 +1,6 @@
 {
   "name": "service-checker",
-  "version": "0.8.2",
+  "version": "0.8.3",
   "description": "Checks a variety of common web services for errors.",
   "repository": "mrkmg/service-checker",
   "bugs": {
