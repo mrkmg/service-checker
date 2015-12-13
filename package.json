@@ -1,6 +1,6 @@
 {
   "name": "service-checker",
-  "version": "0.8.1",
+  "version": "0.8.2",
   "description": "Checks a variety of common web services for errors.",
   "repository": "mrkmg/service-checker",
   "bugs": {
@@ -42,9 +42,12 @@
     "coffee-coverage": "^0.7.0",
     "coffee-script": "^1.10.0",
     "coffeelint": "^1.14.1",
+    "inquirer": "^0.11.0",
     "istanbul": "^0.4.1",
     "istanbul-coveralls": "^1.0.3",
     "mocha": "^2.3.4",
+    "nodegit": "^0.6.0",
+    "nodegit-flow": "^0.1.9",
     "sinon": "^1.17.2",
     "smtp-server": "^1.7.1"
   }
