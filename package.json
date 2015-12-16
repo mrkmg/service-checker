@@ -1,6 +1,6 @@
 {
   "name": "service-checker",
-  "version": "0.7.2",
+  "version": "0.8.4",
   "description": "Checks a variety of common web services for errors.",
   "repository": "mrkmg/service-checker",
   "bugs": {
@@ -15,9 +15,9 @@
     "compile-watch": "coffee -cw -o main/ src/",
     "test": "npm run lint && npm run unit",
     "lint": "coffeelint -f .coffeelint.json src",
-    "unit": "mocha --recursive ./main/test/specs --timeout 10000",
-    "cover": "npm run env && npm run cover-local && npm run coveralls",
-    "cover-local": "istanbul cover _mocha -- --timeout 10000 --recursive ./main/test/specs",
+    "unit": "mocha --recursive --compilers coffee:coffee-script/register ./test/specs --timeout 10000",
+    "cover": "npm run cover-local && npm run coveralls",
+    "cover-local": "istanbul cover _mocha -- --recursive --compilers coffee:coffee-script/register --require coffee-coverage/register-istanbul ./test/specs --timeout 10000",
     "coveralls": "istanbul-coveralls"
   },
   "keywords": [
@@ -39,8 +39,10 @@
   "devDependencies": {
     "chai": "^3.4.1",
     "chai-as-promised": "^5.1.0",
+    "coffee-coverage": "^0.7.0",
     "coffee-script": "^1.10.0",
     "coffeelint": "^1.14.1",
+    "inquirer": "^0.11.0",
     "istanbul": "^0.4.1",
     "istanbul-coveralls": "^1.0.3",
     "mocha": "^2.3.4",

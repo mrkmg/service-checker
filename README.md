@@ -1,31 +1,18 @@
 # ServiceChecker 
 
-<p align="center">
-    <a href="https://travis-ci.org/mrkmg/service-checker/branches" title="service-checker on Travis CI">
-        <img src="https://img.shields.io/travis/mrkmg/service-checker.svg?style=flat-square" alt="Build Status" />
-    </a>  
-    <a href="https://coveralls.io/github/mrkmg/service-checker?branch=master">
-        <img src="https://img.shields.io/coveralls/mrkmg/service-checker/master.svg?style=flat-square" alt="Coverage Status" />
-    </a>
-    <a href="https://david-dm.org/mrkmg/service-checker#badge-embed">
-        <img src="https://img.shields.io/david/mrkmg/service-checker.svg?style=flat-square" />
-    </a>
-    <a href="https://www.npmjs.com/package/service-checker" title="service-checker on NPM">
-        <img src="https://img.shields.io/npm/v/service-checker.svg?style=flat-square" />
-    </a>
-    <a href="https://opensource.org/licenses/MIT" title="MIT License">
-        <img src="https://img.shields.io/npm/l/service-checker.svg?style=flat-square" />
-    </a>
-</p>
+[![ServiceChecker on Travis CI](https://img.shields.io/travis/mrkmg/service-checker.svg?style=flat-square)](https://travis-ci.org/mrkmg/service-checker/branches)
+[![Coverage Status](https://img.shields.io/coveralls/mrkmg/service-checker/master.svg?style=flat-square)](https://coveralls.io/github/mrkmg/service-checker?branch=master)
+[![ServiceChecker on DavidDM](https://img.shields.io/david/mrkmg/service-checker.svg?style=flat-square)](https://david-dm.org/mrkmg/service-checker#badge-embed)
+[![ServiceChecker on NPM](https://img.shields.io/npm/v/service-checker.svg?style=flat-square)](https://www.npmjs.com/package/service-checker)
+[![ServiceChecker uses the MIT](https://img.shields.io/npm/l/service-checker.svg?style=flat-square)](https://opensource.org/licenses/MIT)
 
-Current Version: **0.7.2**
+Current Version: **0.8.4**
 
-A node library to check if various services are up and behaving. This project is in beta. Expect everything to change
-frequently. Until version 1, the api may break at ANY point. After version 1.0.0, standard [SemVer](http://semver.org/) 
-will be followed.
+A node library to check if various services are up and behaving.
 
 - [Install](#install)
-- [Quick Example](#quick-example)
+- [Quick Example - Promise](#quick-example---promise)
+- [Quick Example - Callback](#quick-example---callback)
 - [Usage](#usage)
 - [Included Plugins](#included-plugins)
 - [Including a Plugin](#including-a-plugin)
@@ -39,8 +26,8 @@ Install
 
     npm install --save service-checker
 
-Quick Example
--------------
+Quick Example - Promise
+-----------------------
 
     //Initialize ServiceChecker with default timeout value
     var ServiceChecker = require("service-checker")({
@@ -67,15 +54,45 @@ Quick Example
             console.log(error);
         });
 
+Quick Example - Callback
+------------------------
+
+    //Initialize ServiceChecker with default timeout value
+    var ServiceChecker = require("service-checker")({
+        timeout: 5000
+    });
+    
+    //Check if server is responding to pings
+    ServiceChecker.ping("8.8.8.8", function (err, result)
+    {
+        if (err)
+        {
+            console.log("Other Error");
+            console.log(error);
+        }
+        else
+        {
+            if (result.success)
+                console.log("Did respond to ping");
+                console.log("It took " + result.time + "ms");
+            }
+            else
+            {
+                console.log("Did not respond to ping");
+                console.log(result.error);
+            }
+        }        
+    });
+
 Usage
 -----
 
-service-checker takes an options argument. The current options are:
+service-checker methods take an options argument and optionally a nodeback style callback. The current options are:
 
 - timeout *Sets the default time out for all checks*
 
-Call one of the plugins *(below)* as a method of service checker. A promise will be returned which will resolve with
-the following public properties:
+Call one of the plugins *(below)* as a method of service checker. All plugins will return an CheckResult object which
+contains the following properties:
 
 - type [string] *Name of the check performed*
 - success [bool] *Whether or not the check was successful*

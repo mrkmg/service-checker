@@ -38,15 +38,15 @@ class ServiceChecker
     return @.hasOwnProperty name
 
   _makeHandler: (name, handler) ->
-    @[name] = (options) ->
-      @_runHandler name, handler, options
+    @[name] = (options, callback) ->
+      @_runHandler name, handler, options, callback
     @_loaded.push(name)
 
-  _runHandler: (name, handler, options) ->
+  _runHandler: (name, handler, options, callback) ->
     default_options = @_options
     result = undefined
 
-    Promise
+    check_result = Promise
       .try ->
         result = new CheckResult(name)
         options = _.defaults options, default_options
@@ -54,6 +54,15 @@ class ServiceChecker
       .then handler
       .then (error) ->
         result.finished(error)
+
+    if _.isFunction callback
+      check_result
+        .then (result) ->
+          callback null, result
+        .catch (error) ->
+          callback error
+
+    check_result
 
   use: (plugin) ->
     self = this

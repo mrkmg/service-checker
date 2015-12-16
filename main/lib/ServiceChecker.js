@@ -48,23 +48,31 @@
     };
 
     ServiceChecker.prototype._makeHandler = function(name, handler) {
-      this[name] = function(options) {
-        return this._runHandler(name, handler, options);
+      this[name] = function(options, callback) {
+        return this._runHandler(name, handler, options, callback);
       };
       return this._loaded.push(name);
     };
 
-    ServiceChecker.prototype._runHandler = function(name, handler, options) {
-      var default_options, result;
+    ServiceChecker.prototype._runHandler = function(name, handler, options, callback) {
+      var check_result, default_options, result;
       default_options = this._options;
       result = void 0;
-      return Promise["try"](function() {
+      check_result = Promise["try"](function() {
         result = new CheckResult(name);
         options = _.defaults(options, default_options);
         return options;
       }).then(handler).then(function(error) {
         return result.finished(error);
       });
+      if (_.isFunction(callback)) {
+        check_result.then(function(result) {
+          return callback(null, result);
+        })["catch"](function(error) {
+          return callback(error);
+        });
+      }
+      return check_result;
     };
 
     ServiceChecker.prototype.use = function(plugin) {
