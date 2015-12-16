@@ -8,13 +8,15 @@
  */
 
 (function() {
-  var CheckResult, Promise, ServiceChecker, _, allowed_properties;
+  var CheckResult, DuplicateProviderError, Promise, ServiceChecker, _, allowed_properties;
 
   _ = require('underscore');
 
   Promise = require('bluebird');
 
   CheckResult = require('./CheckResult');
+
+  DuplicateProviderError = require('./errors/DuplicateProviderError');
 
   allowed_properties = ['timeout', 'ca'];
 
@@ -40,6 +42,10 @@
       }
       this._options = options;
     }
+
+    ServiceChecker.prototype._checkForDuplicatePlugin = function(name) {
+      return this.hasOwnProperty(name);
+    };
 
     ServiceChecker.prototype._makeHandler = function(name, handler) {
       this[name] = function(options) {
@@ -67,6 +73,11 @@
       if (!_.isObject(plugin)) {
         throw new Error('plugin must key:value object');
       }
+      _.each(plugin, function(handler, name) {
+        if (self._checkForDuplicatePlugin(name)) {
+          throw new DuplicateProviderError(name);
+        }
+      });
       _.each(plugin, function(handler, name) {
         if (_.isFunction(handler) && _.isString(name)) {
           return self._makeHandler(name, handler);

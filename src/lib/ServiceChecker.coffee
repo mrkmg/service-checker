@@ -8,6 +8,7 @@
 _ = require 'underscore'
 Promise = require 'bluebird'
 CheckResult = require './CheckResult'
+DuplicateProviderError = require './errors/DuplicateProviderError'
 
 allowed_properties = ['timeout', 'ca']
 
@@ -33,6 +34,9 @@ class ServiceChecker
 
     @_options = options
 
+  _checkForDuplicatePlugin: (name) ->
+    return @.hasOwnProperty name
+
   _makeHandler: (name, handler) ->
     @[name] = (options) ->
       @_runHandler name, handler, options
@@ -56,6 +60,10 @@ class ServiceChecker
 
     if !_.isObject(plugin)
       throw new Error('plugin must key:value object')
+
+    _.each plugin, (handler, name) ->
+      if self._checkForDuplicatePlugin name
+        throw new DuplicateProviderError name
 
     _.each plugin, (handler, name) ->
       if _.isFunction(handler) and _.isString(name)
