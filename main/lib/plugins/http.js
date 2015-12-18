@@ -37,7 +37,8 @@
       strictSSL: false,
       rejectUnauthorized: true,
       ca: null,
-      timeout: 5000
+      timeout: 5000,
+      agent: false
     });
     handler = ssl ? https_node : http_node;
     return handler.request(_.pick(options, 'host', 'port', 'method', 'path', 'strictSSL', 'rejectUnauthorized', 'ca'));

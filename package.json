@@ -1,6 +1,6 @@
 {
   "name": "service-checker",
-  "version": "0.8.4",
+  "version": "0.8.5",
   "description": "Checks a variety of common web services for errors.",
   "repository": "mrkmg/service-checker",
   "bugs": {
@@ -18,7 +18,8 @@
     "unit": "mocha --recursive --compilers coffee:coffee-script/register ./test/specs --timeout 10000",
     "cover": "npm run cover-local && npm run coveralls",
     "cover-local": "istanbul cover _mocha -- --recursive --compilers coffee:coffee-script/register --require coffee-coverage/register-istanbul ./test/specs --timeout 10000",
-    "coveralls": "istanbul-coveralls"
+    "coveralls": "istanbul-coveralls",
+    "generate-release": "./bin/generate_release"
   },
   "keywords": [
     "service",
@@ -31,6 +32,7 @@
     "async": "^1.5.0",
     "bluebird": "^3.0.5",
     "chalk": "^1.1.1",
+    "extend": "^3.0.0",
     "minimist": "^1.2.0",
     "native-dns": "^0.7.0",
     "smtp-connection": "^1.3.1",

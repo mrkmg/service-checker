@@ -23,3 +23,7 @@ describe 'MAIN: plugin system', ->
   it 'should throw if plugin does not have a valid schema', ->
     assert.throw ->
       ServiceChecker.use badPlugin: true
+
+  it 'should throw if a plugin with a duplicate name is used', ->
+    assert.throw ->
+      ServiceChecker.use http: ->

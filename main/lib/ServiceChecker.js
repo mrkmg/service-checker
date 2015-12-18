@@ -8,15 +8,25 @@
  */
 
 (function() {
-  var CheckResult, Promise, ServiceChecker, _, allowed_properties;
+  var CheckResult, DuplicateProviderError, Promise, PromiseWhile, ServiceChecker, _, allowed_properties, defaults;
 
   _ = require('underscore');
 
   Promise = require('bluebird');
 
+  PromiseWhile = (require('./PromiseWhile'))(Promise);
+
   CheckResult = require('./CheckResult');
 
-  allowed_properties = ['timeout', 'ca'];
+  DuplicateProviderError = require('./errors/DuplicateProviderError');
+
+  allowed_properties = ['timeout', 'ca', 'retries'];
+
+  defaults = {
+    timeout: 5000,
+    retries: 0,
+    ca: null
+  };
 
   ServiceChecker = (function() {
     function ServiceChecker(options) {
@@ -24,12 +34,12 @@
       if (!_.isObject(options)) {
         options = {};
       }
-      _.defaults(options, {
-        timeout: 5000,
-        ca: null
-      });
+      _.defaults(options, defaults);
       if (!_.isNumber(options.timeout)) {
         throw new Error('Timeout must be a number');
+      }
+      if (!_.isNumber(options.retries)) {
+        throw new Error('Retries must be a number');
       }
       if ((!_.isArray(options.ca)) && (!_.isString(options.ca)) && (!_.isNull(options.ca))) {
         throw new Error('CA must be an array, string, or empty');
@@ -50,13 +60,25 @@
 
     ServiceChecker.prototype._runHandler = function(name, handler, options, callback) {
       var check_result, default_options, result;
+      if (options === void 0) {
+        options = {};
+      }
       default_options = this._options;
       result = void 0;
       check_result = Promise["try"](function() {
         result = new CheckResult(name);
-        options = _.defaults(options, default_options);
-        return options;
-      }).then(handler).then(function(error) {
+        return _.defaults(options, default_options);
+      }).then(function(options) {
+        var doCheck, run_count, test;
+        run_count = 0;
+        test = function(last_result) {
+          return (++run_count <= options.retries) && !!last_result;
+        };
+        doCheck = function() {
+          return handler(options);
+        };
+        return PromiseWhile(test, doCheck);
+      }).then(function(error) {
         return result.finished(error);
       });
       if (_.isFunction(callback)) {
@@ -75,6 +97,11 @@
       if (!_.isObject(plugin)) {
         throw new Error('plugin must key:value object');
       }
+      _.each(plugin, function(handler, name) {
+        if (self.hasOwnProperty(name)) {
+          throw new DuplicateProviderError(name);
+        }
+      });
       _.each(plugin, function(handler, name) {
         if (_.isFunction(handler) && _.isString(name)) {
           return self._makeHandler(name, handler);

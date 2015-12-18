@@ -10,7 +10,6 @@ Promise = require 'bluebird'
 minimist = require 'minimist'
 _ = require 'underscore'
 chalk = require 'chalk'
-UsageError = require '../lib/errors/UsageError'
 ExitError = require '../lib/errors/ExitError'
 
 printMethods = ->
@@ -27,10 +26,10 @@ usage = ->
   console.log ''
   printMethods()
 
-
 makeOptions = (args) ->
   if args.hasOwnProperty 'h'
-    throw new UsageError()
+    usage()
+    throw new ExitError 0
 
   simple = args.hasOwnProperty 's'
 
@@ -52,7 +51,8 @@ makeOptions = (args) ->
     method,
     host,
     simple,
-    _.extend host: host, _.omit args,
+    _.extend
+      host: host, _.omit args,
       [
         '_',
         'host'
@@ -82,18 +82,16 @@ doCheck = (method, host, simple, options) ->
 
 run = (args) ->
   Promise
-    .try ->
-      args.slice 2
-    .then minimist
-    .then makeOptions
-    .spread doCheck
-    .catch UsageError,  ->
-      usage()
-    .catch ExitError, (error) ->
-      if error.message
-        console.log error.toString()
-      process.exit error.code
-    .then ->
-      process.exit 0
+  .try ->
+    args.slice 2
+  .then minimist
+  .then makeOptions
+  .spread doCheck
+  .catch ExitError, (error) ->
+    if error.message
+      console.log error.toString()
+    process.exit error.code
+  .then ->
+    process.exit 0
 
 module.exports = run

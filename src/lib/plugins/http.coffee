@@ -21,7 +21,7 @@ run = (options, ssl) ->
       .catch _.identity
 
 makeRequest = (options, ssl) ->
-  _.defaults(options,
+  _.defaults options,
     host: 'localhost'
     port: if ssl then 443 else 80
     method: 'GET'
@@ -29,7 +29,8 @@ makeRequest = (options, ssl) ->
     strictSSL: false
     rejectUnauthorized: true
     ca: null
-    timeout: 5000)
+    timeout: 5000
+    agent: false
 
   handler = if ssl then https_node else http_node
 
@@ -69,6 +70,7 @@ runRequest = (options, request) ->
       reject err
 
     request_timeout = setTimeout doTimeout, options.timeout
+
     request.end()
 
 

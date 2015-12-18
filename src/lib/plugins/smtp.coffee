@@ -12,9 +12,8 @@ _ = require 'underscore'
 
 run = (options, tls) ->
   Promise
-  .try(->
+  .try ->
     makeRequest options, tls
-  )
   .then (request) ->
     runRequest(options, request)
     .catch _.identity

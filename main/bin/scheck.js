@@ -8,7 +8,7 @@
  */
 
 (function() {
-  var ExitError, Promise, ServiceChecker, UsageError, _, chalk, doCheck, makeOptions, minimist, printMethods, run, usage;
+  var ExitError, Promise, ServiceChecker, _, chalk, doCheck, makeOptions, minimist, printMethods, run, usage;
 
   ServiceChecker = require('../index')();
 
@@ -19,8 +19,6 @@
   _ = require('underscore');
 
   chalk = require('chalk');
-
-  UsageError = require('../lib/errors/UsageError');
 
   ExitError = require('../lib/errors/ExitError');
 
@@ -43,7 +41,8 @@
   makeOptions = function(args) {
     var host, method, simple;
     if (args.hasOwnProperty('h')) {
-      throw new UsageError();
+      usage();
+      throw new ExitError(0);
     }
     simple = args.hasOwnProperty('s');
     if (args._.length === 0) {
@@ -94,9 +93,7 @@
   run = function(args) {
     return Promise["try"](function() {
       return args.slice(2);
-    }).then(minimist).then(makeOptions).spread(doCheck)["catch"](UsageError, function() {
-      return usage();
-    })["catch"](ExitError, function(error) {
+    }).then(minimist).then(makeOptions).spread(doCheck)["catch"](ExitError, function(error) {
       if (error.message) {
         console.log(error.toString());
       }

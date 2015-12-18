@@ -6,7 +6,7 @@
 [![ServiceChecker on NPM](https://img.shields.io/npm/v/service-checker.svg?style=flat-square)](https://www.npmjs.com/package/service-checker)
 [![ServiceChecker uses the MIT](https://img.shields.io/npm/l/service-checker.svg?style=flat-square)](https://opensource.org/licenses/MIT)
 
-Current Version: **0.8.4**
+Current Version: **0.8.5**
 
 A node library to check if various services are up and behaving.
 
@@ -29,13 +29,17 @@ Install
 Quick Example - Promise
 -----------------------
 
-    //Initialize ServiceChecker with default timeout value
+    // Initialize ServiceChecker with a default timeout of 1 second
     var ServiceChecker = require("service-checker")({
-        timeout: 5000
+        timeout: 1000
     });
     
-    //Check if server is responding to pings
-    ServiceChecker.ping("8.8.8.8")
+    //Check if server is responding to pings and try up to 3 total times
+    ServiceChecker
+        .ping({
+            host: '8.8.8.8',
+            retries: 2
+        })
         .then(function (result)
         {
             if (result.success)
@@ -57,13 +61,18 @@ Quick Example - Promise
 Quick Example - Callback
 ------------------------
 
-    //Initialize ServiceChecker with default timeout value
+    // Initialize ServiceChecker with a default timeout of 1 second
     var ServiceChecker = require("service-checker")({
-        timeout: 5000
+        timeout: 1000
     });
     
-    //Check if server is responding to pings
-    ServiceChecker.ping("8.8.8.8", function (err, result)
+    //Check if server is responding to pings and try up to 3 total times
+    var options = {
+        host: '8.8.8.8',
+        retries: 2
+    };
+    
+    ServiceChecker.ping(options, function (err, result)
     {
         if (err)
         {
@@ -89,17 +98,22 @@ Usage
 
 service-checker methods take an options argument and optionally a nodeback style callback. The current options are:
 
-- timeout *Sets the default time out for all checks*
+- **timeout** *Sets the default timeout in ms for all checks. Default: 5000*
+- **retries** *Sets the default number of retries for all checks. Default: 0*
+- **ca** *Sets the ca for all future checks, useful for https and smtpTls plugins. Default: null*
+
+*Note, the timeout is for each individual check. If you set retries to 1 and timeout to 1000ms and the check fails both 
+    attempts, then the total amount of time for the entire call will be 2000ms*
 
 Call one of the plugins *(below)* as a method of service checker. All plugins will return an CheckResult object which
 contains the following properties:
 
-- type [string] *Name of the check performed*
-- success [bool] *Whether or not the check was successful*
-- time [int] *How long in milliseconds the check took*
-- start_time [int] *Millisecond timestamp (Date.now()) when the check started*
-- end_time [int] *Millisecond timestamp (Date.now()) when the check finished*
-- error [object|undefined] *If the test was not successful, the error object from the check*
+- **type [string]** *Name of the check performed*
+- **success [bool]** *Whether or not the check was successful*
+- **time [int]** *How long in milliseconds the check took*
+- **start_time [int]** *Millisecond timestamp (Date.now()) when the check started*
+- **end_time [int]** *Millisecond timestamp (Date.now()) when the check finished*
+- **error [object|undefined]** *If the test was not successful, the error object from the check*
 
 
 Included Plugins
