@@ -35,11 +35,13 @@ Quick Example - Promise
     });
     
     //Check if server is responding to pings and try up to 3 total times
+    var options = {
+        host: '8.8.8.8',
+        retries: 2
+    };
+    
     ServiceChecker
-        .ping({
-            host: '8.8.8.8',
-            retries: 2
-        })
+        .ping(options)
         .then(function (result)
         {
             if (result.success)
