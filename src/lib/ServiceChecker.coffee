@@ -7,22 +7,28 @@
 
 _ = require 'underscore'
 Promise = require 'bluebird'
+PromiseWhile = (require './PromiseWhile') Promise
 CheckResult = require './CheckResult'
 DuplicateProviderError = require './errors/DuplicateProviderError'
 
-allowed_properties = ['timeout', 'ca']
+allowed_properties = ['timeout', 'ca', 'retries']
+defaults =
+  timeout: 5000
+  retries: 0
+  ca: null
 
 class ServiceChecker
   constructor: (options) ->
     if !_.isObject(options)
       options = {}
 
-    _.defaults options,
-      timeout: 5000
-      ca: null
+    _.defaults options, defaults
 
     if not _.isNumber options.timeout
       throw new Error 'Timeout must be a number'
+
+    if not _.isNumber options.retries
+      throw new Error 'Retries must be a number'
 
     if (not _.isArray options.ca) and (not _.isString options.ca) and (not _.isNull options.ca)
       throw new Error 'CA must be an array, string, or empty'
@@ -34,26 +40,32 @@ class ServiceChecker
 
     @_options = options
 
-  _checkForDuplicatePlugin: (name) ->
-    return @.hasOwnProperty name
-
   _makeHandler: (name, handler) ->
     @[name] = (options, callback) ->
       @_runHandler name, handler, options, callback
     @_loaded.push(name)
 
   _runHandler: (name, handler, options, callback) ->
+    if options is undefined then options = {}
     default_options = @_options
     result = undefined
 
     check_result = Promise
       .try ->
         result = new CheckResult(name)
-        options = _.defaults options, default_options
-        options
-      .then handler
+        _.defaults options, default_options
+      .then (options) ->
+        run_count = 0
+
+        test = (last_result) ->
+          (++run_count <= options.retries) and !!last_result
+
+        doCheck = ->
+          handler options
+
+        PromiseWhile test, doCheck
       .then (error) ->
-        result.finished(error)
+        result.finished error
 
     if _.isFunction callback
       check_result
@@ -68,17 +80,17 @@ class ServiceChecker
     self = this
 
     if !_.isObject(plugin)
-      throw new Error('plugin must key:value object')
+      throw new Error 'plugin must key:value object'
 
     _.each plugin, (handler, name) ->
-      if self._checkForDuplicatePlugin name
+      if self.hasOwnProperty name
         throw new DuplicateProviderError name
 
     _.each plugin, (handler, name) ->
       if _.isFunction(handler) and _.isString(name)
         self._makeHandler name, handler
       else
-        throw new Error("#{name} does not have a valid handler")
+        throw new Error "#{name} does not have a valid handler"
 
     this
 

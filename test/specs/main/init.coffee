@@ -17,6 +17,11 @@ describe 'MAIN: Module Exists', ->
   it "_name should exist and equal 'service-checker'", ->
     assert.equal ServiceChecker._name, 'service-checker'
 
+  it 'should be able to run with no parameters', ->
+    ServiceChecker.use noop: ->
+
+    assert.isFulfilled ServiceChecker.noop()
+
   it 'should throw for bad default initialization', ->
     assert.throws ->
       ServiceCheckerNonInit
@@ -31,3 +36,8 @@ describe 'MAIN: Module Exists', ->
     assert.throws ->
       ServiceCheckerNonInit
         ca: true
+
+  it 'should throw for bad retires', ->
+    assert.throws ->
+      ServiceCheckerNonInit
+        retries: 'a'
