@@ -6,7 +6,7 @@
 [![ServiceChecker on NPM](https://img.shields.io/npm/v/service-checker.svg?style=flat-square)](https://www.npmjs.com/package/service-checker)
 [![ServiceChecker uses the MIT](https://img.shields.io/npm/l/service-checker.svg?style=flat-square)](https://opensource.org/licenses/MIT)
 
-Current Version: **0.8.5**
+Current Version: **0.8.6**
 
 A node library to check if various services are up and behaving.
 
@@ -35,11 +35,13 @@ Quick Example - Promise
     });
     
     //Check if server is responding to pings and try up to 3 total times
+    var options = {
+        host: '8.8.8.8',
+        retries: 2
+    };
+    
     ServiceChecker
-        .ping({
-            host: '8.8.8.8',
-            retries: 2
-        })
+        .ping(options)
         .then(function (result)
         {
             if (result.success)
