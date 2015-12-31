@@ -10,7 +10,7 @@ chai.use require('chai-as-promised')
 assert = chai.assert
 
 ServiceChecker = require('../../../src/index') timeout: 1000
-CheckResult = require '../../../src/lib/CheckResult'
+CheckResult = require '../../../src/lib/components/CheckResult'
 
 describe 'MAIN: nodeback interface', ->
   it 'should eventually call nodeback with CheckResult with valid data', (done) ->
