@@ -11,8 +11,7 @@ Current Version: **0.8.6**
 A node library to check if various services are up and behaving.
 
 - [Install](#install)
-- [Quick Example - Promise](#quick-example---promise)
-- [Quick Example - Callback](#quick-example---callback)
+- [Quick Example - Promise](#quick-example)
 - [Usage](#usage)
 - [Included Plugins](#included-plugins)
 - [CLI Utility](#cli-utility)
@@ -26,73 +25,39 @@ Install
 
     npm install --save service-checker
 
-Quick Example - Promise
+Quick Example
 -----------------------
 
-    // Initialize ServiceChecker with a default timeout of 1 second
-    var ServiceChecker = require("service-checker")({
-        timeout: 1000
-    });
+    var ServiceChecker = require("service-checker")();
     
-    //Check if server is responding to pings and try up to 3 total times
-    var options = {
-        host: '8.8.8.8',
-        retries: 2
-    };
-    
+    /* Promise Style */
     ServiceChecker
-        .ping(options)
-        .then(function (result)
-        {
-            if (result.success)
-                console.log("Did respond to ping");
-                console.log("It took " + result.time + "ms");
+        .https({host: 'github.com'})
+        .then(function (result) {
+            if (result.success) {
+                console.log('GitHub.com is up');
             }
-            else
-            {
-                console.log("Did not respond to ping");
-                console.log(result.error);
-            }
+            else {
+                console.log('GitHub.com is down');
+            }                
         })
-        .catch(function (error)
-        {
-            console.log("Other Error");
-            console.log(error);
+        .catch(function () {
+            console.log('Other Error, check not attempted');
         });
-
-Quick Example - Callback
-------------------------
-
-    // Initialize ServiceChecker with a default timeout of 1 second
-    var ServiceChecker = require("service-checker")({
-        timeout: 1000
-    });
-    
-    //Check if server is responding to pings and try up to 3 total times
-    var options = {
-        host: '8.8.8.8',
-        retries: 2
-    };
-    
-    ServiceChecker.ping(options, function (err, result)
-    {
-        if (err)
-        {
-            console.log("Other Error");
-            console.log(error);
+        
+    /* Callback Style */
+    ServiceChecker.https({host: 'github.com'}, function (err, result) {
+        if (err) {
+            console.log('Other Error, check not attempted');
+            return;
         }
-        else
-        {
-            if (result.success)
-                console.log("Did respond to ping");
-                console.log("It took " + result.time + "ms");
-            }
-            else
-            {
-                console.log("Did not respond to ping");
-                console.log(result.error);
-            }
-        }        
+        
+        if (result.success) {
+            console.log('GitHub.com is up');
+        }
+        else {
+            console.log('GitHub.com is down');
+        } 
     });
 
 Usage
