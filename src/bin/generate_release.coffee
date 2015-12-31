@@ -111,7 +111,7 @@
 
         opts.env.GIT_MERGE_AUTOEDIT = 'no'
 
-        Exec 'git add -A', opts
+        Exec 'git add README.md package.json', opts
         Exec 'git commit -am "Release ' + new_version + '"', opts
         Exec 'git flow release finish -m "' + new_version + '" ' + new_version, opts
         Exec 'git push origin develop', opts
