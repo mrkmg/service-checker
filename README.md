@@ -1,10 +1,10 @@
 # ServiceChecker 
 
-[![ServiceChecker on Travis CI](https://img.shields.io/travis/mrkmg/service-checker.svg?style=flat-square)](https://travis-ci.org/mrkmg/service-checker/branches)
-[![Coverage Status](https://img.shields.io/coveralls/mrkmg/service-checker/master.svg?style=flat-square)](https://coveralls.io/github/mrkmg/service-checker?branch=master)
-[![ServiceChecker on DavidDM](https://img.shields.io/david/mrkmg/service-checker.svg?style=flat-square)](https://david-dm.org/mrkmg/service-checker#badge-embed)
-[![ServiceChecker on NPM](https://img.shields.io/npm/v/service-checker.svg?style=flat-square)](https://www.npmjs.com/package/service-checker)
-[![ServiceChecker uses the MIT](https://img.shields.io/npm/l/service-checker.svg?style=flat-square)](https://opensource.org/licenses/MIT)
+[![ServiceChecker on Travis CI](//img.shields.io/travis/mrkmg/service-checker.svg?style=flat-square)](https://travis-ci.org/mrkmg/service-checker/branches)
+[![Coverage Status](//img.shields.io/coveralls/mrkmg/service-checker/master.svg?style=flat-square)](https://coveralls.io/github/mrkmg/service-checker?branch=master)
+[![ServiceChecker on DavidDM](//img.shields.io/david/mrkmg/service-checker.svg?style=flat-square)](https://david-dm.org/mrkmg/service-checker#badge-embed)
+[![ServiceChecker on NPM](//img.shields.io/npm/v/service-checker.svg?style=flat-square)](https://www.npmjs.com/package/service-checker)
+[![ServiceChecker uses the MIT](//img.shields.io/npm/l/service-checker.svg?style=flat-square)](https://opensource.org/licenses/MIT)
 
 Current Version: **0.8.6**
 
@@ -15,9 +15,9 @@ A node library to check if various services are up and behaving.
 - [Quick Example - Callback](#quick-example---callback)
 - [Usage](#usage)
 - [Included Plugins](#included-plugins)
+- [CLI Utility](#cli-utility)
 - [Including a Plugin](#including-a-plugin)
 - [Writing a Plugin](#writing-a-plugin)
-- [CLI Utility](#cli-utility)
 - [Contributing](#contributing)
 - [License](#license)
 
@@ -121,7 +121,16 @@ contains the following properties:
 Included Plugins
 ----------------
 
-**Ping** _Check a given host for an ICMP response. Uses the system ping utility. If your system does not have a ping utility in path, this plugin will fail_
+- [Ping](#ping)
+- [HTTP](#http)
+- [HTTPS](#https)
+- [SMTP](#smtp)
+- [SMTP-TLS](#smtp-tls)
+- [Ping](#ping)
+- [DNS](#dns)
+
+#### Ping 
+_Check a given host for an ICMP response. Uses the system ping utility. If your system does not have a ping utility in path, this plugin will fail_
 
 `.ping(options)`
 
@@ -132,7 +141,8 @@ Where options are:
 
 --------------------------------------------------------------------------------
 
-**HTTP** _Check a given host for a valid HTTP response_
+#### HTTP 
+_Check a given host for a valid HTTP response_
 
 `.http(options)`
 
@@ -144,7 +154,8 @@ Where options are:
 
 --------------------------------------------------------------------------------
 
-**HTTPS** _Check a given host for a valid HTTP response and for a valid SSL Certificate_
+#### HTTPS 
+_Check a given host for a valid HTTP response and for a valid SSL Certificate_
 
 `.https(options)`
 
@@ -157,7 +168,8 @@ Where options are:
 
 --------------------------------------------------------------------------------
 
-**SMTP** _Check a given host for a valid SMTP response. Does not use TLS_
+#### SMTP 
+_Check a given host for a valid SMTP response. Does not use TLS_
 
 `.smtp(options)`
 
@@ -167,7 +179,8 @@ Where options are:
 
 --------------------------------------------------------------------------------
 
-**SMTP-TLS** _Check a given host for a valid SMTP response and that STARTSSL is enabled with a valid TLS Certificate_
+#### SMTP-TLS 
+_Check a given host for a valid SMTP response and that STARTSSL is enabled with a valid TLS Certificate_
 
 `.smtpTls(options)`
 
@@ -178,7 +191,8 @@ Where options are:
 
 --------------------------------------------------------------------------------
 
-**Raw-TCP** _Check that a TCP connection can be made to a given host on a given port_
+#### Raw-TCP 
+_Check that a TCP connection can be made to a given host on a given port_
 
 `.rawTcp(options)`
 
@@ -188,7 +202,8 @@ Where options are:
 
 --------------------------------------------------------------------------------
 
-**DNS** _Check that a dns server is resolving_
+#### DNS 
+_Check that a dns server is resolving_
 
 `.dns(options)`
 
@@ -197,6 +212,54 @@ Where options are:
 - name (string) The hostname to lookup. Defaults to 'google.com'.
 - type (string) The record type to lookup. Defaults to 'A'.
 - timeout (number) How long to wait until the request is considered timed out.
+
+CLI Utility
+-------------
+
+service-checker also comes with a simple CLI utility called scheck. If service-checker is
+installed globally, you should have the `scheck` utility installed and ready to use.
+
+To use the `scheck` CLI utility, make sure to install service-checker globally.
+
+    sudo npm install -g service-checker
+     
+Then call the `scheck` utility.
+
+    #See how to use scheck
+    scheck -h
+
+    #Check 8.8.8.8 via ping
+    scheck 8.8.8.8 
+    
+    #Check google.com via https with a 500ms timeout
+    scheck https google.com --timeout 500
+    
+    #Check if gmails mail server is up and properly configured for TLS
+    scheck smtpTls gmail-smtp-in.l.google.com
+    
+The program can be used in a script multiple ways.
+
+**Exit Codes**
+
+The program will exit with the following codes.
+
+Exit Code | Meaning 
+--------- | ------- 
+0         | All parameters are sane and the check was successful. 
+1         | There was an error with the parameters. Check your input. 
+2         | All parameters are sane, but the check failed. 
+255       | An unknown error occurred. Please report this as a bug. 
+
+**Simple Mode**
+
+The program can also be invoked with the `-s` parameter to enable "simple" mode. In simple mode, the output will always
+be in the following format.
+
+    (Up/Down)<tab>(Time)
+    
+For example, with cut you could run the following command to get how long it takes for a host to respond to a ping.
+
+    scheck 127.0.0.1 -s | cut -f2 -d$'\t'
 
 
 Including a Plugin
@@ -305,54 +368,6 @@ To use the plugin you just wrote is simple as well:
                 console.log("File does not exist");
             }
         });
-
-CLI Utility
--------------
-
-service-checker also comes with a simple CLI utility called scheck. If service-checker is
-installed globally, you should have the `scheck` utility installed and ready to use.
-
-To use the `scheck` CLI utility, make sure to install service-checker globally.
-
-    sudo npm install -g service-checker
-     
-Then call the `scheck` utility.
-
-    #See how to use scheck
-    scheck -h
-
-    #Check 8.8.8.8 via ping
-    scheck 8.8.8.8 
-    
-    #Check google.com via https with a 500ms timeout
-    scheck https google.com --timeout 500
-    
-    #Check if gmails mail server is up and properly configured for TLS
-    scheck smtpTls gmail-smtp-in.l.google.com
-    
-The program can be used in a script multiple ways.
-
-**Exit Codes**
-
-The program will exit with the following codes.
-
-Exit Code | Meaning 
---------- | ------- 
-0         | All parameters are sane and the check was successful. 
-1         | There was an error with the parameters. Check your input. 
-2         | All parameters are sane, but the check failed. 
-255       | An unknown error occurred. Please report this as a bug. 
-
-**Simple Mode**
-
-The program can also be invoked with the `-s` parameter to enable "simple" mode. In simple mode, the output will always
-be in the following format.
-
-    (Up/Down)<tab>(Time)
-    
-For example, with cut you could run the following command to get how long it takes for a host to respond to a ping.
-
-    scheck 127.0.0.1 -s | cut -f2 -d$'\t'
 
 Contributing
 ------------
