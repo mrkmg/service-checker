@@ -1,10 +1,10 @@
 # ServiceChecker 
 
-[![ServiceChecker on Travis CI](//img.shields.io/travis/mrkmg/service-checker.svg?style=flat-square)](https://travis-ci.org/mrkmg/service-checker/branches)
-[![Coverage Status](//img.shields.io/coveralls/mrkmg/service-checker/master.svg?style=flat-square)](https://coveralls.io/github/mrkmg/service-checker?branch=master)
-[![ServiceChecker on DavidDM](//img.shields.io/david/mrkmg/service-checker.svg?style=flat-square)](https://david-dm.org/mrkmg/service-checker#badge-embed)
-[![ServiceChecker on NPM](//img.shields.io/npm/v/service-checker.svg?style=flat-square)](https://www.npmjs.com/package/service-checker)
-[![ServiceChecker uses the MIT](//img.shields.io/npm/l/service-checker.svg?style=flat-square)](https://opensource.org/licenses/MIT)
+[![ServiceChecker on Travis CI](https://img.shields.io/travis/mrkmg/service-checker.svg?style=flat-square)](https://travis-ci.org/mrkmg/service-checker/branches)
+[![Coverage Status](https://img.shields.io/coveralls/mrkmg/service-checker/master.svg?style=flat-square)](https://coveralls.io/github/mrkmg/service-checker?branch=master)
+[![ServiceChecker on DavidDM](https://img.shields.io/david/mrkmg/service-checker.svg?style=flat-square)](https://david-dm.org/mrkmg/service-checker#badge-embed)
+[![ServiceChecker on NPM](https://img.shields.io/npm/v/service-checker.svg?style=flat-square)](https://www.npmjs.com/package/service-checker)
+[![ServiceChecker uses the MIT](https://img.shields.io/npm/l/service-checker.svg?style=flat-square)](https://opensource.org/licenses/MIT)
 
 Current Version: **0.8.6**
 
