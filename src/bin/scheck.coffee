@@ -44,7 +44,7 @@ makeOptions = (args) ->
   else
     throw new ExitError 1, 'Too many parameters'
 
-  if (not ServiceChecker.hasOwnProperty(method)) or (not _.isFunction ServiceChecker[method])
+  unless ServiceChecker[method]? and _.isFunction ServiceChecker[method]
     throw new ExitError 1, "#{method} is not a valid method"
 
   [

@@ -12,7 +12,11 @@
   Exec = require('child_process').execSync
 
   getCurrentVersion = ->
-    require('../../package.json').version
+    version = require('../../package.json').version
+    unless version
+      throw new Error 'Could not read current version'
+
+    version
 
   getBumpType = ->
     args =
@@ -27,7 +31,7 @@
         resolve answers.release
 
   bumpVersion = (version, bump) ->
-    version_split = (version.split '.').map (t) -> parseInt t
+    version_split = version.split('.').map (t) -> parseInt t
 
     switch bump
       when 'patch'
@@ -84,11 +88,12 @@
       .then ->
         confirmUpdate current_version, new_version
       .then (do_update) ->
-        if not do_update then process.exit 1
+        unless do_update
+          throw new Error 'Update Canceled'
       .then ->
         opts =
-          env:
-            HOME: process.env.HOME
+          env: process.env
+
         Exec 'git fetch', opts
         Exec 'git checkout develop', opts
         Exec 'git pull origin develop --rebase', opts
@@ -102,14 +107,17 @@
         writeNewVersionPackage current_version, new_version
       .then ->
         opts =
-          env:
-            HOME: process.env.HOME
-            GIT_MERGE_AUTOEDIT: 'no'
+          env: process.env
 
-        Exec 'git add -A', opts
+        opts.env.GIT_MERGE_AUTOEDIT = 'no'
+
+        Exec 'git add README.md package.json', opts
         Exec 'git commit -am "Release ' + new_version + '"', opts
         Exec 'git flow release finish -m "' + new_version + '" ' + new_version, opts
         Exec 'git push origin develop', opts
         Exec 'git push origin master', opts
         Exec 'git push origin --tags', opts
+      .catch (err) ->
+        console.log err.message
+        process.exit 1
 )()

@@ -18,7 +18,12 @@
     FS = require('fs');
     Exec = require('child_process').execSync;
     getCurrentVersion = function() {
-      return require('../../package.json').version;
+      var version;
+      version = require('../../package.json').version;
+      if (!version) {
+        throw new Error('Could not read current version');
+      }
+      return version;
     };
     getBumpType = function() {
       var args;
@@ -37,7 +42,7 @@
     };
     bumpVersion = function(version, bump) {
       var version_split;
-      version_split = (version.split('.')).map(function(t) {
+      version_split = version.split('.').map(function(t) {
         return parseInt(t);
       });
       switch (bump) {
@@ -101,14 +106,12 @@
         return confirmUpdate(current_version, new_version);
       }).then(function(do_update) {
         if (!do_update) {
-          return process.exit(1);
+          throw new Error('Update Canceled');
         }
       }).then(function() {
         var opts;
         opts = {
-          env: {
-            HOME: process.env.HOME
-          }
+          env: process.env
         };
         Exec('git fetch', opts);
         Exec('git checkout develop', opts);
@@ -124,17 +127,18 @@
       }).then(function() {
         var opts;
         opts = {
-          env: {
-            HOME: process.env.HOME,
-            GIT_MERGE_AUTOEDIT: 'no'
-          }
+          env: process.env
         };
+        opts.env.GIT_MERGE_AUTOEDIT = 'no';
         Exec('git add -A', opts);
         Exec('git commit -am "Release ' + new_version + '"', opts);
         Exec('git flow release finish -m "' + new_version + '" ' + new_version, opts);
         Exec('git push origin develop', opts);
         Exec('git push origin master', opts);
         return Exec('git push origin --tags', opts);
+      })["catch"](function(err) {
+        console.log(err.message);
+        return process.exit(1);
       });
     };
   })();

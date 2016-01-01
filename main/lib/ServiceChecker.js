@@ -14,9 +14,9 @@
 
   Promise = require('bluebird');
 
-  PromiseWhile = (require('./PromiseWhile'))(Promise);
+  PromiseWhile = (require('./components/PromiseWhile'))(Promise);
 
-  CheckResult = require('./CheckResult');
+  CheckResult = require('./components/CheckResult');
 
   DuplicateProviderError = require('./errors/DuplicateProviderError');
 
@@ -69,15 +69,20 @@
         result = new CheckResult(name);
         return _.defaults(options, default_options);
       }).then(function(options) {
-        var doCheck, run_count, test;
+        var last_result, run, run_count, test;
         run_count = 0;
-        test = function(last_result) {
+        last_result = void 0;
+        test = function() {
           return (++run_count <= options.retries) && !!last_result;
         };
-        doCheck = function() {
-          return handler(options);
+        run = function() {
+          return Promise.resolve(options).then(handler).then(function(result) {
+            return last_result = result;
+          });
         };
-        return PromiseWhile(test, doCheck);
+        return PromiseWhile(test, run).then(function() {
+          return last_result;
+        });
       }).then(function(error) {
         return result.finished(error);
       });

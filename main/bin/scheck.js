@@ -56,7 +56,7 @@
     } else {
       throw new ExitError(1, 'Too many parameters');
     }
-    if ((!ServiceChecker.hasOwnProperty(method)) || (!_.isFunction(ServiceChecker[method]))) {
+    if (!((ServiceChecker[method] != null) && _.isFunction(ServiceChecker[method]))) {
       throw new ExitError(1, method + " is not a valid method");
     }
     return [

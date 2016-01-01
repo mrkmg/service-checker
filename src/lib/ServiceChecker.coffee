@@ -7,8 +7,8 @@
 
 _ = require 'underscore'
 Promise = require 'bluebird'
-PromiseWhile = (require './PromiseWhile') Promise
-CheckResult = require './CheckResult'
+PromiseWhile = (require './components/PromiseWhile') Promise
+CheckResult = require './components/CheckResult'
 DuplicateProviderError = require './errors/DuplicateProviderError'
 
 allowed_properties = ['timeout', 'ca', 'retries']
@@ -56,14 +56,21 @@ class ServiceChecker
         _.defaults options, default_options
       .then (options) ->
         run_count = 0
+        last_result = undefined
 
-        test = (last_result) ->
+        test = ->
           (++run_count <= options.retries) and !!last_result
 
-        doCheck = ->
-          handler options
+        run = ->
+          Promise
+            .resolve options
+            .then handler
+            .then (result) ->
+              last_result = result
 
-        PromiseWhile test, doCheck
+        PromiseWhile test, run
+          .then ->
+            last_result
       .then (error) ->
         result.finished error
 
@@ -79,7 +86,7 @@ class ServiceChecker
   use: (plugin) ->
     self = this
 
-    if !_.isObject(plugin)
+    unless _.isObject plugin
       throw new Error 'plugin must key:value object'
 
     _.each plugin, (handler, name) ->
