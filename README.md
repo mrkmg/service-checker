@@ -6,7 +6,7 @@
 [![ServiceChecker on NPM](https://img.shields.io/npm/v/service-checker.svg?style=flat-square)](https://www.npmjs.com/package/service-checker)
 [![ServiceChecker uses the MIT](https://img.shields.io/npm/l/service-checker.svg?style=flat-square)](https://opensource.org/licenses/MIT)
 
-Current Version: **0.9.2**
+Current Version: **0.9.3**
 
 A node library to check if various services are up and behaving.
 
