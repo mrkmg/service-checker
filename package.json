@@ -19,7 +19,7 @@
     "cover": "npm run cover-local && npm run coveralls",
     "cover-local": "istanbul cover _mocha -- --recursive --compilers coffee:coffee-script/register --require coffee-coverage/register-istanbul ./test/specs --timeout 10000",
     "coveralls": "istanbul-coveralls",
-    "generate-release": "./bin/generate_release"
+    "generate-release": "generate-release"
   },
   "keywords": [
     "service",
@@ -44,6 +44,7 @@
     "coffee-coverage": "^1.0.0",
     "coffee-script": "^1.10.0",
     "coffeelint": "^1.14.1",
+    "generate-release": "0.0.3",
     "inquirer": "^0.11.0",
     "istanbul": "^0.4.1",
     "istanbul-coveralls": "^1.0.3",
